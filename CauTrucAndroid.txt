@@ -1,0 +1,91 @@
+QuizletEnglish/
+│
+├── app/
+│   │
+│   ├── manifests/
+│   │   └── AndroidManifest.xml
+│   │
+│   ├── java/
+│   │   └── com.example.quizletenglish/
+│   │       │
+│   │       ├── MainActivity.java
+│   │       │
+│   │       ├── activities/
+│   │       │   ├── TaoBoTuVungActivity.java
+│   │       │   ├── ChiTietBoTuActivity.java
+│   │       │   ├── ThemTuActivity.java
+│   │       │   ├── FlashcardActivity.java
+│   │       │   ├── TracNghiemActivity.java
+│   │       │   ├── GhepTuActivity.java
+│   │       │   ├── KetQuaActivity.java
+│   │       │   ├── ThongKeActivity.java
+│   │       │   └── CaNhanActivity.java
+│   │       │
+│   │       ├── fragments/
+│   │       │   ├── TrangChuFragment.java
+│   │       │   ├── ThuVienFragment.java
+│   │       │   └── AIChatFragment.java
+│   │       │
+│   │       ├── adapters/
+│   │       │   ├── BoTuVungAdapter.java
+│   │       │   ├── TuVungAdapter.java
+│   │       │   └── TinNhanAdapter.java
+│   │       │
+│   │       ├── models/
+│   │       │   ├── BoTuVung.java
+│   │       │   ├── TuVung.java
+│   │       │   ├── TienDoHoc.java
+│   │       │   └── TinNhan.java
+│   │       │
+│   │       ├── database/
+│   │       │   ├── DatabaseHelper.java
+│   │       │   ├── BoTuVungDAO.java
+│   │       │   ├── TuVungDAO.java
+│   │       │   └── TienDoDAO.java
+│   │       │
+│   │       └── utils/
+│   │           └── Utils.java
+│   │
+│   └── res/
+│       │
+│       ├── layout/
+│       │   │
+│       │   ├── activity_main.xml
+│       │   ├── activity_tao_bo_tu_vung.xml
+│       │   ├── activity_chi_tiet_bo_tu.xml
+│       │   ├── activity_them_tu.xml
+│       │   ├── activity_flashcard.xml
+│       │   ├── activity_trac_nghiem.xml
+│       │   ├── activity_ghep_tu.xml
+│       │   ├── activity_ket_qua.xml
+│       │   ├── activity_thong_ke.xml
+│       │   └── activity_ca_nhan.xml
+│       │
+│       │   ├── fragment_trang_chu.xml
+│       │   ├── fragment_thu_vien.xml
+│       │   ├── fragment_ai_chat.xml
+│       │
+│       │   ├── item_bo_tu_vung.xml
+│       │   ├── item_tu_vung.xml
+│       │   └── item_tin_nhan.xml
+│       │
+│       ├── menu/
+│       │   └── bottom_navigation_menu.xml
+│       │
+│       ├── drawable/
+│       │   ├── bg_card.xml
+│       │   ├── bg_button.xml
+│       │   ├── bg_search.xml
+│       │   └── bg_flashcard.xml
+│       │
+│       ├── values/
+│       │   ├── colors.xml
+│       │   ├── strings.xml
+│       │   ├── themes.xml
+│       │   └── dimens.xml
+│       │
+│       └── mipmap/
+│
+├── build.gradle
+├── settings.gradle
+└── gradle.properties
