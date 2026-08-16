@@ -6,250 +6,238 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    // =====================================================
-    // TÊN DATABASE
-    // =====================================================
+        // =====================================================
+        // TÊN DATABASE
+        // =====================================================
 
-    private static final String DATABASE_NAME = "quizletapp.db";
+        private static final String DATABASE_NAME = "quizletapp.db";
 
-    // Vẫn giữ version 2
-    private static final int DATABASE_VERSION = 2;
+        // Version mới:
+        // - Thêm is_learned vào WORD
+        private static final int DATABASE_VERSION = 3;
 
+        // =====================================================
+        // TÊN CÁC BẢNG
+        // =====================================================
 
-    // =====================================================
-    // TÊN CÁC BẢNG
-    // =====================================================
+        public static final String TABLE_VOCABULARY_SET = "VOCABULARY_SET";
+        public static final String TABLE_WORD = "WORD";
+        public static final String TABLE_LEARNING_HISTORY = "LEARNING_HISTORY";
+        public static final String TABLE_QUIZ_RESULT = "QUIZ_RESULT";
 
-    public static final String TABLE_VOCABULARY_SET = "VOCABULARY_SET";
-    public static final String TABLE_WORD = "WORD";
-    public static final String TABLE_LEARNING_HISTORY = "LEARNING_HISTORY";
-    public static final String TABLE_QUIZ_RESULT = "QUIZ_RESULT";
+        // =====================================================
+        // CONSTRUCTOR
+        // =====================================================
 
+        public DatabaseHelper(Context context) {
+                super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
 
-    // =====================================================
-    // CONSTRUCTOR
-    // =====================================================
+        // =====================================================
+        // BẬT KHÓA NGOÀI
+        // =====================================================
 
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
+        @Override
+        public void onConfigure(SQLiteDatabase db) {
+                super.onConfigure(db);
 
+                db.setForeignKeyConstraintsEnabled(true);
+        }
 
-    // =====================================================
-    // BẬT KHÓA NGOÀI
-    // =====================================================
+        // =====================================================
+        // TẠO DATABASE
+        // =====================================================
 
-    @Override
-    public void onConfigure(SQLiteDatabase db) {
-        super.onConfigure(db);
+        @Override
+        public void onCreate(SQLiteDatabase db) {
 
-        db.setForeignKeyConstraintsEnabled(true);
-    }
+                // =================================================
+                // BẢNG VOCABULARY_SET
+                // =================================================
 
+                String createVocabularySetTable = "CREATE TABLE " + TABLE_VOCABULARY_SET + " (" +
 
-    // =====================================================
-    // TẠO DATABASE
-    // =====================================================
+                // ID bộ từ
+                                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+                                // Firebase UID của người tạo bộ từ
+                                "user_uid TEXT NOT NULL, " +
 
-        // =================================================
-        // BẢNG VOCABULARY_SET
-        // =================================================
+                                // Tên bộ từ
+                                "title TEXT NOT NULL, " +
 
-        String createVocabularySetTable =
-                "CREATE TABLE " + TABLE_VOCABULARY_SET + " (" +
+                                // Mô tả
+                                "description TEXT, " +
 
-                        // ID bộ từ
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                // Chủ đề
+                                "topic TEXT, " +
 
-                        // Firebase UID của người tạo bộ từ
-                        "user_uid TEXT NOT NULL, " +
+                                // Trình độ
+                                "level TEXT, " +
 
-                        // Tên bộ từ
-                        "title TEXT NOT NULL, " +
+                                // Ảnh bìa
+                                "cover_image TEXT, " +
 
-                        // Mô tả
-                        "description TEXT, " +
+                                // Thời gian tạo
+                                "created_at TEXT, " +
 
-                        // Chủ đề
-                        "topic TEXT, " +
+                                // Thời gian cập nhật
+                                "updated_at TEXT" +
 
-                        // Trình độ
-                        "level TEXT, " +
+                                ")";
 
-                        // Ảnh bìa
-                        "cover_image TEXT, " +
+                db.execSQL(createVocabularySetTable);
 
-                        // Thời gian tạo
-                        "created_at TEXT, " +
+                // =================================================
+                // BẢNG WORD
+                // =================================================
 
-                        // Thời gian cập nhật
-                        "updated_at TEXT" +
+                String createWordTable = "CREATE TABLE " + TABLE_WORD + " (" +
 
-                        ")";
+                // ID từ
+                                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-        db.execSQL(createVocabularySetTable);
+                                // ID bộ từ
+                                "set_id INTEGER NOT NULL, " +
 
+                                // Từ tiếng Anh
+                                "english TEXT NOT NULL, " +
 
-        // =================================================
-        // BẢNG WORD
-        // =================================================
+                                // Phiên âm
+                                "pronunciation TEXT, " +
 
-        String createWordTable =
-                "CREATE TABLE " + TABLE_WORD + " (" +
+                                // Nghĩa tiếng Việt
+                                "meaning TEXT NOT NULL, " +
 
-                        // ID từ
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                // Ví dụ
+                                "example TEXT, " +
 
-                        // ID bộ từ
-                        "set_id INTEGER NOT NULL, " +
+                                // Ghi chú
+                                "note TEXT, " +
 
-                        // Từ tiếng Anh
-                        "english TEXT NOT NULL, " +
+                                // Đã học chưa (0: chưa, 1: đã)
+                                "is_learned INTEGER DEFAULT 0, " +
 
-                        // Phiên âm
-                        "pronunciation TEXT, " +
+                                // Khóa ngoại tới VOCABULARY_SET
+                                "FOREIGN KEY(set_id) " +
+                                "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
 
-                        // Nghĩa tiếng Việt
-                        "meaning TEXT NOT NULL, " +
+                                // Xóa bộ từ thì xóa luôn các từ
+                                "ON DELETE CASCADE" +
 
-                        // Ví dụ
-                        "example TEXT, " +
+                                ")";
 
-                        // Ghi chú
-                        "note TEXT, " +
+                db.execSQL(createWordTable);
 
-                        // Khóa ngoại tới VOCABULARY_SET
-                        "FOREIGN KEY(set_id) " +
-                        "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
+                // =================================================
+                // BẢNG LEARNING_HISTORY
+                // =================================================
 
-                        // Xóa bộ từ thì xóa luôn các từ
-                        "ON DELETE CASCADE" +
+                String createLearningHistoryTable = "CREATE TABLE " + TABLE_LEARNING_HISTORY + " (" +
 
-                        ")";
+                // ID lịch sử
+                                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-        db.execSQL(createWordTable);
+                                // ID bộ từ
+                                "set_id INTEGER NOT NULL, " +
 
+                                // ID từ vựng
+                                "word_id INTEGER NOT NULL, " +
 
-        // =================================================
-        // BẢNG LEARNING_HISTORY
-        // =================================================
+                                // 1 = đúng
+                                // 0 = sai
+                                "is_correct INTEGER NOT NULL, " +
 
-        String createLearningHistoryTable =
-                "CREATE TABLE " + TABLE_LEARNING_HISTORY + " (" +
+                                // Chế độ học
+                                // FLASHCARD / QUIZ / MATCHING...
+                                "learning_mode TEXT NOT NULL, " +
 
-                        // ID lịch sử
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                // Thời gian học
+                                "learned_at TEXT, " +
 
-                        // ID bộ từ
-                        "set_id INTEGER NOT NULL, " +
+                                // Khóa ngoại tới VOCABULARY_SET
+                                "FOREIGN KEY(set_id) " +
+                                "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
 
-                        // ID từ vựng
-                        "word_id INTEGER NOT NULL, " +
+                                "ON DELETE CASCADE, " +
 
-                        // 1 = đúng
-                        // 0 = sai
-                        "is_correct INTEGER NOT NULL, " +
+                                // Khóa ngoại tới WORD
+                                "FOREIGN KEY(word_id) " +
+                                "REFERENCES " + TABLE_WORD + "(id) " +
 
-                        // Chế độ học
-                        // FLASHCARD / QUIZ / MATCHING...
-                        "learning_mode TEXT NOT NULL, " +
+                                "ON DELETE CASCADE" +
 
-                        // Thời gian học
-                        "learned_at TEXT, " +
+                                ")";
 
-                        // Khóa ngoại tới VOCABULARY_SET
-                        "FOREIGN KEY(set_id) " +
-                        "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
+                db.execSQL(createLearningHistoryTable);
 
-                        "ON DELETE CASCADE, " +
+                // =================================================
+                // BẢNG QUIZ_RESULT
+                // =================================================
 
-                        // Khóa ngoại tới WORD
-                        "FOREIGN KEY(word_id) " +
-                        "REFERENCES " + TABLE_WORD + "(id) " +
+                String createQuizResultTable = "CREATE TABLE " + TABLE_QUIZ_RESULT + " (" +
 
-                        "ON DELETE CASCADE" +
+                // ID kết quả
+                                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-                        ")";
+                                // ID bộ từ
+                                "set_id INTEGER NOT NULL, " +
 
-        db.execSQL(createLearningHistoryTable);
+                                // Tổng số câu
+                                "total_questions INTEGER NOT NULL, " +
 
+                                // Số câu đúng
+                                "correct_answers INTEGER NOT NULL, " +
 
-        // =================================================
-        // BẢNG QUIZ_RESULT
-        // =================================================
+                                // Số câu sai
+                                "wrong_answers INTEGER NOT NULL, " +
 
-        String createQuizResultTable =
-                "CREATE TABLE " + TABLE_QUIZ_RESULT + " (" +
+                                // Điểm
+                                "score REAL NOT NULL, " +
 
-                        // ID kết quả
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                // Thời gian hoàn thành
+                                "completed_at TEXT, " +
 
-                        // ID bộ từ
-                        "set_id INTEGER NOT NULL, " +
+                                // Khóa ngoại tới VOCABULARY_SET
+                                "FOREIGN KEY(set_id) " +
+                                "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
 
-                        // Tổng số câu
-                        "total_questions INTEGER NOT NULL, " +
+                                "ON DELETE CASCADE" +
 
-                        // Số câu đúng
-                        "correct_answers INTEGER NOT NULL, " +
+                                ")";
 
-                        // Số câu sai
-                        "wrong_answers INTEGER NOT NULL, " +
+                db.execSQL(createQuizResultTable);
+        }
 
-                        // Điểm
-                        "score REAL NOT NULL, " +
+        // =====================================================
+        // NÂNG VERSION DATABASE
+        // =====================================================
 
-                        // Thời gian hoàn thành
-                        "completed_at TEXT, " +
+        @Override
+        public void onUpgrade(
+                        SQLiteDatabase db,
+                        int oldVersion,
+                        int newVersion) {
 
-                        // Khóa ngoại tới VOCABULARY_SET
-                        "FOREIGN KEY(set_id) " +
-                        "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
+                // Xóa bảng theo thứ tự từ bảng phụ → bảng chính
 
-                        "ON DELETE CASCADE" +
+                db.execSQL(
+                                "DROP TABLE IF EXISTS " +
+                                                TABLE_LEARNING_HISTORY);
 
-                        ")";
+                db.execSQL(
+                                "DROP TABLE IF EXISTS " +
+                                                TABLE_QUIZ_RESULT);
 
-        db.execSQL(createQuizResultTable);
-    }
+                db.execSQL(
+                                "DROP TABLE IF EXISTS " +
+                                                TABLE_WORD);
 
+                db.execSQL(
+                                "DROP TABLE IF EXISTS " +
+                                                TABLE_VOCABULARY_SET);
 
-    // =====================================================
-    // NÂNG VERSION DATABASE
-    // =====================================================
-
-    @Override
-    public void onUpgrade(
-            SQLiteDatabase db,
-            int oldVersion,
-            int newVersion) {
-
-        // Xóa bảng theo thứ tự từ bảng phụ → bảng chính
-
-        db.execSQL(
-                "DROP TABLE IF EXISTS " +
-                        TABLE_LEARNING_HISTORY
-        );
-
-        db.execSQL(
-                "DROP TABLE IF EXISTS " +
-                        TABLE_QUIZ_RESULT
-        );
-
-        db.execSQL(
-                "DROP TABLE IF EXISTS " +
-                        TABLE_WORD
-        );
-
-        db.execSQL(
-                "DROP TABLE IF EXISTS " +
-                        TABLE_VOCABULARY_SET
-        );
-
-        // Tạo lại database
-        onCreate(db);
-    }
+                // Tạo lại database
+                onCreate(db);
+        }
 }
