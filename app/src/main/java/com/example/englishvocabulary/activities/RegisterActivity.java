@@ -1,9 +1,12 @@
 package com.example.englishvocabulary.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText edtEmail;
     private TextInputEditText edtPassword;
     private TextInputEditText edtConfirmPassword;
+
+    private TextView tvLogin;
 
     private Button btnRegister;
 
@@ -61,8 +66,15 @@ public class RegisterActivity extends AppCompatActivity {
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
 
         btnRegister = findViewById(R.id.btnRegister);
+        tvLogin = findViewById(R.id.tvLogin);
 
-
+        tvLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         // ==========================================
         // NÚT ĐĂNG KÝ
         // ==========================================
