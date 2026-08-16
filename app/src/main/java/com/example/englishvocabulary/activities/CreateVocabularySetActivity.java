@@ -217,6 +217,18 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         String userUid =
                 firebaseUser.getUid();
 
+        // KIỂM TRA TÊN BỘ TỪ ĐÃ TỒN TẠI CHƯA
+
+        if (vocabularySetDAO.isTitleExists(userUid, title)) {
+
+            tilTitle.setError(
+                    "Tên bộ từ này đã tồn tại!"
+            );
+
+            edtTitle.requestFocus();
+
+            return;
+        }
 
         // THỜI GIAN HIỆN TẠI
 
@@ -226,10 +238,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                         Locale.getDefault()
                 ).format(new Date());
 
-
-        // ẢNH BÌA
-
-        // ẢNH BÌA
 
         String coverImage = "";
 

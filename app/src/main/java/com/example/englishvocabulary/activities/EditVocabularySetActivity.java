@@ -68,6 +68,11 @@ public class EditVocabularySetActivity extends AppCompatActivity {
     private int previousNavItemId;
 
 
+    // ĐƯỜNG DẪN ẢNH BÌA HIỆN TẠI
+
+    private String currentCoverImagePath;
+
+
     // Mở thư viện chọn ảnh
 
     private final ActivityResultLauncher<String> imagePicker =
@@ -247,6 +252,9 @@ public class EditVocabularySetActivity extends AppCompatActivity {
 
         // Hiển thị dữ liệu cũ
 
+        currentCoverImagePath =
+                vocabularySet.getCoverImage();
+
         edtTitle.setText(
                 vocabularySet.getTitle()
         );
@@ -362,11 +370,22 @@ public class EditVocabularySetActivity extends AppCompatActivity {
         // ẢNH BÌA
 
         String coverImage =
-                vocabularySetDAO.getVocabularySetById(
-                        vocabularySetId
-                ).getCoverImage();
+                currentCoverImagePath;
 
         if (selectedImageUri != null) {
+
+            // Xóa ảnh cũ để tránh rác bộ nhớ
+
+            if (currentCoverImagePath != null &&
+                    !currentCoverImagePath.isEmpty()) {
+
+                File oldFile =
+                        new File(currentCoverImagePath);
+
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                }
+            }
 
             coverImage =
                     saveImageToInternalStorage(

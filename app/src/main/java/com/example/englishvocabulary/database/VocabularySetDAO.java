@@ -18,6 +18,34 @@ public class VocabularySetDAO {
         dbHelper = new DatabaseHelper(context);
     }
 
+    // =====================================================
+    // KIỂM TRA TÊN BỘ TỪ ĐÃ TỒN TẠI CHƯA
+    // =====================================================
+
+    public boolean isTitleExists(String userUid, String title) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_VOCABULARY_SET,
+                new String[]{"id"},
+                "user_uid = ? AND title = ?",
+                new String[]{userUid, title},
+                null,
+                null,
+                null
+        );
+
+        boolean exists = (cursor.getCount() > 0);
+
+        cursor.close();
+
+        db.close();
+
+        return exists;
+    }
+
 
     // =====================================================
     // THÊM BỘ TỪ VỰNG
