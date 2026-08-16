@@ -1,66 +1,375 @@
 package com.example.englishvocabulary.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.englishvocabulary.R;
+import com.example.englishvocabulary.activities.CreateVocabularySetActivity;
+import com.example.englishvocabulary.adapters.VocabularySetAdapter;
+import com.example.englishvocabulary.database.VocabularySetDAO;
+import com.example.englishvocabulary.models.VocabularySet;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ThuVienFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class ThuVienFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerVocabularySet;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private TextView tvEmpty;
 
-    public ThuVienFragment() {
-        // Required empty public constructor
+    private TextInputEditText edtSearch;
+
+    private ImageButton btnAddVocabulary;
+
+    // DATABASE
+    private VocabularySetDAO vocabularySetDAO;
+
+    // FIREBASE
+    private FirebaseAuth mAuth;
+
+    // ADAPTER
+    private VocabularySetAdapter adapter;
+
+    // DANH SÁCH BỘ TỪ
+    private List<VocabularySet> vocabularySetList;
+
+    private List<VocabularySet> allVocabularySetList;
+
+
+    // ==========================================
+    // TẠO VIEW
+    // ==========================================
+
+    @Nullable
+    @Override
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(
+                R.layout.fragment_thu_vien,
+                container,
+                false
+        );
+
+
+        // ÁNH XẠ VIEW
+
+        recyclerVocabularySet =
+                view.findViewById(
+                        R.id.recyclerVocabularySet
+                );
+
+        tvEmpty =
+                view.findViewById(
+                        R.id.tvEmpty
+                );
+
+        edtSearch =
+                view.findViewById(
+                        R.id.edtSearch
+                );
+
+        btnAddVocabulary =
+                view.findViewById(
+                        R.id.btnAddVocabulary
+                );
+
+
+        // DATABASE
+
+        vocabularySetDAO =
+                new VocabularySetDAO(requireContext());
+
+
+        // FIREBASE
+
+        mAuth =
+                FirebaseAuth.getInstance();
+
+
+        // KHỞI TẠO DANH SÁCH
+
+        vocabularySetList =
+                new ArrayList<>();
+
+        allVocabularySetList =
+                new ArrayList<>();
+
+
+        // RECYCLERVIEW
+
+        recyclerVocabularySet.setLayoutManager(
+                new LinearLayoutManager(requireContext())
+        );
+
+        adapter =
+                new VocabularySetAdapter(
+                        requireContext(),
+                        vocabularySetList
+                );
+
+        recyclerVocabularySet.setAdapter(adapter);
+
+
+        // NÚT TẠO BỘ TỪ
+
+        btnAddVocabulary.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            requireContext(),
+                            CreateVocabularySetActivity.class
+                    );
+
+            intent.putExtra(
+                    "previous_nav_item",
+                    R.id.nav_library
+            );
+
+            startActivity(intent);
+        });
+
+
+        // TÌM KIẾM
+
+        edtSearch.addTextChangedListener(
+                new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s,
+                            int start,
+                            int count,
+                            int after) {
+                    }
+
+
+                    @Override
+                    public void onTextChanged(
+                            CharSequence s,
+                            int start,
+                            int before,
+                            int count) {
+
+                        filterVocabularySet(
+                                s.toString()
+                        );
+                    }
+
+
+                    @Override
+                    public void afterTextChanged(
+                            Editable s) {
+                    }
+                }
+        );
+
+
+        // LẤY DỮ LIỆU
+
+        loadVocabularySet();
+
+
+        return view;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ThuVienFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ThuVienFragment newInstance(String param1, String param2) {
-        ThuVienFragment fragment = new ThuVienFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
+    // ==========================================
+    // KHI QUAY LẠI FRAGMENT
+    // ==========================================
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onResume() {
+
+        super.onResume();
+
+        loadVocabularySet();
+    }
+
+
+    // ==========================================
+    // LẤY DANH SÁCH BỘ TỪ
+    // ==========================================
+
+    private void loadVocabularySet() {
+
+        FirebaseUser firebaseUser =
+                mAuth.getCurrentUser();
+
+
+        // KIỂM TRA ĐĂNG NHẬP
+
+        if (firebaseUser == null) {
+
+            vocabularySetList.clear();
+
+            allVocabularySetList.clear();
+
+            adapter.notifyDataSetChanged();
+
+            tvEmpty.setText(
+                    "Vui lòng đăng nhập"
+            );
+
+            tvEmpty.setVisibility(
+                    View.VISIBLE
+            );
+
+            recyclerVocabularySet.setVisibility(
+                    View.GONE
+            );
+
+            return;
+        }
+
+
+        // LẤY FIREBASE UID
+
+        String userUid =
+                firebaseUser.getUid();
+
+
+        // LẤY DANH SÁCH TỪ DATABASE
+
+        List<VocabularySet> list =
+                vocabularySetDAO.getByUserUid(
+                        userUid
+                );
+
+
+        allVocabularySetList.clear();
+
+        allVocabularySetList.addAll(list);
+
+
+        vocabularySetList.clear();
+
+        vocabularySetList.addAll(list);
+
+
+        adapter.notifyDataSetChanged();
+
+
+        // KIỂM TRA DANH SÁCH
+
+        if (vocabularySetList.isEmpty()) {
+
+            tvEmpty.setText(
+                    "Chưa có bộ từ nào"
+            );
+
+            tvEmpty.setVisibility(
+                    View.VISIBLE
+            );
+
+            recyclerVocabularySet.setVisibility(
+                    View.GONE
+            );
+
+        } else {
+
+            tvEmpty.setVisibility(
+                    View.GONE
+            );
+
+            recyclerVocabularySet.setVisibility(
+                    View.VISIBLE
+            );
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_thu_vien, container, false);
+
+    // ==========================================
+    // TÌM KIẾM BỘ TỪ
+    // ==========================================
+
+    private void filterVocabularySet(String keyword) {
+
+        String search =
+                keyword.trim().toLowerCase();
+
+
+        vocabularySetList.clear();
+
+
+        // NẾU KHÔNG NHẬP TỪ KHÓA
+
+        if (search.isEmpty()) {
+
+            vocabularySetList.addAll(
+                    allVocabularySetList
+            );
+
+        } else {
+
+            // TÌM THEO TÊN BỘ TỪ
+
+            for (VocabularySet vocabularySet :
+                    allVocabularySetList) {
+
+                String title =
+                        vocabularySet.getTitle();
+
+
+                if (title != null &&
+                        title.toLowerCase()
+                                .contains(search)) {
+
+                    vocabularySetList.add(
+                            vocabularySet
+                    );
+                }
+            }
+        }
+
+
+        adapter.notifyDataSetChanged();
+
+
+        // KIỂM TRA KẾT QUẢ TÌM KIẾM
+
+        if (vocabularySetList.isEmpty()) {
+
+            tvEmpty.setText(
+                    "Không tìm thấy bộ từ"
+            );
+
+            tvEmpty.setVisibility(
+                    View.VISIBLE
+            );
+
+            recyclerVocabularySet.setVisibility(
+                    View.GONE
+            );
+
+        } else {
+
+            tvEmpty.setVisibility(
+                    View.GONE
+            );
+
+            recyclerVocabularySet.setVisibility(
+                    View.VISIBLE
+            );
+        }
     }
 }
