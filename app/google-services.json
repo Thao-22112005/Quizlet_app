@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "239616758103",
+    "project_id": "quizletapp-9fbae",
+    "storage_bucket": "quizletapp-9fbae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239616758103:android:4655c780a465012c0d6e12",
+        "android_client_info": {
+          "package_name": "com.example.englishvocabulary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx2wyMzzLRMD7Eb_mSlBV4CvVegWF4pLM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
