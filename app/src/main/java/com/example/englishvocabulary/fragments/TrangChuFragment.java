@@ -1,66 +1,170 @@
 package com.example.englishvocabulary.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.englishvocabulary.R;
+import com.example.englishvocabulary.activities.FlashcardActivity;
+import com.example.englishvocabulary.database.VocabularySetDAO;
+import com.example.englishvocabulary.database.WordDAO;
+import com.example.englishvocabulary.models.VocabularySet;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TrangChuFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class TrangChuFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private Button btnTestFlashcard;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // DATABASE
+    private VocabularySetDAO vocabularySetDAO;
+    private WordDAO wordDAO;
 
-    public TrangChuFragment() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TrangChuFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TrangChuFragment newInstance(String param1, String param2) {
-        TrangChuFragment fragment = new TrangChuFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // =====================================================
+    // TẠO VIEW
+    // =====================================================
 
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+
+        View view =
+                inflater.inflate(
+                        R.layout.fragment_trang_chu,
+                        container,
+                        false
+                );
+
+
+        // ÁNH XẠ VIEW
+
+        btnTestFlashcard =
+                view.findViewById(
+                        R.id.btnTestFlashcard
+                );
+
+
+        // DATABASE
+
+        vocabularySetDAO =
+                new VocabularySetDAO(
+                        requireContext()
+                );
+
+        wordDAO =
+                new WordDAO(
+                        requireContext()
+                );
+
+        // TEST FLASHCARD
+
+        btnTestFlashcard.setOnClickListener(v -> {
+
+            testFlashcard();
+
+        });
+
+
+        return view;
+    }
+
+
+    // =====================================================
+    // TEST FLASHCARD
+    // =====================================================
+
+    private void testFlashcard() {
+
+        // TẠO BỘ TỪ TEST
+
+        VocabularySet vocabularySet =
+                new VocabularySet();
+
+        vocabularySet.setUserUid(
+                "test_user"
+        );
+
+        vocabularySet.setTitle(
+                "Tiếng Anh Test"
+        );
+
+        vocabularySet.setDescription(
+                "Bộ từ dùng để test Flashcard"
+        );
+
+        vocabularySet.setTopic(
+                "Cơ bản"
+        );
+
+        vocabularySet.setLevel(
+                "A1"
+        );
+
+        vocabularySet.setCoverImage(
+                ""
+        );
+
+        vocabularySet.setCreatedAt(
+                "2026-08-17 19:00:00"
+        );
+
+        vocabularySet.setUpdatedAt(
+                "2026-08-17 19:00:00"
+        );
+
+
+        // LƯU BỘ TỪ
+
+        long setId =
+                vocabularySetDAO.insert(
+                        vocabularySet
+                );
+
+
+        // KIỂM TRA KẾT QUẢ
+
+        if (setId == -1) {
+
+            Toast.makeText(
+                    requireContext(),
+                    "Tạo bộ test thất bại",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trang_chu, container, false);
+
+        // TẠO 5 TỪ GIẢ
+
+        wordDAO.insertFakeData(
+                (int) setId
+        );
+
+
+        // MỞ FLASHCARD
+
+        Intent intent =
+                new Intent(
+                        requireContext(),
+                        FlashcardActivity.class
+                );
+
+        intent.putExtra(
+                "set_id",
+                (int) setId
+        );
+
+        startActivity(intent);
     }
 }

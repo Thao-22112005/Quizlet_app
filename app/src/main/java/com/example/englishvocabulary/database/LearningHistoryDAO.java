@@ -1,0 +1,556 @@
+package com.example.englishvocabulary.database;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.example.englishvocabulary.models.LearningHistory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LearningHistoryDAO {
+
+    private DatabaseHelper dbHelper;
+
+
+    public LearningHistoryDAO(Context context) {
+
+        dbHelper =
+                new DatabaseHelper(context);
+    }
+
+
+    // =====================================================
+    // THÊM LỊCH SỬ HỌC
+    // =====================================================
+
+    public long insert(
+            LearningHistory learningHistory) {
+
+        SQLiteDatabase db =
+                dbHelper.getWritableDatabase();
+
+        ContentValues values =
+                new ContentValues();
+
+
+        // ID BỘ TỪ
+
+        values.put(
+                "set_id",
+                learningHistory.getSetId()
+        );
+
+
+        // ID TỪ VỰNG
+
+        values.put(
+                "word_id",
+                learningHistory.getWordId()
+        );
+
+
+        // ĐÚNG / SAI
+
+        values.put(
+                "is_correct",
+                learningHistory.getIsCorrect()
+        );
+
+
+        // CHẾ ĐỘ HỌC
+
+        values.put(
+                "learning_mode",
+                learningHistory.getLearningMode()
+        );
+
+
+        // THỜI GIAN HỌC
+
+        values.put(
+                "learned_at",
+                learningHistory.getLearnedAt()
+        );
+
+
+        long id =
+                db.insert(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+                        null,
+                        values
+                );
+
+
+        db.close();
+
+
+        return id;
+    }
+
+
+    // =====================================================
+    // LẤY 1 LỊCH SỬ THEO ID
+    // =====================================================
+
+    public LearningHistory getById(int id) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.query(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+
+                        null,
+
+                        "id = ?",
+
+                        new String[]{
+                                String.valueOf(id)
+                        },
+
+                        null,
+                        null,
+                        null
+                );
+
+
+        LearningHistory learningHistory =
+                null;
+
+
+        if (cursor.moveToFirst()) {
+
+            learningHistory =
+                    cursorToLearningHistory(cursor);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return learningHistory;
+    }
+
+
+    // =====================================================
+    // LẤY LỊCH SỬ CỦA 1 BỘ TỪ
+    // =====================================================
+
+    public List<LearningHistory> getBySetId(
+            int setId) {
+
+        List<LearningHistory> list =
+                new ArrayList<>();
+
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.query(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+
+                        null,
+
+                        "set_id = ?",
+
+                        new String[]{
+                                String.valueOf(setId)
+                        },
+
+                        null,
+                        null,
+
+                        "id ASC"
+                );
+
+
+        while (cursor.moveToNext()) {
+
+            LearningHistory learningHistory =
+                    cursorToLearningHistory(cursor);
+
+            list.add(learningHistory);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return list;
+    }
+
+
+    // =====================================================
+    // LẤY LỊCH SỬ CỦA 1 TỪ
+    // =====================================================
+
+    public List<LearningHistory> getByWordId(
+            int wordId) {
+
+        List<LearningHistory> list =
+                new ArrayList<>();
+
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.query(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+
+                        null,
+
+                        "word_id = ?",
+
+                        new String[]{
+                                String.valueOf(wordId)
+                        },
+
+                        null,
+                        null,
+
+                        "id DESC"
+                );
+
+
+        while (cursor.moveToNext()) {
+
+            LearningHistory learningHistory =
+                    cursorToLearningHistory(cursor);
+
+            list.add(learningHistory);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return list;
+    }
+
+
+    // =====================================================
+    // LẤY LỊCH SỬ THEO BỘ TỪ + CHẾ ĐỘ HỌC
+    // =====================================================
+
+    public List<LearningHistory> getBySetIdAndMode(
+            int setId,
+            String learningMode) {
+
+        List<LearningHistory> list =
+                new ArrayList<>();
+
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.query(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+
+                        null,
+
+                        "set_id = ? AND learning_mode = ?",
+
+                        new String[]{
+                                String.valueOf(setId),
+                                learningMode
+                        },
+
+                        null,
+                        null,
+
+                        "id ASC"
+                );
+
+
+        while (cursor.moveToNext()) {
+
+            LearningHistory learningHistory =
+                    cursorToLearningHistory(cursor);
+
+            list.add(learningHistory);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return list;
+    }
+
+
+    // =====================================================
+    // LẤY LỊCH SỬ MỚI NHẤT CỦA 1 TỪ
+    // =====================================================
+
+    public LearningHistory getLatestByWordId(
+            int wordId,
+            String learningMode) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.query(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+
+                        null,
+
+                        "word_id = ? AND learning_mode = ?",
+
+                        new String[]{
+                                String.valueOf(wordId),
+                                learningMode
+                        },
+
+                        null,
+                        null,
+
+                        "id DESC",
+
+                        "1"
+                );
+
+
+        LearningHistory learningHistory =
+                null;
+
+
+        if (cursor.moveToFirst()) {
+
+            learningHistory =
+                    cursorToLearningHistory(cursor);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return learningHistory;
+    }
+
+
+    // =====================================================
+    // LẤY SỐ LẦN ĐÚNG
+    // =====================================================
+
+    public int countCorrect(
+            int setId,
+            String learningMode) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.rawQuery(
+                        "SELECT COUNT(*) " +
+                                "FROM " +
+                                DatabaseHelper.TABLE_LEARNING_HISTORY +
+                                " WHERE set_id = ? " +
+                                "AND learning_mode = ? " +
+                                "AND is_correct = 1",
+
+                        new String[]{
+                                String.valueOf(setId),
+                                learningMode
+                        }
+                );
+
+
+        int count = 0;
+
+
+        if (cursor.moveToFirst()) {
+
+            count =
+                    cursor.getInt(0);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return count;
+    }
+
+
+    // =====================================================
+    // LẤY SỐ LẦN SAI
+    // =====================================================
+
+    public int countWrong(
+            int setId,
+            String learningMode) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+
+        Cursor cursor =
+                db.rawQuery(
+                        "SELECT COUNT(*) " +
+                                "FROM " +
+                                DatabaseHelper.TABLE_LEARNING_HISTORY +
+                                " WHERE set_id = ? " +
+                                "AND learning_mode = ? " +
+                                "AND is_correct = 0",
+
+                        new String[]{
+                                String.valueOf(setId),
+                                learningMode
+                        }
+                );
+
+
+        int count = 0;
+
+
+        if (cursor.moveToFirst()) {
+
+            count =
+                    cursor.getInt(0);
+        }
+
+
+        cursor.close();
+
+        db.close();
+
+
+        return count;
+    }
+
+
+    // =====================================================
+    // XÓA LỊCH SỬ CỦA 1 BỘ TỪ
+    // =====================================================
+
+    public int deleteBySetId(int setId) {
+
+        SQLiteDatabase db =
+                dbHelper.getWritableDatabase();
+
+
+        int result =
+                db.delete(
+                        DatabaseHelper.TABLE_LEARNING_HISTORY,
+
+                        "set_id = ?",
+
+                        new String[]{
+                                String.valueOf(setId)
+                        }
+                );
+
+
+        db.close();
+
+
+        return result;
+    }
+
+
+    // =====================================================
+    // CURSOR → OBJECT
+    // =====================================================
+
+    private LearningHistory cursorToLearningHistory(
+            Cursor cursor) {
+
+        LearningHistory learningHistory =
+                new LearningHistory();
+
+
+        // ID
+
+        learningHistory.setId(
+                cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                                "id"
+                        )
+                )
+        );
+
+
+        // ID BỘ TỪ
+
+        learningHistory.setSetId(
+                cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                                "set_id"
+                        )
+                )
+        );
+
+
+        // ID TỪ VỰNG
+
+        learningHistory.setWordId(
+                cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                                "word_id"
+                        )
+                )
+        );
+
+
+        // ĐÚNG / SAI
+
+        learningHistory.setIsCorrect(
+                cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                                "is_correct"
+                        )
+                )
+        );
+
+
+        // CHẾ ĐỘ HỌC
+
+        learningHistory.setLearningMode(
+                cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                                "learning_mode"
+                        )
+                )
+        );
+
+
+        // THỜI GIAN HỌC
+
+        learningHistory.setLearnedAt(
+                cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                                "learned_at"
+                        )
+                )
+        );
+
+
+        return learningHistory;
+    }
+}

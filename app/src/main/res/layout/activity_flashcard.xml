@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+
+    <!-- NÚT QUAY LẠI -->
+
+    <ImageButton
+        android:id="@+id/btnBack"
+
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+
+        android:background="?attr/selectableItemBackgroundBorderless"
+
+        android:contentDescription="Quay lại"
+
+        android:src="@drawable/ic_back"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
+
+
+    <!-- TIẾN ĐỘ -->
+
+    <TextView
+        android:id="@+id/tvProgress"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="1/5"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack" />
+
+
+    <!-- NÚT CÀI ĐẶT -->
+
+    <ImageButton
+        android:id="@+id/btnSetting"
+
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+
+        android:background="?attr/selectableItemBackgroundBorderless"
+
+        android:contentDescription="Cài đặt"
+
+        android:src="@android:drawable/ic_menu_manage"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
+
+
+    <!-- THANH TIẾN ĐỘ -->
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+
+        style="?android:attr/progressBarStyleHorizontal"
+
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="10dp"
+
+        android:max="100"
+        android:progress="20"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+
+    <!-- CARD FLASHCARD -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardFlashcard"
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="30dp"
+
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintBottom_toTopOf="@id/layoutAnswer">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- NÚT PHÁT ÂM -->
+
+            <ImageButton
+                android:id="@+id/btnSound"
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="15dp"
+
+                android:background="?attr/selectableItemBackgroundBorderless"
+
+                android:src="@android:drawable/ic_lock_silent_mode_off"
+
+                android:contentDescription="Phát âm"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <!-- MẶT TRƯỚC -->
+
+            <TextView
+                android:id="@+id/tvEnglish"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="ability"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#222222"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+
+            <!-- MẶT SAU -->
+
+            <LinearLayout
+                android:id="@+id/layoutBackCard"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+                android:gravity="center"
+
+                android:padding="30dp"
+
+                android:visibility="gone"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+
+                <!-- TỪ TIẾNG ANH -->
+
+                <TextView
+                    android:id="@+id/tvBackEnglish"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="ability"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#222222" />
+
+
+                <!-- NGHĨA -->
+
+                <TextView
+                    android:id="@+id/tvMeaning"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="15dp"
+
+                    android:text="khả năng"
+                    android:textSize="22sp"
+                    android:textColor="#333333" />
+
+
+                <!-- VÍ DỤ -->
+
+                <TextView
+                    android:id="@+id/tvExample"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="25dp"
+
+                    android:gravity="center"
+
+                    android:text="She has the ability to solve problems quickly."
+                    android:textSize="16sp"
+                    android:textColor="#666666" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <!-- HAI NÚT NHỚ -->
+
+    <LinearLayout
+        android:id="@+id/layoutAnswer"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="25dp"
+
+        android:weightSum="2"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <!-- CHƯA NHỚ -->
+
+        <TextView
+            android:id="@+id/tvChuaNho"
+
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+
+            android:layout_weight="1"
+
+            android:layout_marginEnd="8dp"
+
+            android:gravity="center"
+
+            android:text="Chưa nhớ"
+            android:textSize="16sp"
+            android:textStyle="bold"
+
+            android:textColor="#D32F2F"
+
+            android:background="@drawable/bg_button_not_remember"
+
+            android:clickable="true"
+            android:focusable="true" />
+
+
+        <!-- ĐÃ NHỚ -->
+
+        <TextView
+            android:id="@+id/tvDaNho"
+
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+
+            android:layout_weight="1"
+
+            android:layout_marginStart="8dp"
+
+            android:gravity="center"
+
+            android:text="Đã nhớ"
+            android:textSize="16sp"
+            android:textStyle="bold"
+
+            android:textColor="#FFFFFF"
+
+            android:background="@drawable/bg_button_remember"
+
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

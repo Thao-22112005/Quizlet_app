@@ -14,5 +14,10 @@
         android:text="TRANG CHỦ"
         android:textSize="28sp"
         android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnTestFlashcard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TEST FLASHCARD" />
 
 </LinearLayout>

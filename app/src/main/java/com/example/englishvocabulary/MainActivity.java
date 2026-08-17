@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.englishvocabulary.activities.CreateVocabularySetActivity;
+import com.example.englishvocabulary.activities.FlashcardActivity;
 import com.example.englishvocabulary.fragments.AIChatFragment;
 import com.example.englishvocabulary.fragments.ThuVienFragment;
 import com.example.englishvocabulary.fragments.TrangChuFragment;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
         // ÁNH XẠ VIEW
         bottomNavigation = findViewById(R.id.bottomNavigation);
+
+
 
         currentNavItemId = R.id.nav_home;
 

@@ -6,39 +6,26 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    // =====================================================
     // TÊN DATABASE
-    // =====================================================
-
     private static final String DATABASE_NAME = "quizletapp.db";
 
     // Vẫn giữ version 2
     private static final int DATABASE_VERSION = 2;
 
 
-    // =====================================================
     // TÊN CÁC BẢNG
-    // =====================================================
-
     public static final String TABLE_VOCABULARY_SET = "VOCABULARY_SET";
     public static final String TABLE_WORD = "WORD";
     public static final String TABLE_LEARNING_HISTORY = "LEARNING_HISTORY";
     public static final String TABLE_QUIZ_RESULT = "QUIZ_RESULT";
 
 
-    // =====================================================
     // CONSTRUCTOR
-    // =====================================================
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-
-    // =====================================================
     // BẬT KHÓA NGOÀI
-    // =====================================================
-
     @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
@@ -47,17 +34,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    // =====================================================
     // TẠO DATABASE
-    // =====================================================
-
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // =================================================
         // BẢNG VOCABULARY_SET
-        // =================================================
-
         String createVocabularySetTable =
                 "CREATE TABLE " + TABLE_VOCABULARY_SET + " (" +
 
@@ -92,11 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createVocabularySetTable);
 
-
-        // =================================================
         // BẢNG WORD
-        // =================================================
-
         String createWordTable =
                 "CREATE TABLE " + TABLE_WORD + " (" +
 
@@ -133,10 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createWordTable);
 
 
-        // =================================================
         // BẢNG LEARNING_HISTORY
-        // =================================================
-
         String createLearningHistoryTable =
                 "CREATE TABLE " + TABLE_LEARNING_HISTORY + " (" +
 
@@ -177,10 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createLearningHistoryTable);
 
 
-        // =================================================
         // BẢNG QUIZ_RESULT
-        // =================================================
-
         String createQuizResultTable =
                 "CREATE TABLE " + TABLE_QUIZ_RESULT + " (" +
 
@@ -217,10 +188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    // =====================================================
     // NÂNG VERSION DATABASE
-    // =====================================================
-
     @Override
     public void onUpgrade(
             SQLiteDatabase db,

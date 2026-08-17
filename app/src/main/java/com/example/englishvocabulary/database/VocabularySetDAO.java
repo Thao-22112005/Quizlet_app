@@ -47,10 +47,7 @@ public class VocabularySetDAO {
     }
 
 
-    // =====================================================
     // THÊM BỘ TỪ VỰNG
-    // =====================================================
-
     public long insert(VocabularySet vocabularySet) {
 
         SQLiteDatabase db =
