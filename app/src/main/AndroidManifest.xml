@@ -33,6 +33,10 @@
             android:name=".activities.ForgotPasswordActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".activities.AddWordActivity" />
+        <activity android:name=".activities.VocabularySetDetailActivity" />
+
     </application>
 
 </manifest>

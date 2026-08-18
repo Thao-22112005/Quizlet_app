@@ -103,12 +103,27 @@ public class LoginActivity extends AppCompatActivity {
     // =====================================================
 
     private void loginAccount() {
+        //fake login
+        edtEmail.setText("a");
+        edtPassword.setText("a");
 
         String email =
                 edtEmail.getText().toString().trim();
 
         String password =
                 edtPassword.getText().toString().trim();
+
+        //fake login
+        if(email.equals("a") && password.equals("a")){
+            Intent intent =
+                    new Intent(
+                            LoginActivity.this,
+                            MainActivity.class
+                    );
+            startActivity(intent);
+            finish();
+            return;
+        }
 
 
         boolean isValid = true;
