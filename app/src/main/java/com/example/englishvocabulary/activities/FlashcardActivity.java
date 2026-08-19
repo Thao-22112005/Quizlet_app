@@ -25,21 +25,17 @@ import java.util.Locale;
 
 public class FlashcardActivity extends AppCompatActivity {
 
-    // =====================================================
-    // VIEW
-    // =====================================================
-
     private ImageButton btnBack;
     private ImageButton btnSound;
-    private ImageButton btnSetting;
+    private ImageButton btnSave;
 
     private TextView tvProgress;
 
-    private TextView tvEnglish;
+    private TextView tvEnglish, tvLoaiTu;
 
-    private TextView tvBackEnglish;
+    private TextView tvBackEnglish, tvBackLoaiTu, tvPronunciation;
     private TextView tvMeaning;
-    private TextView tvExample;
+    private TextView tvExample, tvTranslateExample;
 
     private TextView tvChuaNho;
     private TextView tvDaNho;
@@ -50,48 +46,22 @@ public class FlashcardActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
-
-    // =====================================================
-    // DATABASE
-    // =====================================================
-
+    //db
     private WordDAO wordDAO;
     private LearningHistoryDAO learningHistoryDAO;
-
-
-    // =====================================================
-    // DANH SÁCH TỪ
-    // =====================================================
 
     private List<Word> wordList;
 
 
-    // =====================================================
-    // VỊ TRÍ HIỆN TẠI
-    // =====================================================
-
     private int currentPosition = 0;
 
-
-    // =====================================================
-    // ID BỘ TỪ
-    // =====================================================
-
+    //ma bo tu
     private int setId;
 
-
-    // =====================================================
     // TRẠNG THÁI MẶT THẺ
     // false = mặt trước
     // true = mặt sau
-    // =====================================================
-
     private boolean isBackSide = false;
-
-
-    // =====================================================
-    // TEXT TO SPEECH
-    // =====================================================
 
     private TextToSpeech textToSpeech;
 
@@ -122,7 +92,7 @@ public class FlashcardActivity extends AppCompatActivity {
 
         btnSound = findViewById(R.id.btnSound);
 
-        btnSetting = findViewById(R.id.btnSetting);
+        btnSave = findViewById(R.id.btnSave);
 
         tvProgress = findViewById(R.id.tvProgress);
 
@@ -131,14 +101,18 @@ public class FlashcardActivity extends AppCompatActivity {
         cardFlashcard = findViewById(R.id.cardFlashcard);
 
         tvEnglish = findViewById(R.id.tvEnglish);
+        tvLoaiTu = findViewById(R.id.tvLoaiTu);
 
         layoutBackCard = findViewById(R.id.layoutBackCard);
 
         tvBackEnglish = findViewById(R.id.tvBackEnglish);
+        tvBackLoaiTu = findViewById(R.id.tvBackLoaiTu);
+        tvPronunciation = findViewById(R.id.tvPronunciation);
 
         tvMeaning = findViewById(R.id.tvMeaning);
 
         tvExample = findViewById(R.id.tvExample);
+        tvTranslateExample = findViewById(R.id.tvTranslateExample);
 
         tvChuaNho = findViewById(R.id.tvChuaNho);
 
@@ -293,13 +267,9 @@ public class FlashcardActivity extends AppCompatActivity {
         // CÀI ĐẶT
         // =====================================================
 
-        btnSetting.setOnClickListener(v -> {
+        btnSave.setOnClickListener(v -> {
 
-            Toast.makeText(
-                    this,
-                    "Chức năng cài đặt sẽ làm sau",
-                    Toast.LENGTH_SHORT
-            ).show();
+            saveLearningHistory(1);
 
         });
     }
@@ -330,7 +300,7 @@ public class FlashcardActivity extends AppCompatActivity {
         tvEnglish.setText(
                 word.getEnglish()
         );
-
+        tvLoaiTu.setText(word.getLoaiTu());
 
         // =================================================
         // MẶT SAU
@@ -339,11 +309,13 @@ public class FlashcardActivity extends AppCompatActivity {
         tvBackEnglish.setText(
                 word.getEnglish()
         );
-
+        tvBackLoaiTu.setText(word.getLoaiTu());
+        tvPronunciation.setText(word.getPronunciation());
 
         tvMeaning.setText(
                 word.getMeaning()
         );
+
 
 
         if (word.getExample() != null &&
@@ -352,6 +324,7 @@ public class FlashcardActivity extends AppCompatActivity {
             tvExample.setText(
                     word.getExample()
             );
+            tvTranslateExample.setText(word.getNote());
 
         } else {
 
@@ -434,6 +407,10 @@ public class FlashcardActivity extends AppCompatActivity {
                 View.VISIBLE
         );
 
+        tvLoaiTu.setVisibility(
+                View.VISIBLE
+        );
+
         layoutBackCard.setVisibility(
                 View.GONE
         );
@@ -441,14 +418,14 @@ public class FlashcardActivity extends AppCompatActivity {
         isBackSide = false;
     }
 
-
-    // =====================================================
-    // HIỆN MẶT SAU
-    // =====================================================
-
+    //mat sau
     private void showBackSide() {
 
         tvEnglish.setVisibility(
+                View.GONE
+        );
+
+        tvLoaiTu.setVisibility(
                 View.GONE
         );
 
@@ -459,11 +436,7 @@ public class FlashcardActivity extends AppCompatActivity {
         isBackSide = true;
     }
 
-
-    // =====================================================
-    // PHÁT ÂM
-    // =====================================================
-
+    //phat am
     private void speakWord() {
 
         if (currentPosition >=
@@ -493,10 +466,7 @@ public class FlashcardActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // LƯU LỊCH SỬ HỌC
-    // =====================================================
-
     private void saveLearningHistory(
             int isCorrect) {
 
@@ -511,10 +481,7 @@ public class FlashcardActivity extends AppCompatActivity {
                 wordList.get(currentPosition);
 
 
-        // =================================================
         // THỜI GIAN HIỆN TẠI
-        // =================================================
-
         String currentTime =
                 new SimpleDateFormat(
                         "yyyy-MM-dd HH:mm:ss",
@@ -524,10 +491,7 @@ public class FlashcardActivity extends AppCompatActivity {
                 );
 
 
-        // =================================================
         // TẠO HISTORY
-        // =================================================
-
         LearningHistory history =
                 new LearningHistory();
 
@@ -556,11 +520,7 @@ public class FlashcardActivity extends AppCompatActivity {
                 currentTime
         );
 
-
-        // =================================================
         // LƯU DATABASE
-        // =================================================
-
         long id =
                 learningHistoryDAO.insert(
                         history
@@ -579,10 +539,7 @@ public class FlashcardActivity extends AppCompatActivity {
         }
 
 
-        // =================================================
         // CHUYỂN SANG TỪ TIẾP THEO
-        // =================================================
-
         currentPosition++;
 
 
@@ -604,10 +561,7 @@ public class FlashcardActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // GIẢI PHÓNG TTS
-    // =====================================================
-
     @Override
     protected void onDestroy() {
 

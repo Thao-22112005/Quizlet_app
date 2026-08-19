@@ -43,6 +43,8 @@ public class WordDAO {
         );
 
 
+
+
         // TỪ TIẾNG ANH
 
         values.put(
@@ -50,6 +52,11 @@ public class WordDAO {
                 word.getEnglish()
         );
 
+
+        values.put(
+                "loai_tu",
+                word.getLoaiTu()
+        );
 
         // PHIÊN ÂM
 
@@ -216,6 +223,11 @@ public class WordDAO {
                 word.getEnglish()
         );
 
+        values.put(
+                "loai_tu",
+                word.getLoaiTu()
+        );
+
 
         // PHIÊN ÂM
 
@@ -344,6 +356,14 @@ public class WordDAO {
                 )
         );
 
+        word.setLoaiTu(
+                cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                                "loai_tu"
+                        )
+                )
+        );
+
 
         // PHIÊN ÂM
 
@@ -400,10 +420,11 @@ public class WordDAO {
 
         word1.setSetId(setId);
         word1.setEnglish("apple");
+        word1.setLoaiTu("n");
         word1.setPronunciation("/ˈæpəl/");
         word1.setMeaning("quả táo");
         word1.setExample("I eat an apple every day.");
-        word1.setNote("Danh từ");
+        word1.setNote("Tôi ăn táo mọi ngày.");
 
 
         // TỪ 2
@@ -411,10 +432,11 @@ public class WordDAO {
 
         word2.setSetId(setId);
         word2.setEnglish("book");
+        word2.setLoaiTu("v");
         word2.setPronunciation("/bʊk/");
         word2.setMeaning("quyển sách");
         word2.setExample("I am reading a book.");
-        word2.setNote("Danh từ");
+        word2.setNote("Tôi đang đọc sách");
 
 
         // TỪ 3
@@ -422,10 +444,11 @@ public class WordDAO {
 
         word3.setSetId(setId);
         word3.setEnglish("teacher");
+        word3.setLoaiTu("n");
         word3.setPronunciation("/ˈtiːtʃər/");
         word3.setMeaning("giáo viên");
         word3.setExample("My teacher is very kind.");
-        word3.setNote("Danh từ");
+        word3.setNote("Giáo viên của tôi rất tốt bụng");
 
 
         // TỪ 4
@@ -433,6 +456,7 @@ public class WordDAO {
 
         word4.setSetId(setId);
         word4.setEnglish("student");
+        word4.setLoaiTu("n");
         word4.setPronunciation("/ˈstuːdənt/");
         word4.setMeaning("học sinh");
         word4.setExample("She is a good student.");
@@ -444,6 +468,7 @@ public class WordDAO {
 
         word5.setSetId(setId);
         word5.setEnglish("school");
+        word5.setLoaiTu("n");
         word5.setPronunciation("/skuːl/");
         word5.setMeaning("trường học");
         word5.setExample("I go to school every day.");

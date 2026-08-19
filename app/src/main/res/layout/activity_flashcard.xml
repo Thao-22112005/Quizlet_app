@@ -54,7 +54,7 @@
     <!-- NÚT CÀI ĐẶT -->
 
     <ImageButton
-        android:id="@+id/btnSetting"
+        android:id="@+id/btnSave"
 
         android:layout_width="45dp"
         android:layout_height="45dp"
@@ -66,7 +66,7 @@
 
         android:contentDescription="Cài đặt"
 
-        android:src="@android:drawable/ic_menu_manage"
+        android:src="@drawable/ic_done"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -135,7 +135,7 @@
 
                 android:background="?attr/selectableItemBackgroundBorderless"
 
-                android:src="@android:drawable/ic_lock_silent_mode_off"
+                android:src="@android:drawable/ic_btn_speak_now"
 
                 android:contentDescription="Phát âm"
 
@@ -160,6 +160,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvLoaiTu"
+                android:text="Danh từ"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+
+                app:layout_constraintTop_toBottomOf="@id/tvEnglish"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
 
             <!-- MẶT SAU -->
@@ -196,6 +209,25 @@
                     android:textStyle="bold"
                     android:textColor="#222222" />
 
+                <TextView
+                    android:id="@+id/tvBackLoaiTu"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="n"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#222222" />
+
+                <TextView
+                    android:id="@+id/tvPronunciation"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#222222" />
 
                 <!-- NGHĨA -->
 
@@ -225,6 +257,20 @@
                     android:gravity="center"
 
                     android:text="She has the ability to solve problems quickly."
+                    android:textSize="16sp"
+                    android:textColor="#666666" />
+
+                <TextView
+                    android:id="@+id/tvTranslateExample"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="25dp"
+
+                    android:gravity="center"
+
+                    android:text="Cô ấy có khả năng giải quyết vấn đề rất nhanh."
                     android:textSize="16sp"
                     android:textColor="#666666" />
 

@@ -10,7 +10,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "quizletapp.db";
 
     // Vẫn giữ version 2
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
 
     // TÊN CÁC BẢNG
@@ -85,6 +85,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                         // Từ tiếng Anh
                         "english TEXT NOT NULL, " +
+
+                        //Loại từ (n,v, adj)
+                        "loai_tu TEXT NOT NULL," +
 
                         // Phiên âm
                         "pronunciation TEXT, " +
