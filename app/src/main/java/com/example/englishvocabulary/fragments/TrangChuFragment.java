@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.activities.FlashcardActivity;
+import com.example.englishvocabulary.activities.QuizActivity;
 import com.example.englishvocabulary.database.VocabularySetDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.example.englishvocabulary.models.VocabularySet;
@@ -21,6 +22,7 @@ import com.example.englishvocabulary.models.VocabularySet;
 public class TrangChuFragment extends Fragment {
 
     private Button btnTestFlashcard;
+    private Button btnQuiz;
 
     // DATABASE
     private VocabularySetDAO vocabularySetDAO;
@@ -53,6 +55,8 @@ public class TrangChuFragment extends Fragment {
                         R.id.btnTestFlashcard
                 );
 
+        btnQuiz = view.findViewById(R.id.btnQuiz);
+
 
         // DATABASE
 
@@ -74,8 +78,81 @@ public class TrangChuFragment extends Fragment {
 
         });
 
+        btnQuiz.setOnClickListener(v->{
+            testQuiz();
+        });
+
 
         return view;
+    }
+
+    // =====================================================
+    // TEST QUIZ
+    // =====================================================
+
+    private void testQuiz() {
+
+        // TẠO BỘ TỪ TEST QUIZ
+
+        VocabularySet vocabularySet =
+                new VocabularySet();
+
+        vocabularySet.setUserUid("test_user");
+
+        vocabularySet.setTitle("Quiz Test Data");
+
+        vocabularySet.setDescription("Bộ từ để test Quiz");
+
+        vocabularySet.setTopic("Test");
+
+        vocabularySet.setLevel("A1");
+
+        vocabularySet.setCoverImage("");
+
+        vocabularySet.setCreatedAt("2026-08-17 19:00:00");
+
+        vocabularySet.setUpdatedAt("2026-08-17 19:00:00");
+
+
+        // LƯU BỘ TỪ
+
+        long setId =
+                vocabularySetDAO.insert(
+                        vocabularySet
+                );
+
+
+        if (setId == -1) {
+
+            Toast.makeText(
+                    requireContext(),
+                    "Tạo bộ test Quiz thất bại",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+        // TẠO 5 TỪ GIẢ (Để đủ 4 đáp án A,B,C,D)
+
+        wordDAO.insertFakeData(
+                (int) setId
+        );
+
+
+        // MỞ QUIZ ACTIVITY
+
+        Intent intent =
+                new Intent(
+                        requireContext(),
+                        QuizActivity.class
+                );
+
+        intent.putExtra(
+                "set_id",
+                (int) setId
+        );
+
+        startActivity(intent);
     }
 
 

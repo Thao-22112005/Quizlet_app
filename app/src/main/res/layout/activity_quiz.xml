@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+
+    <!-- NÚT QUAY LẠI -->
+
+    <ImageButton
+        android:id="@+id/btnBack"
+
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+
+        android:background="?attr/selectableItemBackgroundBorderless"
+
+        android:src="@drawable/ic_back"
+        android:contentDescription="Quay lại"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        tools:ignore="TouchTargetSizeCheck" />
+
+
+    <!-- TIẾN ĐỘ -->
+
+    <TextView
+        android:id="@+id/tvProgress"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="1/5"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack" />
+
+
+    <!-- THANH TIẾN ĐỘ -->
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+
+        style="?android:attr/progressBarStyleHorizontal"
+
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginTop="8dp"
+
+        android:max="100"
+        android:progress="20"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+
+    <!-- CARD CÂU HỎI -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardQuestion"
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="20dp"
+
+        app:cardCornerRadius="18dp"
+        app:cardElevation="2dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+
+
+            <!-- CÂU HỎI -->
+
+            <TextView
+                android:id="@+id/tvQuestionTitle"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Nghĩa của từ sau là gì?"
+                android:textSize="22sp"
+                android:textColor="#333333"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <!-- TỪ TIẾNG ANH -->
+
+            <TextView
+                android:id="@+id/tvQuestion"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="20dp"
+
+                android:text="achieve"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_blue_dark"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvQuestionTitle" />
+
+
+            <!-- ĐÁP ÁN A -->
+
+            <TextView
+                android:id="@+id/tvAnswer1"
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+
+                android:layout_marginTop="25dp"
+
+                android:gravity="center_vertical"
+
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+
+                android:text="A.   đạt được"
+                android:textSize="16sp"
+                android:textColor="#333333"
+
+                android:background="@drawable/bg_quiz_answer"
+
+                android:clickable="true"
+                android:focusable="true"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvQuestion" />
+
+
+            <!-- ĐÁP ÁN B -->
+
+            <TextView
+                android:id="@+id/tvAnswer2"
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+
+                android:layout_marginTop="8dp"
+
+                android:gravity="center_vertical"
+
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+
+                android:text="B.   cho phép"
+                android:textSize="16sp"
+                android:textColor="#333333"
+
+                android:background="@drawable/bg_quiz_answer"
+
+                android:clickable="true"
+                android:focusable="true"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAnswer1" />
+
+
+            <!-- ĐÁP ÁN C -->
+
+            <TextView
+                android:id="@+id/tvAnswer3"
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+
+                android:layout_marginTop="8dp"
+
+                android:gravity="center_vertical"
+
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+
+                android:text="C.   ngạc nhiên"
+                android:textSize="16sp"
+                android:textColor="#333333"
+
+                android:background="@drawable/bg_quiz_answer"
+
+                android:clickable="true"
+                android:focusable="true"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAnswer2" />
+
+
+            <!-- ĐÁP ÁN D -->
+
+            <TextView
+                android:id="@+id/tvAnswer4"
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+
+                android:layout_marginTop="8dp"
+
+                android:gravity="center_vertical"
+
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+
+                android:text="D.   từ bỏ"
+                android:textSize="16sp"
+                android:textColor="#333333"
+
+                android:background="@drawable/bg_quiz_answer"
+
+                android:clickable="true"
+                android:focusable="true"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAnswer3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
