@@ -21,11 +21,6 @@ public class WordDAO {
                 new DatabaseHelper(context);
     }
 
-
-    // =====================================================
-    // THÊM TỪ VỰNG
-    // =====================================================
-
     public long insert(Word word) {
 
         SQLiteDatabase db =
@@ -103,11 +98,6 @@ public class WordDAO {
         return id;
     }
 
-
-    // =====================================================
-    // LẤY 1 TỪ THEO ID
-    // =====================================================
-
     public Word getById(int id) {
 
         SQLiteDatabase db =
@@ -149,11 +139,6 @@ public class WordDAO {
 
         return word;
     }
-
-
-    // =====================================================
-    // LẤY CÁC TỪ CỦA 1 BỘ TỪ
-    // =====================================================
 
     public List<Word> getBySetId(int setId) {
 
@@ -201,10 +186,6 @@ public class WordDAO {
         return list;
     }
 
-
-    // =====================================================
-    // CẬP NHẬT TỪ VỰNG
-    // =====================================================
 
     public int update(Word word) {
 
@@ -284,10 +265,6 @@ public class WordDAO {
     }
 
 
-    // =====================================================
-    // XÓA TỪ VỰNG
-    // =====================================================
-
     public int delete(int id) {
 
         SQLiteDatabase db =
@@ -311,11 +288,6 @@ public class WordDAO {
 
         return result;
     }
-
-
-    // =====================================================
-    // CURSOR → OBJECT
-    // =====================================================
 
     private Word cursorToWord(
             Cursor cursor) {

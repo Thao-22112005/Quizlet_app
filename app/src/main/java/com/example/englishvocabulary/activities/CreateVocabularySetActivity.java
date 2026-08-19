@@ -156,10 +156,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
-    // TẠO BỘ TỪ
-    // =====================================================
-
     private void createVocabularySet() {
 
         // Lấy dữ liệu từ giao diện

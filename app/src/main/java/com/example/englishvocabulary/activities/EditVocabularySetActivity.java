@@ -222,10 +222,7 @@ public class EditVocabularySetActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // LẤY BỘ TỪ CŨ
-    // =====================================================
-
     private void loadVocabularySet() {
 
         VocabularySet vocabularySet =
@@ -271,9 +268,6 @@ public class EditVocabularySetActivity extends AppCompatActivity {
                 vocabularySet.getLevel()
         );
 
-
-        // Hiển thị ảnh bìa cũ
-
         // HIỂN THỊ ẢNH BÌA
 
         String coverImage =
@@ -294,10 +288,6 @@ public class EditVocabularySetActivity extends AppCompatActivity {
         }
     }
 
-
-    // =====================================================
-    // CẬP NHẬT BỘ TỪ
-    // =====================================================
 
     private void updateVocabularySet() {
 
@@ -464,10 +454,7 @@ public class EditVocabularySetActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // QUAY LẠI
-    // =====================================================
-
     private void goBack() {
 
         Intent intent =

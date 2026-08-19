@@ -22,10 +22,6 @@ public class LearningHistoryDAO {
     }
 
 
-    // =====================================================
-    // THÊM LỊCH SỬ HỌC
-    // =====================================================
-
     public long insert(
             LearningHistory learningHistory) {
 
@@ -90,11 +86,6 @@ public class LearningHistoryDAO {
         return id;
     }
 
-
-    // =====================================================
-    // LẤY 1 LỊCH SỬ THEO ID
-    // =====================================================
-
     public LearningHistory getById(int id) {
 
         SQLiteDatabase db =
@@ -137,11 +128,6 @@ public class LearningHistoryDAO {
 
         return learningHistory;
     }
-
-
-    // =====================================================
-    // LẤY LỊCH SỬ CỦA 1 BỘ TỪ
-    // =====================================================
 
     public List<LearningHistory> getBySetId(
             int setId) {
@@ -191,10 +177,7 @@ public class LearningHistoryDAO {
     }
 
 
-    // =====================================================
     // LẤY LỊCH SỬ CỦA 1 TỪ
-    // =====================================================
-
     public List<LearningHistory> getByWordId(
             int wordId) {
 
@@ -241,11 +224,6 @@ public class LearningHistoryDAO {
 
         return list;
     }
-
-
-    // =====================================================
-    // LẤY LỊCH SỬ THEO BỘ TỪ + CHẾ ĐỘ HỌC
-    // =====================================================
 
     public List<LearningHistory> getBySetIdAndMode(
             int setId,
@@ -297,10 +275,6 @@ public class LearningHistoryDAO {
     }
 
 
-    // =====================================================
-    // LẤY LỊCH SỬ MỚI NHẤT CỦA 1 TỪ
-    // =====================================================
-
     public LearningHistory getLatestByWordId(
             int wordId,
             String learningMode) {
@@ -350,11 +324,6 @@ public class LearningHistoryDAO {
         return learningHistory;
     }
 
-
-    // =====================================================
-    // LẤY SỐ LẦN ĐÚNG
-    // =====================================================
-
     public int countCorrect(
             int setId,
             String learningMode) {
@@ -398,10 +367,6 @@ public class LearningHistoryDAO {
     }
 
 
-    // =====================================================
-    // LẤY SỐ LẦN SAI
-    // =====================================================
-
     public int countWrong(
             int setId,
             String learningMode) {
@@ -444,11 +409,6 @@ public class LearningHistoryDAO {
         return count;
     }
 
-
-    // =====================================================
-    // XÓA LỊCH SỬ CỦA 1 BỘ TỪ
-    // =====================================================
-
     public int deleteBySetId(int setId) {
 
         SQLiteDatabase db =
@@ -473,10 +433,6 @@ public class LearningHistoryDAO {
         return result;
     }
 
-
-    // =====================================================
-    // CURSOR → OBJECT
-    // =====================================================
 
     private LearningHistory cursorToLearningHistory(
             Cursor cursor) {

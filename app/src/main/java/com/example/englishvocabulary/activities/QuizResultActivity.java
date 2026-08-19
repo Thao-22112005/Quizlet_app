@@ -38,10 +38,6 @@ public class QuizResultActivity extends AppCompatActivity {
         );
 
 
-        // =====================================================
-        // ÁNH XẠ VIEW
-        // =====================================================
-
         tvCorrect =
                 findViewById(R.id.tvCorrect);
 
@@ -61,20 +57,11 @@ public class QuizResultActivity extends AppCompatActivity {
 
         tvWrongTitle = findViewById(R.id.tvWrongTitle);
 
-
-        // =====================================================
-        // NHẬN LOẠI KẾT QUẢ
-        // =====================================================
-
         learningMode =
                 getIntent().getStringExtra(
                         "learning_mode"
                 );
 
-
-        // =====================================================
-        // NHẬN ID BỘ TỪ
-        // =====================================================
 
         setId =
                 getIntent().getIntExtra(
@@ -82,10 +69,6 @@ public class QuizResultActivity extends AppCompatActivity {
                         -1
                 );
 
-
-        // =====================================================
-        // NẾU LÀ FLASHCARD
-        // =====================================================
 
         if ("FLASHCARD".equals(learningMode)) {
             tvCorrectTitle.setText("Đã nhớ");
@@ -110,9 +93,7 @@ public class QuizResultActivity extends AppCompatActivity {
             tvCorrectTitle.setText("Đúng");
             tvWrongTitle.setText("Sai");
 
-            // =================================================
             // NẾU LÀ QUIZ
-            // =================================================
 
             correct =
                     getIntent().getIntExtra(
@@ -134,10 +115,7 @@ public class QuizResultActivity extends AppCompatActivity {
         }
 
 
-        // =====================================================
         // TÍNH ĐIỂM
-        // =====================================================
-
         int score = 0;
 
         if (total > 0) {
@@ -147,9 +125,7 @@ public class QuizResultActivity extends AppCompatActivity {
         }
 
 
-        // =====================================================
         // HIỂN THỊ
-        // =====================================================
 
         tvCorrect.setText(
                 String.valueOf(correct)
@@ -164,18 +140,13 @@ public class QuizResultActivity extends AppCompatActivity {
         );
 
 
-        // =====================================================
         // HỌC LẠI
-        // =====================================================
 
         btnRetry.setOnClickListener(v -> {
 
             if ("FLASHCARD".equals(learningMode)) {
 
-                // -----------------------------
                 // HỌC LẠI FLASHCARD
-                // -----------------------------
-
                 Intent intent =
                         new Intent(
                                 QuizResultActivity.this,
@@ -191,10 +162,7 @@ public class QuizResultActivity extends AppCompatActivity {
 
             } else {
 
-                // -----------------------------
                 // HỌC LẠI QUIZ
-                // -----------------------------
-
                 Intent intent =
                         new Intent(
                                 QuizResultActivity.this,
@@ -213,9 +181,7 @@ public class QuizResultActivity extends AppCompatActivity {
         });
 
 
-        // =====================================================
         // VỀ TRANG CHỦ
-        // =====================================================
 
         btnHome.setOnClickListener(v -> {
 

@@ -44,16 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_register);
 
-        // ==========================================
-        // KHỞI TẠO FIREBASE
-        // ==========================================
-
         mAuth = FirebaseAuth.getInstance();
-
-
-        // ==========================================
-        // ÁNH XẠ VIEW
-        // ==========================================
 
         tilName = findViewById(R.id.tilName);
         tilEmail = findViewById(R.id.tilEmail);
@@ -75,17 +66,9 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        // ==========================================
-        // NÚT ĐĂNG KÝ
-        // ==========================================
 
         btnRegister.setOnClickListener(v -> registerAccount());
     }
-
-
-    // =====================================================
-    // ĐĂNG KÝ TÀI KHOẢN
-    // =====================================================
 
     private void registerAccount() {
 
@@ -105,10 +88,6 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isValid = true;
 
 
-        // =================================================
-        // KIỂM TRA HỌ TÊN
-        // =================================================
-
         if (TextUtils.isEmpty(name)) {
 
             tilName.setError("Vui lòng nhập họ và tên");
@@ -119,11 +98,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             tilName.setErrorEnabled(false);
         }
-
-
-        // =================================================
-        // KIỂM TRA EMAIL
-        // =================================================
 
         if (TextUtils.isEmpty(email)) {
 
@@ -141,11 +115,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             tilEmail.setErrorEnabled(false);
         }
-
-
-        // =================================================
-        // KIỂM TRA MẬT KHẨU
-        // =================================================
 
         if (TextUtils.isEmpty(password)) {
 
@@ -168,11 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
             tilPassword.setErrorEnabled(false);
         }
 
-
-        // =================================================
-        // KIỂM TRA XÁC NHẬN MẬT KHẨU
-        // =================================================
-
         if (TextUtils.isEmpty(confirmPassword)) {
 
             tilConfirmPassword.setError(
@@ -194,26 +158,11 @@ public class RegisterActivity extends AppCompatActivity {
             tilConfirmPassword.setErrorEnabled(false);
         }
 
-
-        // =================================================
-        // NẾU DỮ LIỆU KHÔNG HỢP LỆ
-        // =================================================
-
         if (!isValid) {
             return;
         }
 
-
-        // =================================================
-        // KHÓA NÚT ĐĂNG KÝ
-        // =================================================
-
         btnRegister.setEnabled(false);
-
-
-        // =================================================
-        // TẠO TÀI KHOẢN FIREBASE
-        // =================================================
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
@@ -240,11 +189,6 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
 
-
-                    // =================================================
-                    // LẤY USER VỪA TẠO
-                    // =================================================
-
                     FirebaseUser user =
                             mAuth.getCurrentUser();
 
@@ -261,11 +205,6 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
 
-
-                    // =================================================
-                    // LƯU DISPLAY NAME VÀO FIREBASE
-                    // =================================================
-
                     UserProfileChangeRequest profile =
                             new UserProfileChangeRequest.Builder()
                                     .setDisplayName(name)
@@ -274,11 +213,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                     user.updateProfile(profile)
                             .addOnCompleteListener(profileTask -> {
-
-
-                                // =================================================
-                                // GỬI EMAIL XÁC MINH
-                                // =================================================
 
                                 user.sendEmailVerification()
                                         .addOnCompleteListener(

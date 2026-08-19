@@ -52,11 +52,6 @@ public class ThuVienFragment extends Fragment {
 
     private List<VocabularySet> allVocabularySetList;
 
-
-    // ==========================================
-    // TẠO VIEW
-    // ==========================================
-
     @Nullable
     @Override
     public View onCreateView(
@@ -192,11 +187,7 @@ public class ThuVienFragment extends Fragment {
         return view;
     }
 
-
-    // ==========================================
     // KHI QUAY LẠI FRAGMENT
-    // ==========================================
-
     @Override
     public void onResume() {
 
@@ -205,11 +196,7 @@ public class ThuVienFragment extends Fragment {
         loadVocabularySet();
     }
 
-
-    // ==========================================
     // LẤY DANH SÁCH BỘ TỪ
-    // ==========================================
-
     private void loadVocabularySet() {
 
         FirebaseUser firebaseUser =
@@ -297,11 +284,7 @@ public class ThuVienFragment extends Fragment {
         }
     }
 
-
-    // ==========================================
     // TÌM KIẾM BỘ TỪ
-    // ==========================================
-
     private void filterVocabularySet(String keyword) {
 
         String search =

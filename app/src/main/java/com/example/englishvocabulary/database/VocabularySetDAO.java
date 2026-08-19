@@ -18,10 +18,6 @@ public class VocabularySetDAO {
         dbHelper = new DatabaseHelper(context);
     }
 
-    // =====================================================
-    // KIỂM TRA TÊN BỘ TỪ ĐÃ TỒN TẠI CHƯA
-    // =====================================================
-
     public boolean isTitleExists(String userUid, String title) {
 
         SQLiteDatabase db =
@@ -106,11 +102,6 @@ public class VocabularySetDAO {
         return id;
     }
 
-
-    // =====================================================
-    // LẤY 1 BỘ TỪ THEO ID
-    // =====================================================
-
     public VocabularySet getVocabularySetById(int id) {
 
         SQLiteDatabase db =
@@ -141,11 +132,6 @@ public class VocabularySetDAO {
 
         return vocabularySet;
     }
-
-
-    // =====================================================
-    // LẤY CÁC BỘ TỪ CỦA 1 USER
-    // =====================================================
 
     public List<VocabularySet> getByUserUid(String userUid) {
 
@@ -186,10 +172,6 @@ public class VocabularySetDAO {
         return list;
     }
 
-
-    // =====================================================
-    // CẬP NHẬT BỘ TỪ
-    // =====================================================
 
     public int update(VocabularySet vocabularySet) {
 
@@ -245,11 +227,6 @@ public class VocabularySetDAO {
         return result;
     }
 
-
-    // =====================================================
-    // XÓA BỘ TỪ
-    // =====================================================
-
     public int delete(int id) {
 
         SQLiteDatabase db =
@@ -267,11 +244,6 @@ public class VocabularySetDAO {
 
         return result;
     }
-
-
-    // =====================================================
-    // CURSOR → OBJECT
-    // =====================================================
 
     private VocabularySet cursorToVocabularySet(
             Cursor cursor) {

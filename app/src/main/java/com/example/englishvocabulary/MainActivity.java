@@ -12,6 +12,9 @@ import com.example.englishvocabulary.fragments.AIChatFragment;
 import com.example.englishvocabulary.fragments.ThuVienFragment;
 import com.example.englishvocabulary.fragments.TrangChuFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +27,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Khởi tạo Firebase
+        FirebaseApp.initializeApp(this);
+
+        // App Check Debug - dùng khi phát triển
+        FirebaseAppCheck firebaseAppCheck =
+                FirebaseAppCheck.getInstance();
+
+        firebaseAppCheck.installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance()
+        );
+
 
         setContentView(R.layout.activity_main);
 

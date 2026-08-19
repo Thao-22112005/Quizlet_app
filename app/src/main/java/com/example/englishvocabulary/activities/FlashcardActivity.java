@@ -80,20 +80,11 @@ public class FlashcardActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_flashcard);
 
-
-        // =====================================================
         // NHẬN ID BỘ TỪ
-        // =====================================================
-
         setId = getIntent().getIntExtra(
                 "set_id",
                 -1
         );
-
-
-        // =====================================================
-        // ÁNH XẠ VIEW
-        // =====================================================
 
         btnBack = findViewById(R.id.btnBack);
 
@@ -126,20 +117,14 @@ public class FlashcardActivity extends AppCompatActivity {
         tvDaNho = findViewById(R.id.tvDaNho);
 
 
-        // =====================================================
         // DATABASE
-        // =====================================================
-
         wordDAO = new WordDAO(this);
 
         learningHistoryDAO =
                 new LearningHistoryDAO(this);
 
 
-        // =====================================================
         // KIỂM TRA SET ID
-        // =====================================================
-
         if (setId == -1) {
 
             Toast.makeText(
@@ -153,19 +138,12 @@ public class FlashcardActivity extends AppCompatActivity {
             return;
         }
 
-
-        // =====================================================
         // LẤY DANH SÁCH TỪ
-        // =====================================================
-
         wordList =
                 wordDAO.getBySetId(setId);
 
 
-        // =====================================================
         // KIỂM TRA DANH SÁCH
-        // =====================================================
-
         if (wordList == null ||
                 wordList.isEmpty()) {
 
@@ -255,11 +233,7 @@ public class FlashcardActivity extends AppCompatActivity {
         });
     }
 
-
-    // =====================================================
     // HIỂN THỊ TỪ HIỆN TẠI
-    // =====================================================
-
     private void showCurrentWord() {
 
         if (currentPosition >= wordList.size()) {
@@ -274,19 +248,13 @@ public class FlashcardActivity extends AppCompatActivity {
                 wordList.get(currentPosition);
 
 
-        // =================================================
         // MẶT TRƯỚC
-        // =================================================
-
         tvEnglish.setText(
                 word.getEnglish()
         );
         tvLoaiTu.setText(word.getLoaiTu());
 
-        // =================================================
         // MẶT SAU
-        // =================================================
-
         tvBackEnglish.setText(
                 word.getEnglish()
         );
@@ -315,17 +283,10 @@ public class FlashcardActivity extends AppCompatActivity {
         }
 
 
-        // =================================================
         // RESET VỀ MẶT TRƯỚC
-        // =================================================
-
         showFrontSide();
 
-
-        // =================================================
         // HIỂN THỊ 1/5, 2/5...
-        // =================================================
-
         tvProgress.setText(
                 (currentPosition + 1)
                         + "/"
@@ -333,10 +294,7 @@ public class FlashcardActivity extends AppCompatActivity {
         );
 
 
-        // =================================================
         // CẬP NHẬT PROGRESS BAR
-        // =================================================
-
         int progress =
                 (int) (
                         ((currentPosition + 1)
@@ -347,11 +305,7 @@ public class FlashcardActivity extends AppCompatActivity {
         progressBar.setProgress(progress);
     }
 
-
-    // =====================================================
     // LẬT THẺ
-    // =====================================================
-
     private void flipCard() {
 
         cardFlashcard.animate()
@@ -377,11 +331,7 @@ public class FlashcardActivity extends AppCompatActivity {
                 .start();
     }
 
-
-    // =====================================================
     // HIỆN MẶT TRƯỚC
-    // =====================================================
-
     private void showFrontSide() {
 
         tvEnglish.setVisibility(
@@ -518,12 +468,8 @@ public class FlashcardActivity extends AppCompatActivity {
             showCurrentWord();
 
         } else {
-
-            // ==========================================
             // ĐÃ HỌC HẾT FLASHCARD
             // CHUYỂN SANG MÀN HÌNH KẾT QUẢ
-            // ==========================================
-
             Intent intent =
                     new Intent(
                             FlashcardActivity.this,

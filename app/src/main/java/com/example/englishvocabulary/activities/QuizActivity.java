@@ -27,10 +27,6 @@ import java.util.Locale;
 
 public class QuizActivity extends AppCompatActivity {
 
-    // =====================================================
-    // VIEW
-    // =====================================================
-
     private ImageButton btnBack;
 
     private TextView tvProgress;
@@ -43,56 +39,23 @@ public class QuizActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
-
-    // =====================================================
-    // DATABASE
-    // =====================================================
-
     private WordDAO wordDAO;
 
     private LearningHistoryDAO learningHistoryDAO;
 
-
-    // =====================================================
-    // DANH SÁCH TỪ
-    // =====================================================
-
     private List<Word> wordList;
-
-
-    // =====================================================
-    // VỊ TRÍ CÂU HIỆN TẠI
-    // =====================================================
 
     private int currentPosition = 0;
 
 
-    // =====================================================
     // ID BỘ TỪ
-    // =====================================================
-
     private int setId;
 
-
-    // =====================================================
-    // ĐÁP ÁN ĐÚNG
-    // =====================================================
-
     private String correctAnswer;
-
-
-    // =====================================================
-    // ĐẾM KẾT QUẢ
-    // =====================================================
 
     private int correctCount = 0;
 
     private int wrongCount = 0;
-
-
-    // =====================================================
-    // KHÔNG CHO CHỌN NHIỀU ĐÁP ÁN
-    // =====================================================
 
     private boolean answerSelected = false;
 
@@ -107,21 +70,12 @@ public class QuizActivity extends AppCompatActivity {
                 R.layout.activity_quiz
         );
 
-
-        // =====================================================
         // NHẬN ID BỘ TỪ
-        // =====================================================
-
         setId =
                 getIntent().getIntExtra(
                         "set_id",
                         -1
                 );
-
-
-        // =====================================================
-        // ÁNH XẠ VIEW
-        // =====================================================
 
         btnBack =
                 findViewById(
@@ -163,11 +117,7 @@ public class QuizActivity extends AppCompatActivity {
                         R.id.progressBar
                 );
 
-
-        // =====================================================
         // DATABASE
-        // =====================================================
-
         wordDAO =
                 new WordDAO(this);
 
@@ -175,10 +125,7 @@ public class QuizActivity extends AppCompatActivity {
                 new LearningHistoryDAO(this);
 
 
-        // =====================================================
         // KIỂM TRA ID BỘ TỪ
-        // =====================================================
-
         if (setId == -1) {
 
             Toast.makeText(
@@ -192,20 +139,14 @@ public class QuizActivity extends AppCompatActivity {
             return;
         }
 
-
-        // =====================================================
         // LẤY DANH SÁCH TỪ
-        // =====================================================
-
         wordList =
                 wordDAO.getBySetId(
                         setId
                 );
 
 
-        // =====================================================
         // KIỂM TRA DỮ LIỆU
-        // =====================================================
 
         if (wordList == null ||
                 wordList.size() < 4) {
@@ -221,28 +162,14 @@ public class QuizActivity extends AppCompatActivity {
             return;
         }
 
-
-        // =====================================================
         // HIỂN THỊ CÂU ĐẦU TIÊN
-        // =====================================================
-
         showCurrentQuestion();
-
-
-        // =====================================================
-        // NÚT QUAY LẠI
-        // =====================================================
 
         btnBack.setOnClickListener(v -> {
 
             finish();
 
         });
-
-
-        // =====================================================
-        // ĐÁP ÁN 1
-        // =====================================================
 
         tvAnswer1.setOnClickListener(v -> {
 
@@ -252,11 +179,6 @@ public class QuizActivity extends AppCompatActivity {
 
         });
 
-
-        // =====================================================
-        // ĐÁP ÁN 2
-        // =====================================================
-
         tvAnswer2.setOnClickListener(v -> {
 
             checkAnswer(
@@ -265,11 +187,6 @@ public class QuizActivity extends AppCompatActivity {
 
         });
 
-
-        // =====================================================
-        // ĐÁP ÁN 3
-        // =====================================================
-
         tvAnswer3.setOnClickListener(v -> {
 
             checkAnswer(
@@ -277,11 +194,6 @@ public class QuizActivity extends AppCompatActivity {
             );
 
         });
-
-
-        // =====================================================
-        // ĐÁP ÁN 4
-        // =====================================================
 
         tvAnswer4.setOnClickListener(v -> {
 
@@ -292,11 +204,7 @@ public class QuizActivity extends AppCompatActivity {
         });
     }
 
-
-    // =====================================================
     // HIỂN THỊ CÂU HỎI HIỆN TẠI
-    // =====================================================
-
     private void showCurrentQuestion() {
 
         if (currentPosition >=
@@ -313,37 +221,23 @@ public class QuizActivity extends AppCompatActivity {
         answerSelected = false;
 
 
-        // =====================================================
         // LẤY TỪ HIỆN TẠI
-        // =====================================================
-
         Word currentWord =
                 wordList.get(
                         currentPosition
                 );
 
-
-        // =====================================================
         // HIỂN THỊ CÂU HỎI
-        // =====================================================
-
         tvQuestion.setText(
                 currentWord.getEnglish()
         );
 
 
-        // =====================================================
         // ĐÁP ÁN ĐÚNG
-        // =====================================================
-
         correctAnswer =
                 currentWord.getMeaning();
 
-
-        // =====================================================
         // TẠO DANH SÁCH ĐÁP ÁN
-        // =====================================================
-
         List<String> answers =
                 new ArrayList<>();
 
@@ -355,10 +249,7 @@ public class QuizActivity extends AppCompatActivity {
         );
 
 
-        // =====================================================
         // LẤY CÁC TỪ KHÁC
-        // =====================================================
-
         List<Word> otherWords =
                 new ArrayList<>();
 
@@ -373,19 +264,12 @@ public class QuizActivity extends AppCompatActivity {
         }
 
 
-        // =====================================================
         // TRỘN CÁC TỪ KHÁC
-        // =====================================================
-
         Collections.shuffle(
                 otherWords
         );
 
-
-        // =====================================================
         // LẤY 3 ĐÁP ÁN SAI
-        // =====================================================
-
         for (Word word : otherWords) {
 
             if (answers.size() >= 4) {
@@ -408,20 +292,12 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
 
-
-        // =====================================================
         // TRỘN ĐÁP ÁN
-        // =====================================================
-
         Collections.shuffle(
                 answers
         );
 
-
-        // =====================================================
         // HIỂN THỊ ĐÁP ÁN
-        // =====================================================
-
         setAnswerText(
                 tvAnswer1,
                 "A",
@@ -446,11 +322,6 @@ public class QuizActivity extends AppCompatActivity {
                 answers.get(3)
         );
 
-
-        // =====================================================
-        // RESET MÀU
-        // =====================================================
-
         resetAnswerStyle(
                 tvAnswer1
         );
@@ -467,11 +338,6 @@ public class QuizActivity extends AppCompatActivity {
                 tvAnswer4
         );
 
-
-        // =====================================================
-        // HIỂN THỊ TIẾN ĐỘ
-        // =====================================================
-
         tvProgress.setText(
                 (currentPosition + 1)
                         + "/"
@@ -479,10 +345,7 @@ public class QuizActivity extends AppCompatActivity {
         );
 
 
-        // =====================================================
         // THANH TIẾN ĐỘ
-        // =====================================================
-
         int progress =
                 (int) (
                         ((currentPosition + 1)
@@ -495,11 +358,6 @@ public class QuizActivity extends AppCompatActivity {
                 progress
         );
     }
-
-
-    // =====================================================
-    // HIỂN THỊ TEXT ĐÁP ÁN
-    // =====================================================
 
     private void setAnswerText(
             TextView textView,
@@ -514,16 +372,10 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
-    // KIỂM TRA ĐÁP ÁN
-    // =====================================================
-
     private void checkAnswer(
             TextView selectedAnswer) {
 
-        // =====================================================
         // KHÔNG CHO CHỌN NHIỀU LẦN
-        // =====================================================
 
         if (answerSelected) {
 
@@ -534,9 +386,7 @@ public class QuizActivity extends AppCompatActivity {
         answerSelected = true;
 
 
-        // =====================================================
         // LẤY NỘI DUNG ĐÁP ÁN
-        // =====================================================
 
         String selectedText =
                 selectedAnswer
@@ -544,30 +394,20 @@ public class QuizActivity extends AppCompatActivity {
                         .toString();
 
 
-        // =====================================================
-        // BỎ A. / B. / C. / D.
-        // =====================================================
-
         String selectedAnswerText =
                 selectedText.substring(
                         selectedText.indexOf(".") + 1
                 ).trim();
 
 
-        // =====================================================
         // KIỂM TRA
-        // =====================================================
-
         boolean isCorrect =
                 selectedAnswerText.equals(
                         correctAnswer
                 );
 
 
-        // =====================================================
         // XỬ LÝ KẾT QUẢ
-        // =====================================================
-
         if (isCorrect) {
 
             // ĐÚNG
@@ -601,28 +441,17 @@ public class QuizActivity extends AppCompatActivity {
         }
 
 
-        // =====================================================
         // LƯU LỊCH SỬ
-        // =====================================================
-
         saveLearningHistory(
                 isCorrect ? 1 : 0
         );
 
-
-        // =====================================================
         // CHỜ 0.8 GIÂY RỒI SANG CÂU TIẾP
-        // =====================================================
 
         new Handler().postDelayed(
                 () -> {
 
                     currentPosition++;
-
-
-                    // =================================================
-                    // VẪN CÒN CÂU
-                    // =================================================
 
                     if (currentPosition <
                             wordList.size()) {
@@ -631,10 +460,7 @@ public class QuizActivity extends AppCompatActivity {
 
                     }
 
-                    // =================================================
                     // HẾT CÂU
-                    // =================================================
-
                     else {
 
                         showResult();
@@ -646,9 +472,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // HIỂN THỊ ĐÁP ÁN ĐÚNG
-    // =====================================================
 
     private void showCorrectAnswer() {
 
@@ -687,10 +511,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // STYLE ĐÁP ÁN ĐÚNG
-    // =====================================================
-
     private void setCorrectStyle(
             TextView textView) {
 
@@ -731,10 +552,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // STYLE ĐÁP ÁN SAI
-    // =====================================================
-
     private void setWrongStyle(
             TextView textView) {
 
@@ -775,10 +593,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
     // RESET STYLE
-    // =====================================================
-
     private void resetAnswerStyle(
             TextView textView) {
 
@@ -817,10 +632,6 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
-    // LƯU LỊCH SỬ HỌC
-    // =====================================================
-
     private void saveLearningHistory(
             int isCorrect) {
 
@@ -831,20 +642,14 @@ public class QuizActivity extends AppCompatActivity {
         }
 
 
-        // =====================================================
         // LẤY TỪ HIỆN TẠI
-        // =====================================================
-
         Word word =
                 wordList.get(
                         currentPosition
                 );
 
 
-        // =====================================================
         // THỜI GIAN HIỆN TẠI
-        // =====================================================
-
         String currentTime =
                 new SimpleDateFormat(
                         "yyyy-MM-dd HH:mm:ss",
@@ -853,11 +658,7 @@ public class QuizActivity extends AppCompatActivity {
                         new Date()
                 );
 
-
-        // =====================================================
         // TẠO HISTORY
-        // =====================================================
-
         LearningHistory history =
                 new LearningHistory();
 
@@ -886,21 +687,14 @@ public class QuizActivity extends AppCompatActivity {
                 currentTime
         );
 
-
-        // =====================================================
         // LƯU DATABASE
-        // =====================================================
-
         long id =
                 learningHistoryDAO.insert(
                         history
                 );
 
 
-        // =====================================================
         // KIỂM TRA LƯU
-        // =====================================================
-
         if (id == -1) {
 
             Toast.makeText(
@@ -911,11 +705,7 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
-
-    // =====================================================
     // CHUYỂN SANG MÀN HÌNH KẾT QUẢ
-    // =====================================================
-
     private void showResult() {
 
         Intent intent =
@@ -925,50 +715,34 @@ public class QuizActivity extends AppCompatActivity {
                 );
 
 
-        // =====================================================
         // SỐ CÂU ĐÚNG
-        // =====================================================
-
         intent.putExtra(
                 "correct",
                 correctCount
         );
 
 
-        // =====================================================
         // SỐ CÂU SAI
-        // =====================================================
-
         intent.putExtra(
                 "wrong",
                 wrongCount
         );
 
 
-        // =====================================================
         // TỔNG SỐ CÂU
-        // =====================================================
-
         intent.putExtra(
                 "total",
                 wordList.size()
         );
 
 
-        // =====================================================
         // ID BỘ TỪ
-        // =====================================================
-
         intent.putExtra(
                 "set_id",
                 setId
         );
 
-
-        // =====================================================
         // MỞ MÀN HÌNH KẾT QUẢ
-        // =====================================================
-
         startActivity(
                 intent
         );

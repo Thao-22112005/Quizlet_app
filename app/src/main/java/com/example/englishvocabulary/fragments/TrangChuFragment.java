@@ -28,11 +28,6 @@ public class TrangChuFragment extends Fragment {
     private VocabularySetDAO vocabularySetDAO;
     private WordDAO wordDAO;
 
-
-    // =====================================================
-    // TẠO VIEW
-    // =====================================================
-
     @Nullable
     @Override
     public View onCreateView(
@@ -85,10 +80,6 @@ public class TrangChuFragment extends Fragment {
 
         return view;
     }
-
-    // =====================================================
-    // TEST QUIZ
-    // =====================================================
 
     private void testQuiz() {
 
@@ -154,11 +145,6 @@ public class TrangChuFragment extends Fragment {
 
         startActivity(intent);
     }
-
-
-    // =====================================================
-    // TEST FLASHCARD
-    // =====================================================
 
     private void testFlashcard() {
 
