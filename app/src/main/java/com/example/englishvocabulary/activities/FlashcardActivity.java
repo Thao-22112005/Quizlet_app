@@ -1,5 +1,6 @@
 package com.example.englishvocabulary.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -64,6 +65,12 @@ public class FlashcardActivity extends AppCompatActivity {
     private boolean isBackSide = false;
 
     private TextToSpeech textToSpeech;
+
+    // SỐ TỪ ĐÃ NHỚ
+    private int rememberedCount = 0;
+
+    // SỐ TỪ CHƯA NHỚ
+    private int notRememberedCount = 0;
 
 
     @Override
@@ -174,23 +181,17 @@ public class FlashcardActivity extends AppCompatActivity {
         }
 
 
-        // =====================================================
         // CÀI ĐẶT PROGRESS BAR
-        // =====================================================
-
         progressBar.setMax(100);
 
 
-        // =====================================================
+
         // HIỂN THỊ TỪ ĐẦU TIÊN
-        // =====================================================
 
         showCurrentWord();
 
 
-        // =====================================================
         // QUAY LẠI
-        // =====================================================
 
         btnBack.setOnClickListener(v -> {
 
@@ -198,10 +199,7 @@ public class FlashcardActivity extends AppCompatActivity {
 
         });
 
-
-        // =====================================================
         // LẬT THẺ
-        // =====================================================
 
         cardFlashcard.setOnClickListener(v -> {
 
@@ -210,10 +208,7 @@ public class FlashcardActivity extends AppCompatActivity {
         });
 
 
-        // =====================================================
         // TEXT TO SPEECH
-        // =====================================================
-
         textToSpeech =
                 new TextToSpeech(
                         this,
@@ -229,11 +224,7 @@ public class FlashcardActivity extends AppCompatActivity {
                         }
                 );
 
-
-        // =====================================================
         // PHÁT ÂM
-        // =====================================================
-
         btnSound.setOnClickListener(v -> {
 
             speakWord();
@@ -241,9 +232,7 @@ public class FlashcardActivity extends AppCompatActivity {
         });
 
 
-        // =====================================================
         // CHƯA NHỚ
-        // =====================================================
 
         tvChuaNho.setOnClickListener(v -> {
 
@@ -251,22 +240,14 @@ public class FlashcardActivity extends AppCompatActivity {
 
         });
 
-
-        // =====================================================
         // ĐÃ NHỚ
-        // =====================================================
-
         tvDaNho.setOnClickListener(v -> {
 
             saveLearningHistory(1);
 
         });
 
-
-        // =====================================================
-        // CÀI ĐẶT
-        // =====================================================
-
+        // Lưu
         btnSave.setOnClickListener(v -> {
 
             saveLearningHistory(1);
@@ -467,64 +448,52 @@ public class FlashcardActivity extends AppCompatActivity {
 
 
     // LƯU LỊCH SỬ HỌC
-    private void saveLearningHistory(
-            int isCorrect) {
+    private void saveLearningHistory(int isCorrect) {
 
-        if (currentPosition >=
-                wordList.size()) {
-
+        if (currentPosition >= wordList.size()) {
             return;
         }
 
+        Word word = wordList.get(currentPosition);
 
-        Word word =
-                wordList.get(currentPosition);
+        // ĐẾM KẾT QUẢ FLASHCARD
+
+        if (isCorrect == 1) {
+            rememberedCount++;
+        } else {
+            notRememberedCount++;
+        }
 
 
         // THỜI GIAN HIỆN TẠI
+
         String currentTime =
                 new SimpleDateFormat(
                         "yyyy-MM-dd HH:mm:ss",
                         Locale.getDefault()
-                ).format(
-                        new Date()
-                );
+                ).format(new Date());
 
 
-        // TẠO HISTORY
+        // TẠO LỊCH SỬ
+
         LearningHistory history =
                 new LearningHistory();
 
+        history.setSetId(setId);
 
-        history.setSetId(
-                setId
-        );
+        history.setWordId(word.getId());
 
+        history.setIsCorrect(isCorrect);
 
-        history.setWordId(
-                word.getId()
-        );
+        history.setLearningMode("FLASHCARD");
 
+        history.setLearnedAt(currentTime);
 
-        history.setIsCorrect(
-                isCorrect
-        );
-
-
-        history.setLearningMode(
-                "FLASHCARD"
-        );
-
-
-        history.setLearnedAt(
-                currentTime
-        );
 
         // LƯU DATABASE
+
         long id =
-                learningHistoryDAO.insert(
-                        history
-                );
+                learningHistoryDAO.insert(history);
 
 
         if (id == -1) {
@@ -539,22 +508,56 @@ public class FlashcardActivity extends AppCompatActivity {
         }
 
 
-        // CHUYỂN SANG TỪ TIẾP THEO
+        // CHUYỂN TỪ TIẾP THEO
+
         currentPosition++;
 
 
-        if (currentPosition <
-                wordList.size()) {
+        if (currentPosition < wordList.size()) {
 
             showCurrentWord();
 
         } else {
 
-            Toast.makeText(
-                    this,
-                    "Đã hoàn thành Flashcard!",
-                    Toast.LENGTH_SHORT
-            ).show();
+            // ==========================================
+            // ĐÃ HỌC HẾT FLASHCARD
+            // CHUYỂN SANG MÀN HÌNH KẾT QUẢ
+            // ==========================================
+
+            Intent intent =
+                    new Intent(
+                            FlashcardActivity.this,
+                            QuizResultActivity.class
+                    );
+
+            intent.putExtra(
+                    "set_id",
+                    setId
+            );
+
+            // XÁC ĐỊNH ĐÂY LÀ KẾT QUẢ FLASHCARD
+
+            intent.putExtra(
+                    "learning_mode",
+                    "FLASHCARD"
+            );
+
+            // SỐ ĐÃ NHỚ
+
+            intent.putExtra(
+                    "remembered_count",
+                    rememberedCount
+            );
+
+            // SỐ CHƯA NHỚ
+
+            intent.putExtra(
+                    "not_remembered_count",
+                    notRememberedCount
+            );
+
+
+            startActivity(intent);
 
             finish();
         }
