@@ -6,4 +6,17 @@
     <color name="bottom_nav_selected">#4055F5</color>
     <color name="bottom_nav_unselected">#667085</color>
 
+    <!-- THEME -->
+    <color name="colorBackground">#F8FAFC</color>
+    <color name="colorSurface">#FFFFFF</color>
+
+    <color name="colorTextPrimary">#111827</color>
+    <color name="colorTextSecondary">#6B7280</color>
+    <color name="colorTextHint">#9CA3AF</color>
+
+    <color name="colorBorder">#E5E7EB</color>
+
+    <color name="colorPrimary">#3155E7</color>
+    <color name="colorProgress">#10B981</color>
+
 </resources>

@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:text="Xin chào 👋"
+            android:text="Xin chào"
             android:textColor="#111827"
             android:textSize="21sp"
             android:textStyle="bold" />

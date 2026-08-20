@@ -1,7 +1,39 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.EnglishVocabulary" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ============================== -->
+    <!-- THEME TỐI -->
+    <!-- ============================== -->
+
+    <style name="Base.Theme.EnglishVocabulary"
+        parent="Theme.Material3.Dark.NoActionBar">
+
+        <!-- Màu chính -->
+        <item name="colorPrimary">#6D83F2</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <!-- Màu phụ -->
+        <item name="colorSecondary">#34D399</item>
+        <item name="colorOnSecondary">#052E16</item>
+
+        <!-- Nền ứng dụng -->
+        <item name="android:colorBackground">#111827</item>
+        <item name="colorSurface">#1F2937</item>
+        <item name="colorSurfaceVariant">#374151</item>
+
+        <!-- Màu chữ -->
+        <item name="colorOnBackground">#F9FAFB</item>
+        <item name="colorOnSurface">#F9FAFB</item>
+
+        <!-- Thanh trạng thái -->
+        <item name="android:statusBarColor">#111827</item>
+        <item name="android:navigationBarColor">#111827</item>
+
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+
+
+    <style name="Theme.EnglishVocabulary"
+        parent="Base.Theme.EnglishVocabulary" />
+
 </resources>

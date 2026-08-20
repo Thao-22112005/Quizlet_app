@@ -418,6 +418,22 @@ public class FlashcardActivity extends AppCompatActivity {
             notRememberedCount++;
         }
 
+        // CẬP NHẬT TRẠNG THÁI ĐÃ HỌC VÀO WORD
+        if (isCorrect == 1) {
+
+            wordDAO.updateLearnedStatus(
+                    word.getId(),
+                    1
+            );
+
+        } else {
+
+            wordDAO.updateLearnedStatus(
+                    word.getId(),
+                    0
+            );
+        }
+
 
         // THỜI GIAN HIỆN TẠI
 

@@ -29,10 +29,6 @@ import java.util.Locale;
 
 public class CreateVocabularySetActivity extends AppCompatActivity {
 
-    // =====================================================
-    // VIEW
-    // =====================================================
-
     private ImageButton btnBack;
     private ImageView imgCover;
     private Button btnChooseCover;
@@ -45,31 +41,11 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
     private TextInputEditText edtTopic;
     private TextInputEditText edtLevel;
 
-
-    // =====================================================
-    // DATABASE
-    // =====================================================
-
     private VocabularySetDAO vocabularySetDAO;
-
-
-    // =====================================================
-    // FIREBASE
-    // =====================================================
-
     private FirebaseAuth mAuth;
-
-
-    // =====================================================
-    // ẢNH ĐƯỢC CHỌN
-    // =====================================================
 
     private Uri selectedImageUri;
 
-
-    // =====================================================
-    // IMAGE PICKER
-    // =====================================================
 
     private final ActivityResultLauncher<String> imagePicker =
             registerForActivityResult(
@@ -87,10 +63,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                     }
             );
 
-
-    // =====================================================
-    // ON CREATE
-    // =====================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,11 +90,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         // Sự kiện
         initEvents();
     }
-
-
-    // =====================================================
-    // ÁNH XẠ VIEW
-    // =====================================================
 
     private void initViews() {
 
@@ -156,11 +123,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                 findViewById(R.id.edtLevel);
     }
 
-
-    // =====================================================
-    // SỰ KIỆN
-    // =====================================================
-
     private void initEvents() {
 
         // Nút quay lại
@@ -180,15 +142,7 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
     }
 
 
-    // =====================================================
-    // TẠO BỘ TỪ
-    // =====================================================
-
     private void createVocabularySet() {
-
-        // -------------------------------------------------
-        // Lấy dữ liệu từ giao diện
-        // -------------------------------------------------
 
         String title =
                 edtTitle.getText()
@@ -210,11 +164,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                         .toString()
                         .trim();
 
-
-        // -------------------------------------------------
-        // KIỂM TRA TÊN BỘ TỪ
-        // -------------------------------------------------
-
         if (TextUtils.isEmpty(title)) {
 
             tilTitle.setError(
@@ -227,11 +176,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         }
 
         tilTitle.setError(null);
-
-
-        // -------------------------------------------------
-        // KIỂM TRA ĐĂNG NHẬP FIREBASE
-        // -------------------------------------------------
 
         FirebaseUser user =
                 mAuth.getCurrentUser();
@@ -247,11 +191,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
 
             return;
         }
-
-
-        // -------------------------------------------------
-        // KIỂM TRA TÊN BỘ TỪ ĐÃ TỒN TẠI
-        // -------------------------------------------------
 
         if (vocabularySetDAO.isTitleExists(
                 user.getUid(),
@@ -271,20 +210,11 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         tilTitle.setError(null);
 
 
-        // -------------------------------------------------
-        // THỜI GIAN
-        // -------------------------------------------------
-
         String currentTime =
                 new SimpleDateFormat(
                         "yyyy-MM-dd HH:mm:ss",
                         Locale.getDefault()
                 ).format(new Date());
-
-
-        // -------------------------------------------------
-        // LƯU ẢNH
-        // -------------------------------------------------
 
         String coverImage = "";
 
@@ -295,11 +225,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                             selectedImageUri
                     );
         }
-
-
-        // -------------------------------------------------
-        // TẠO OBJECT VOCABULARY SET
-        // -------------------------------------------------
 
         VocabularySet set =
                 new VocabularySet();
@@ -337,11 +262,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                 currentTime
         );
 
-
-        // -------------------------------------------------
-        // INSERT DATABASE
-        // -------------------------------------------------
-
         long result =
                 vocabularySetDAO.insert(set);
 
@@ -367,11 +287,6 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
             ).show();
         }
     }
-
-
-    // =====================================================
-    // LƯU ẢNH VÀO INTERNAL STORAGE
-    // =====================================================
 
     private String saveImageToInternalStorage(
             Uri uri

@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- ============================== -->
-    <!-- THEME SÁNG -->
-    <!-- ============================== -->
-
-    <style name="Base.Theme.EnglishVocabulary"
-        parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.Theme.EnglishVocabulary" parent="Theme.Material3.Light.NoActionBar">
 
         <!-- Màu chính -->
         <item name="colorPrimary">#3155E7</item>
@@ -30,10 +25,7 @@
         <item name="android:navigationBarColor">#FFFFFF</item>
 
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
     </style>
-
-
-    <style name="Theme.EnglishVocabulary"
-        parent="Base.Theme.EnglishVocabulary" />
-
 </resources>

@@ -35,10 +35,6 @@ public class VocabularySetAdapter
     private WordDAO wordDAO;
 
 
-    // =====================================================
-    // CONSTRUCTOR
-    // =====================================================
-
     public VocabularySetAdapter(
             Context context,
             List<VocabularySet> vocabularySetList) {
@@ -52,11 +48,6 @@ public class VocabularySetAdapter
         wordDAO =
                 new WordDAO(context);
     }
-
-
-    // =====================================================
-    // TẠO VIEW HOLDER
-    // =====================================================
 
     @NonNull
     @Override
@@ -76,11 +67,6 @@ public class VocabularySetAdapter
         return new ViewHolder(view);
     }
 
-
-    // =====================================================
-    // GÁN DỮ LIỆU
-    // =====================================================
-
     @Override
     public void onBindViewHolder(
             @NonNull ViewHolder holder,
@@ -89,19 +75,9 @@ public class VocabularySetAdapter
         VocabularySet set =
                 vocabularySetList.get(position);
 
-
-        // =================================================
-        // TÊN BỘ TỪ
-        // =================================================
-
         holder.tvTitle.setText(
                 set.getTitle()
         );
-
-
-        // =================================================
-        // MÔ TẢ
-        // =================================================
 
         if (set.getDescription() != null
                 && !set.getDescription().isEmpty()) {
@@ -117,11 +93,6 @@ public class VocabularySetAdapter
             );
         }
 
-
-        // =================================================
-        // TRÌNH ĐỘ
-        // =================================================
-
         if (set.getLevel() != null
                 && !set.getLevel().isEmpty()) {
 
@@ -136,11 +107,6 @@ public class VocabularySetAdapter
             );
         }
 
-
-        // =================================================
-        // ĐẾM SỐ TỪ
-        // =================================================
-
         int count =
                 wordDAO
                         .getBySetId(set.getId())
@@ -149,11 +115,6 @@ public class VocabularySetAdapter
         holder.tvWordCount.setText(
                 count + " thuật ngữ"
         );
-
-
-        // =================================================
-        // ẢNH BÌA
-        // =================================================
 
         String coverPath =
                 set.getCoverImage();
@@ -184,11 +145,6 @@ public class VocabularySetAdapter
             );
         }
 
-
-        // =================================================
-        // CLICK VÀO BỘ TỪ
-        // =================================================
-
         holder.itemView.setOnClickListener(v -> {
 
             Intent intent =
@@ -215,11 +171,6 @@ public class VocabularySetAdapter
             context.startActivity(intent);
         });
 
-
-        // =================================================
-        // NÚT MORE
-        // =================================================
-
         holder.btnMore.setOnClickListener(v -> {
 
             showMoreDialog(
@@ -228,11 +179,6 @@ public class VocabularySetAdapter
             );
         });
     }
-
-
-    // =====================================================
-    // MENU MORE
-    // =====================================================
 
     private void showMoreDialog(
             VocabularySet set,
@@ -252,10 +198,6 @@ public class VocabularySetAdapter
                         options,
                         (dialog, which) -> {
 
-                            // -----------------------------
-                            // SỬA
-                            // -----------------------------
-
                             if (which == 0) {
 
                                 Intent intent =
@@ -274,10 +216,6 @@ public class VocabularySetAdapter
                                 );
                             }
 
-                            // -----------------------------
-                            // XOÁ
-                            // -----------------------------
-
                             else {
 
                                 showDeleteDialog(
@@ -290,10 +228,6 @@ public class VocabularySetAdapter
                 .show();
     }
 
-
-    // =====================================================
-    // XÓA BỘ TỪ
-    // =====================================================
 
     private void showDeleteDialog(
             VocabularySet set,
@@ -357,20 +291,11 @@ public class VocabularySetAdapter
     }
 
 
-    // =====================================================
-    // SỐ LƯỢNG ITEM
-    // =====================================================
-
     @Override
     public int getItemCount() {
 
         return vocabularySetList.size();
     }
-
-
-    // =====================================================
-    // VIEW HOLDER
-    // =====================================================
 
     public static class ViewHolder
             extends RecyclerView.ViewHolder {
@@ -423,10 +348,6 @@ public class VocabularySetAdapter
         }
     }
 
-
-    // =====================================================
-    // CẬP NHẬT DATA
-    // =====================================================
 
     public void updateData(
             List<VocabularySet> newList) {

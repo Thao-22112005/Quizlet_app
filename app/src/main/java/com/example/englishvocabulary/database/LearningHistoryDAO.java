@@ -509,4 +509,64 @@ public class LearningHistoryDAO {
 
         return learningHistory;
     }
+
+
+    //thong ke
+    public int getCorrectCountByDate(String date) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) " +
+                        "FROM " + DatabaseHelper.TABLE_LEARNING_HISTORY +
+                        " WHERE learned_at LIKE ? " +
+                        " AND is_correct = 1",
+                new String[]{
+                        date + "%"
+                }
+        );
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+
+    public int getDailyActivityCount(String userUid, String date) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "SELECT COUNT(*) FROM " + DatabaseHelper.TABLE_LEARNING_HISTORY + " lh " +
+                "INNER JOIN " + DatabaseHelper.TABLE_VOCABULARY_SET + " vs ON lh.set_id = vs.id " +
+                "WHERE vs.user_uid = ? AND lh.learned_at LIKE ?";
+        Cursor cursor = db.rawQuery(sql, new String[]{userUid, date + "%"});
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public int getRememberedCountByUser(String userUid) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "SELECT COUNT(DISTINCT lh.word_id) " +
+                "FROM " + DatabaseHelper.TABLE_LEARNING_HISTORY + " lh " +
+                "INNER JOIN " + DatabaseHelper.TABLE_VOCABULARY_SET + " vs ON lh.set_id = vs.id " +
+                "WHERE vs.user_uid = ? AND lh.is_correct = 1";
+        Cursor cursor = db.rawQuery(sql, new String[]{userUid});
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
 }

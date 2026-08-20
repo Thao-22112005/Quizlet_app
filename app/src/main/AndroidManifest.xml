@@ -52,10 +52,12 @@
             android:name=".activities.QuizResultActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-
         <activity android:name=".activities.AddWordActivity" />
         <activity android:name=".activities.VocabularySetDetailActivity" />
-
+        <activity
+            android:name=".activities.ThongKeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

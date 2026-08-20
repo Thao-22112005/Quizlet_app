@@ -94,8 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             tilPassword.setError(null);
         }
 
-        btnLogin.setEnabled(false);
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     btnLogin.setEnabled(true);

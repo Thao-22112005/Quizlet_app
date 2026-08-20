@@ -13,19 +13,9 @@ import java.util.List;
 public class WordDAO {
 
     private DatabaseHelper dbHelper;
-
-    // =====================================================
-    // CONSTRUCTOR
-    // =====================================================
-
     public WordDAO(Context context) {
         dbHelper = new DatabaseHelper(context);
     }
-
-
-    // =====================================================
-    // THÊM TỪ VỰNG
-    // =====================================================
 
     public long insert(Word word) {
 
@@ -112,11 +102,6 @@ public class WordDAO {
         return id;
     }
 
-
-    // =====================================================
-    // LẤY TỪ VỰNG THEO ID
-    // =====================================================
-
     public Word getById(int id) {
 
         SQLiteDatabase db =
@@ -152,11 +137,6 @@ public class WordDAO {
 
         return word;
     }
-
-
-    // =====================================================
-    // LẤY DANH SÁCH TỪ THEO BỘ TỪ
-    // =====================================================
 
     public List<Word> getBySetId(int setId) {
 
@@ -198,11 +178,6 @@ public class WordDAO {
 
         return list;
     }
-
-
-    // =====================================================
-    // CẬP NHẬT TỪ VỰNG
-    // =====================================================
 
     public int update(Word word) {
 
@@ -276,11 +251,6 @@ public class WordDAO {
         return result;
     }
 
-
-    // =====================================================
-    // XÓA TỪ VỰNG
-    // =====================================================
-
     public int delete(int id) {
 
         SQLiteDatabase db =
@@ -303,10 +273,6 @@ public class WordDAO {
         return result;
     }
 
-
-    // =====================================================
-    // CHUYỂN CURSOR → WORD
-    // =====================================================
 
     private Word cursorToWord(Cursor cursor) {
 
@@ -430,10 +396,10 @@ public class WordDAO {
                 dbHelper.getReadableDatabase();
 
         String sql =
-                "SELECT COUNT(DISTINCT word_id) " +
-                        "FROM LEARNING_HISTORY " +
-                        "WHERE set_id = ? " +
-                        "AND is_correct = 1";
+                "SELECT COUNT(*) " +
+                        "FROM " + DatabaseHelper.TABLE_WORD +
+                        " WHERE set_id = ? " +
+                        "AND is_learned = 1";
 
         Cursor cursor =
                 db.rawQuery(
@@ -441,6 +407,85 @@ public class WordDAO {
                         new String[]{
                                 String.valueOf(setId)
                         }
+                );
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+
+    public boolean updateLearnedStatus(int wordId, int isLearned) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("is_learned", isLearned);
+
+        int result = db.update(
+                DatabaseHelper.TABLE_WORD,
+                values,
+                "id = ?",
+                new String[]{String.valueOf(wordId)}
+        );
+
+        return result > 0;
+    }
+
+    public int getLearnedWordCountByUser(String userUid) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        String sql =
+                "SELECT COUNT(*) " +
+                        "FROM " + DatabaseHelper.TABLE_WORD + " w " +
+                        "INNER JOIN " + DatabaseHelper.TABLE_VOCABULARY_SET + " s " +
+                        "ON w.set_id = s.id " +
+                        "WHERE s.user_uid = ? " +
+                        "AND w.is_learned = 1";
+
+        Cursor cursor =
+                db.rawQuery(
+                        sql,
+                        new String[]{userUid}
+                );
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+
+    public int getUnlearnedWordCountByUser(String userUid) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        String sql =
+                "SELECT COUNT(*) " +
+                        "FROM " + DatabaseHelper.TABLE_WORD + " w " +
+                        "INNER JOIN " + DatabaseHelper.TABLE_VOCABULARY_SET + " s " +
+                        "ON w.set_id = s.id " +
+                        "WHERE s.user_uid = ? " +
+                        "AND w.is_learned = 0";
+
+        Cursor cursor =
+                db.rawQuery(
+                        sql,
+                        new String[]{userUid}
                 );
 
         int count = 0;

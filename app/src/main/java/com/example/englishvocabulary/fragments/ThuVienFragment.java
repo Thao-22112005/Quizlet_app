@@ -32,11 +32,6 @@ import java.util.List;
 
 public class ThuVienFragment extends Fragment {
 
-
-    // =====================================================
-    // VIEW
-    // =====================================================
-
     private RecyclerView recyclerVocabularySet;
 
     private LinearLayout layoutEmpty;
@@ -47,31 +42,11 @@ public class ThuVienFragment extends Fragment {
 
     private ImageButton btnAddVocabulary;
 
-
-    // =====================================================
-    // DATABASE
-    // =====================================================
-
     private VocabularySetDAO vocabularySetDAO;
-
-
-    // =====================================================
-    // FIREBASE
-    // =====================================================
 
     private FirebaseAuth mAuth;
 
-
-    // =====================================================
-    // ADAPTER
-    // =====================================================
-
     private VocabularySetAdapter adapter;
-
-
-    // =====================================================
-    // LIST
-    // =====================================================
 
     // Danh sách đang hiển thị
     private final List<VocabularySet> vocabularySetList =
@@ -83,18 +58,11 @@ public class ThuVienFragment extends Fragment {
             new ArrayList<>();
 
 
-    // =====================================================
-    // CONSTRUCTOR
-    // =====================================================
-
     public ThuVienFragment() {
         // Required empty public constructor
     }
 
 
-    // =====================================================
-    // ON CREATE VIEW
-    // =====================================================
 
     @Nullable
     @Override
@@ -112,16 +80,9 @@ public class ThuVienFragment extends Fragment {
                 );
 
 
-        // -------------------------------------------------
-        // ÁNH XẠ VIEW
-        // -------------------------------------------------
-
         initViews(view);
 
 
-        // -------------------------------------------------
-        // DATABASE
-        // -------------------------------------------------
 
         vocabularySetDAO =
                 new VocabularySetDAO(
@@ -129,49 +90,21 @@ public class ThuVienFragment extends Fragment {
                 );
 
 
-        // -------------------------------------------------
-        // FIREBASE AUTH
-        // -------------------------------------------------
-
         mAuth =
                 FirebaseAuth.getInstance();
 
-
-        // -------------------------------------------------
-        // RECYCLER VIEW
-        // -------------------------------------------------
-
         setupRecyclerView();
-
-
-        // -------------------------------------------------
-        // SỰ KIỆN
-        // -------------------------------------------------
 
         setupListeners();
 
 
-        // -------------------------------------------------
-        // TÌM KIẾM
-        // -------------------------------------------------
-
         setupSearch();
-
-
-        // -------------------------------------------------
-        // TẢI DỮ LIỆU
-        // -------------------------------------------------
 
         loadVocabularySet();
 
 
         return view;
     }
-
-
-    // =====================================================
-    // ÁNH XẠ VIEW
-    // =====================================================
 
     private void initViews(View view) {
 
@@ -205,11 +138,6 @@ public class ThuVienFragment extends Fragment {
                 );
     }
 
-
-    // =====================================================
-    // RECYCLER VIEW
-    // =====================================================
-
     private void setupRecyclerView() {
 
         recyclerVocabularySet.setLayoutManager(
@@ -230,11 +158,6 @@ public class ThuVienFragment extends Fragment {
                 adapter
         );
     }
-
-
-    // =====================================================
-    // SỰ KIỆN
-    // =====================================================
 
     private void setupListeners() {
 
@@ -260,11 +183,6 @@ public class ThuVienFragment extends Fragment {
                 }
         );
     }
-
-
-    // =====================================================
-    // TÌM KIẾM
-    // =====================================================
 
     private void setupSearch() {
 
@@ -304,33 +222,15 @@ public class ThuVienFragment extends Fragment {
         );
     }
 
-
-    // =====================================================
-    // TẢI DANH SÁCH BỘ TỪ
-    // =====================================================
-
     private void loadVocabularySet() {
-
-        // -------------------------------------------------
-        // Kiểm tra Fragment còn hoạt động
-        // -------------------------------------------------
 
         if (!isAdded()) {
             return;
         }
 
 
-        // -------------------------------------------------
-        // Lấy user Firebase
-        // -------------------------------------------------
-
         FirebaseUser firebaseUser =
                 mAuth.getCurrentUser();
-
-
-        // -------------------------------------------------
-        // Chưa đăng nhập
-        // -------------------------------------------------
 
         if (firebaseUser == null) {
 
@@ -350,27 +250,14 @@ public class ThuVienFragment extends Fragment {
         }
 
 
-        // -------------------------------------------------
-        // UID người dùng
-        // -------------------------------------------------
-
         String userUid =
                 firebaseUser.getUid();
 
-
-        // -------------------------------------------------
-        // LẤY DỮ LIỆU TỪ SQLITE
-        // -------------------------------------------------
 
         List<VocabularySet> list =
                 vocabularySetDAO.getByUserUid(
                         userUid
                 );
-
-
-        // -------------------------------------------------
-        // LƯU DANH SÁCH GỐC
-        // -------------------------------------------------
 
         allVocabularySetList.clear();
 
@@ -382,10 +269,6 @@ public class ThuVienFragment extends Fragment {
         }
 
 
-        // -------------------------------------------------
-        // HIỂN THỊ DANH SÁCH
-        // -------------------------------------------------
-
         vocabularySetList.clear();
 
         vocabularySetList.addAll(
@@ -393,16 +276,8 @@ public class ThuVienFragment extends Fragment {
         );
 
 
-        // -------------------------------------------------
-        // CẬP NHẬT ADAPTER
-        // -------------------------------------------------
-
         adapter.notifyDataSetChanged();
 
-
-        // -------------------------------------------------
-        // CẬP NHẬT GIAO DIỆN
-        // -------------------------------------------------
 
         if (vocabularySetList.isEmpty()) {
 
@@ -420,11 +295,6 @@ public class ThuVienFragment extends Fragment {
         }
     }
 
-
-    // =====================================================
-    // TÌM KIẾM BỘ TỪ
-    // =====================================================
-
     private void filterVocabularySet(
             String keyword
     ) {
@@ -439,10 +309,6 @@ public class ThuVienFragment extends Fragment {
         vocabularySetList.clear();
 
 
-        // -------------------------------------------------
-        // Không nhập từ khóa
-        // -------------------------------------------------
-
         if (search.isEmpty()) {
 
             vocabularySetList.addAll(
@@ -450,11 +316,6 @@ public class ThuVienFragment extends Fragment {
             );
 
         }
-
-        // -------------------------------------------------
-        // Có từ khóa
-        // -------------------------------------------------
-
         else {
 
             for (
@@ -481,17 +342,7 @@ public class ThuVienFragment extends Fragment {
             }
         }
 
-
-        // -------------------------------------------------
-        // Cập nhật RecyclerView
-        // -------------------------------------------------
-
         adapter.notifyDataSetChanged();
-
-
-        // -------------------------------------------------
-        // Cập nhật Empty State
-        // -------------------------------------------------
 
         if (vocabularySetList.isEmpty()) {
 
@@ -518,11 +369,6 @@ public class ThuVienFragment extends Fragment {
             );
         }
     }
-
-
-    // =====================================================
-    // CẬP NHẬT GIAO DIỆN
-    // =====================================================
 
     private void updateUI(
             boolean isEmpty,
@@ -555,11 +401,6 @@ public class ThuVienFragment extends Fragment {
         }
     }
 
-
-    // =====================================================
-    // KHI QUAY LẠI FRAGMENT
-    // =====================================================
-
     @Override
     public void onResume() {
 
@@ -577,11 +418,6 @@ public class ThuVienFragment extends Fragment {
             loadVocabularySet();
         }
     }
-
-
-    // =====================================================
-    // HỦY VIEW
-    // =====================================================
 
     @Override
     public void onDestroyView() {

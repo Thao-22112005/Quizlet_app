@@ -15,11 +15,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class AddWordActivity extends AppCompatActivity {
-
-    // =====================================================
-    // VIEW
-    // =====================================================
-
     private TextInputLayout tilEnglish;
     private TextInputLayout tilMeaning;
 
@@ -35,32 +30,11 @@ public class AddWordActivity extends AppCompatActivity {
     private Button btnSaveWord;
     private ImageButton btnBack;
 
-
-    // =====================================================
-    // DATABASE
-    // =====================================================
-
     private WordDAO wordDAO;
-
-
-    // =====================================================
-    // THÔNG TIN BỘ TỪ
-    // =====================================================
-
     private int setId;
     private int wordId;
 
-
-    // =====================================================
-    // CHẾ ĐỘ
-    // =====================================================
-
     private boolean editMode = false;
-
-
-    // =====================================================
-    // ON CREATE
-    // =====================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,11 +100,6 @@ public class AddWordActivity extends AppCompatActivity {
         setupListeners();
     }
 
-
-    // =====================================================
-    // ÁNH XẠ VIEW
-    // =====================================================
-
     private void initViews() {
 
         btnBack =
@@ -169,11 +138,6 @@ public class AddWordActivity extends AppCompatActivity {
                 findViewById(R.id.edtNote);
     }
 
-
-    // =====================================================
-    // CHẾ ĐỘ THÊM
-    // =====================================================
-
     private void setupAddMode() {
 
         tvTitle.setText(
@@ -184,11 +148,6 @@ public class AddWordActivity extends AppCompatActivity {
                 "Lưu từ"
         );
     }
-
-
-    // =====================================================
-    // CHẾ ĐỘ SỬA
-    // =====================================================
 
     private void setupEditMode() {
 
@@ -282,12 +241,6 @@ public class AddWordActivity extends AppCompatActivity {
                 word.getNote()
         );
     }
-
-
-    // =====================================================
-    // SỰ KIỆN
-    // =====================================================
-
     private void setupListeners() {
 
         // Quay lại
@@ -302,17 +255,7 @@ public class AddWordActivity extends AppCompatActivity {
         );
     }
 
-
-    // =====================================================
-    // LƯU TỪ VỰNG
-    // =====================================================
-
     private void saveWord() {
-
-        // -------------------------------------------------
-        // Lấy dữ liệu
-        // -------------------------------------------------
-
         String english =
                 edtEnglish.getText()
                         .toString()
@@ -343,11 +286,6 @@ public class AddWordActivity extends AppCompatActivity {
                         .toString()
                         .trim();
 
-
-        // -------------------------------------------------
-        // KIỂM TRA TỪ TIẾNG ANH
-        // -------------------------------------------------
-
         if (english.isEmpty()) {
 
             tilEnglish.setError(
@@ -360,11 +298,6 @@ public class AddWordActivity extends AppCompatActivity {
         }
 
         tilEnglish.setError(null);
-
-
-        // -------------------------------------------------
-        // KIỂM TRA NGHĨA
-        // -------------------------------------------------
 
         if (meaning.isEmpty()) {
 
@@ -379,10 +312,6 @@ public class AddWordActivity extends AppCompatActivity {
 
         tilMeaning.setError(null);
 
-
-        // -------------------------------------------------
-        // TẠO OBJECT WORD
-        // -------------------------------------------------
 
         Word word =
                 new Word();
@@ -415,11 +344,6 @@ public class AddWordActivity extends AppCompatActivity {
         word.setNote(
                 note
         );
-
-
-        // =================================================
-        // CHẾ ĐỘ SỬA
-        // =================================================
 
         if (editMode) {
 
@@ -473,10 +397,6 @@ public class AddWordActivity extends AppCompatActivity {
         }
 
 
-        // =================================================
-        // CHẾ ĐỘ THÊM
-        // =================================================
-
         // Từ mới mặc định chưa học
         word.setIsLearned(0);
 
@@ -510,11 +430,6 @@ public class AddWordActivity extends AppCompatActivity {
             ).show();
         }
     }
-
-
-    // =====================================================
-    // XÓA FORM
-    // =====================================================
 
     private void clearForm() {
 
