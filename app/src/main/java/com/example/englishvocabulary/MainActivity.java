@@ -1,63 +1,143 @@
 package com.example.englishvocabulary;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.englishvocabulary.activities.CreateVocabularySetActivity;
+import com.example.englishvocabulary.activities.FlashcardActivity;
 import com.example.englishvocabulary.fragments.AIChatFragment;
 import com.example.englishvocabulary.fragments.ThuVienFragment;
 import com.example.englishvocabulary.fragments.TrangChuFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 
 public class MainActivity extends AppCompatActivity {
-    BottomNavigationView bottomNavigation;
+
+    private BottomNavigationView bottomNavigation;
+
+
+    // LƯU MENU HIỆN TẠI
+    private int currentNavItemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Khởi tạo Firebase
+        FirebaseApp.initializeApp(this);
+
+        // App Check Debug - dùng khi phát triển
+        FirebaseAppCheck firebaseAppCheck =
+                FirebaseAppCheck.getInstance();
+
+        firebaseAppCheck.installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance()
+        );
+
+
         setContentView(R.layout.activity_main);
 
+        // ÁNH XẠ VIEW
         bottomNavigation = findViewById(R.id.bottomNavigation);
 
-        // Mặc định mở Trang chủ
+
+
+        currentNavItemId = R.id.nav_home;
+
+        bottomNavigation.setSelectedItemId(R.id.nav_home);
+
         loadFragment(new TrangChuFragment());
+
 
         bottomNavigation.setOnItemSelectedListener(item -> {
 
-            int id = item.getItemId();
+            int itemId = item.getItemId();
 
-            if (id == R.id.nav_home) {
+            if (itemId == R.id.nav_home) {
+
+                currentNavItemId = R.id.nav_home;
 
                 loadFragment(new TrangChuFragment());
 
-            } else if (id == R.id.nav_library) {
+                return true;
+            }
+
+            else if (itemId == R.id.nav_library) {
+
+                currentNavItemId = R.id.nav_library;
 
                 loadFragment(new ThuVienFragment());
 
-            } else if (id == R.id.nav_ai) {
+                return true;
+            }
+
+            else if (itemId == R.id.nav_ai) {
+
+                currentNavItemId = R.id.nav_ai;
 
                 loadFragment(new AIChatFragment());
 
-            } else if (id == R.id.nav_add) {
-
-                // Tạm thời chưa làm màn hình tạo bộ
-                // Bước sau sẽ mở TaoBoTuVungActivity
+                return true;
             }
 
-            return true;
+            else if (itemId == R.id.nav_add) {
+
+                Intent intent =
+                        new Intent(
+                                MainActivity.this,
+                                CreateVocabularySetActivity.class
+                        );
+
+                // Gửi trang hiện tại sang CreateVocabularySetActivity
+                intent.putExtra(
+                        "previous_nav_item",
+                        currentNavItemId
+                );
+
+                startActivity(intent);
+
+                // Không chọn nav_add
+                return false;
+            }
+
+            return false;
         });
     }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        super.onNewIntent(intent);
+
+        setIntent(intent);
+
+        int previousNavItemId =
+                intent.getIntExtra(
+                        "previous_nav_item",
+                        R.id.nav_home
+                );
+
+        // Chọn lại menu trước đó
+        bottomNavigation.setSelectedItemId(
+                previousNavItemId
+        );
+    }
+
 
     private void loadFragment(Fragment fragment) {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+                .replace(
+                        R.id.fragmentContainer,
+                        fragment
+                )
                 .commit();
     }
 }

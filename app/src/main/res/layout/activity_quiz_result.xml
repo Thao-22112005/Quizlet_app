@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="17dp">
+
+
+    <!-- CARD KẾT QUẢ -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardResult"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:cardCornerRadius="25dp"
+        app:cardElevation="3dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+            android:gravity="center"
+
+            android:padding="25dp">
+
+
+            <!-- HÌNH CÚP -->
+
+            <ImageView
+                android:id="@+id/imgTrophy"
+
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+
+                android:src="@drawable/ic_cup"
+
+                android:contentDescription="Kết quả" />
+
+
+            <!-- TIÊU ĐỀ -->
+
+            <TextView
+                android:id="@+id/tvTitle"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="15dp"
+
+                android:text="Hoàn thành bài học!"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#222222" />
+
+
+            <!-- KHU VỰC ĐIỂM -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="25dp"
+
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+
+                <!-- ĐÚNG -->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:orientation="vertical"
+
+                    android:padding="12dp"
+                    android:background="#F1FAF5">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvCorrectTitle"
+                        android:text="Đúng"
+                        android:textSize="14sp"
+                        android:textColor="#4CAF50" />
+
+
+                    <TextView
+                        android:id="@+id/tvCorrect"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="5dp"
+
+                        android:text="16"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="#4CAF50" />
+
+                </LinearLayout>
+
+
+                <!-- SAI -->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:orientation="vertical"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:padding="12dp"
+                    android:background="#FFF5F5">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvWrongTitle"
+                        android:text="Sai"
+                        android:textSize="14sp"
+                        android:textColor="#D32F2F" />
+
+
+                    <TextView
+                        android:id="@+id/tvWrong"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="5dp"
+
+                        android:text="4"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="#D32F2F" />
+
+                </LinearLayout>
+
+
+                <!-- ĐIỂM -->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:orientation="vertical"
+
+                    android:padding="12dp"
+                    android:background="#F3F6FF">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Điểm"
+                        android:textSize="14sp"
+                        android:textColor="#3F51B5" />
+
+
+                    <TextView
+                        android:id="@+id/tvScore"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="5dp"
+
+                        android:text="80%"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="#3F51B5" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- HỌC LẠI -->
+
+            <Button
+                android:id="@+id/btnRetry"
+
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+
+                android:layout_marginTop="30dp"
+
+                android:text="Học lại"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#304FFE"
+                app:cornerRadius="12dp"/>
+
+
+            <!-- VỀ TRANG CHỦ -->
+
+            <Button
+                android:id="@+id/btnHome"
+
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+
+                android:layout_marginTop="10dp"
+
+
+                android:text="Về trang chủ"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                android:textColor="#304FFE"
+                android:backgroundTint="#FFF"
+                app:strokeWidth="1.5dp"
+                app:strokeColor="#304FFE"
+                app:cornerRadius="12dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,17 +5,22 @@ public class LearningHistory {
     private int id;
     private int setId;
     private int wordId;
-    private boolean isCorrect;
+    private int isCorrect;
     private String learningMode;
     private String learnedAt;
+
 
     public LearningHistory() {
     }
 
-    public LearningHistory(int id, int setId, int wordId,
-                           boolean isCorrect,
-                           String learningMode,
-                           String learnedAt) {
+
+    public LearningHistory(
+            int id,
+            int setId,
+            int wordId,
+            int isCorrect,
+            String learningMode,
+            String learnedAt) {
 
         this.id = id;
         this.setId = setId;
@@ -25,6 +30,7 @@ public class LearningHistory {
         this.learnedAt = learnedAt;
     }
 
+
     public int getId() {
         return id;
     }
@@ -32,6 +38,7 @@ public class LearningHistory {
     public void setId(int id) {
         this.id = id;
     }
+
 
     public int getSetId() {
         return setId;
@@ -41,6 +48,7 @@ public class LearningHistory {
         this.setId = setId;
     }
 
+
     public int getWordId() {
         return wordId;
     }
@@ -49,13 +57,15 @@ public class LearningHistory {
         this.wordId = wordId;
     }
 
-    public boolean isCorrect() {
+
+    public int getIsCorrect() {
         return isCorrect;
     }
 
-    public void setCorrect(boolean correct) {
-        isCorrect = correct;
+    public void setIsCorrect(int isCorrect) {
+        this.isCorrect = isCorrect;
     }
+
 
     public String getLearningMode() {
         return learningMode;
@@ -64,6 +74,7 @@ public class LearningHistory {
     public void setLearningMode(String learningMode) {
         this.learningMode = learningMode;
     }
+
 
     public String getLearnedAt() {
         return learnedAt;

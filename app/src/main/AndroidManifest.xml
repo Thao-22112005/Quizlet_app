@@ -33,6 +33,25 @@
             android:name=".activities.ForgotPasswordActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.CreateVocabularySetActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.EditVocabularySetActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.FlashcardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.QuizActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.QuizResultActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity android:name=".activities.AddWordActivity" />
         <activity android:name=".activities.VocabularySetDetailActivity" />

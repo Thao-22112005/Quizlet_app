@@ -3,6 +3,8 @@ package com.example.englishvocabulary.models;
 public class VocabularySet {
     // bo tu vung
     private int id;
+
+    private String userUid;
     private String title;
     private String description;
     private String topic;
@@ -28,12 +30,32 @@ public class VocabularySet {
         this.updatedAt = updatedAt;
     }
 
+    public VocabularySet(int id, String userUid, String title, String description, String topic, String level, String coverImage, String createdAt, String updatedAt) {
+        this.id = id;
+        this.userUid = userUid;
+        this.title = title;
+        this.description = description;
+        this.topic = topic;
+        this.level = level;
+        this.coverImage = coverImage;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUserUid() {
+        return userUid;
+    }
+
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
     public String getTitle() {

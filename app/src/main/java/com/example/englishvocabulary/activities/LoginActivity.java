@@ -39,16 +39,9 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        // ==========================================
         // FIREBASE
-        // ==========================================
-
         mAuth = FirebaseAuth.getInstance();
 
-
-        // ==========================================
-        // ÁNH XẠ VIEW
-        // ==========================================
 
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
@@ -74,17 +67,11 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        // ==========================================
         // ĐĂNG NHẬP
-        // ==========================================
-
         btnLogin.setOnClickListener(v -> loginAccount());
 
 
-        // ==========================================
         // CHUYỂN SANG ĐĂNG KÝ
-        // ==========================================
-
         tvRegister.setOnClickListener(v -> {
 
             Intent intent =
@@ -97,11 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
-    // =====================================================
     // ĐĂNG NHẬP
-    // =====================================================
-
     private void loginAccount() {
         //fake login
         edtEmail.setText("a");
@@ -129,9 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         boolean isValid = true;
 
 
-        // ==========================================
         // KIỂM TRA EMAIL
-        // ==========================================
 
         if (TextUtils.isEmpty(email)) {
 
@@ -151,10 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        // ==========================================
         // KIỂM TRA MẬT KHẨU
-        // ==========================================
-
         if (TextUtils.isEmpty(password)) {
 
             tilPassword.setError(
@@ -168,27 +146,14 @@ public class LoginActivity extends AppCompatActivity {
             tilPassword.setErrorEnabled(false);
         }
 
-
-        // ==========================================
-        // DỪNG NẾU DỮ LIỆU KHÔNG HỢP LỆ
-        // ==========================================
-
         if (!isValid) {
             return;
         }
 
 
-        // ==========================================
-        // KHÓA NÚT
-        // ==========================================
-
         btnLogin.setEnabled(false);
 
-
-        // ==========================================
         // FIREBASE ĐĂNG NHẬP
-        // ==========================================
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
 
@@ -204,11 +169,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         return;
                     }
-
-
-                    // ==========================================
-                    // LẤY USER
-                    // ==========================================
 
                     FirebaseUser user =
                             mAuth.getCurrentUser();
@@ -228,10 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
 
-                    // ==========================================
                     // KIỂM TRA EMAIL ĐÃ XÁC MINH CHƯA
-                    // ==========================================
-
                     if (!user.isEmailVerified()) {
 
                         btnLogin.setEnabled(true);
@@ -249,20 +206,12 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
 
-                    // ==========================================
                     // ĐĂNG NHẬP THÀNH CÔNG
-                    // ==========================================
-
                     Toast.makeText(
                             LoginActivity.this,
                             "Đăng nhập thành công!",
                             Toast.LENGTH_SHORT
                     ).show();
-
-
-                    // ==========================================
-                    // CHUYỂN SANG MAIN ACTIVITY
-                    // ==========================================
 
                     Intent intent =
                             new Intent(

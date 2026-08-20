@@ -6,6 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    // TÊN DATABASE
+    private static final String DATABASE_NAME = "quizletapp.db";
+
+    // Vẫn giữ version 2
+    private static final int DATABASE_VERSION = 3;
         // =====================================================
         // TÊN DATABASE
         // =====================================================
@@ -21,36 +26,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // TÊN CÁC BẢNG
         // =====================================================
 
-        public static final String TABLE_VOCABULARY_SET = "VOCABULARY_SET";
-        public static final String TABLE_WORD = "WORD";
-        public static final String TABLE_LEARNING_HISTORY = "LEARNING_HISTORY";
-        public static final String TABLE_QUIZ_RESULT = "QUIZ_RESULT";
-
-        // =====================================================
-        // CONSTRUCTOR
-        // =====================================================
+    // TÊN CÁC BẢNG
+    public static final String TABLE_VOCABULARY_SET = "VOCABULARY_SET";
+    public static final String TABLE_WORD = "WORD";
+    public static final String TABLE_LEARNING_HISTORY = "LEARNING_HISTORY";
+    public static final String TABLE_QUIZ_RESULT = "QUIZ_RESULT";
 
         public DatabaseHelper(Context context) {
                 super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-        // =====================================================
-        // BẬT KHÓA NGOÀI
-        // =====================================================
+    // CONSTRUCTOR
+    public DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
-        @Override
-        public void onConfigure(SQLiteDatabase db) {
-                super.onConfigure(db);
-
-                db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        // =====================================================
-        // TẠO DATABASE
-        // =====================================================
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
+    // BẬT KHÓA NGOÀI
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
 
                 // =================================================
                 // BẢNG VOCABULARY_SET
@@ -58,17 +52,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 String createVocabularySetTable = "CREATE TABLE " + TABLE_VOCABULARY_SET + " (" +
 
-                // ID bộ từ
-                                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    // TẠO DATABASE
+    @Override
+    public void onCreate(SQLiteDatabase db) {
 
-                                // Firebase UID của người tạo bộ từ
-                                "user_uid TEXT NOT NULL, " +
-
-                                // Tên bộ từ
-                                "title TEXT NOT NULL, " +
-
-                                // Mô tả
-                                "description TEXT, " +
+        // BẢNG VOCABULARY_SET
+        String createVocabularySetTable =
+                "CREATE TABLE " + TABLE_VOCABULARY_SET + " (" +
 
                                 // Chủ đề
                                 "topic TEXT, " +
@@ -101,14 +91,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 // ID bộ từ
                                 "set_id INTEGER NOT NULL, " +
 
-                                // Từ tiếng Anh
-                                "english TEXT NOT NULL, " +
-
-                                // Phiên âm
-                                "pronunciation TEXT, " +
-
-                                // Nghĩa tiếng Việt
-                                "meaning TEXT NOT NULL, " +
+        // BẢNG WORD
+        String createWordTable =
+                "CREATE TABLE " + TABLE_WORD + " (" +
 
                                 // Ví dụ
                                 "example TEXT, " +
@@ -119,6 +104,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 // Đã học chưa (0: chưa, 1: đã)
                                 "is_learned INTEGER DEFAULT 0, " +
 
+                        //Loại từ (n,v, adj)
+                        "loai_tu TEXT NOT NULL," +
+
+                        // Phiên âm
+                        "pronunciation TEXT, " +
                                 // Khóa ngoại tới VOCABULARY_SET
                                 "FOREIGN KEY(set_id) " +
                                 "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
@@ -145,6 +135,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 // ID từ vựng
                                 "word_id INTEGER NOT NULL, " +
 
+        // BẢNG LEARNING_HISTORY
+        String createLearningHistoryTable =
+                "CREATE TABLE " + TABLE_LEARNING_HISTORY + " (" +
                                 // 1 = đúng
                                 // 0 = sai
                                 "is_correct INTEGER NOT NULL, " +
@@ -187,6 +180,77 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 // Tổng số câu
                                 "total_questions INTEGER NOT NULL, " +
 
+
+        // BẢNG QUIZ_RESULT
+        String createQuizResultTable =
+                "CREATE TABLE " + TABLE_QUIZ_RESULT + " (" +
+
+                        // ID kết quả
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                        // ID bộ từ
+                        "set_id INTEGER NOT NULL, " +
+
+                        // Tổng số câu
+                        "total_questions INTEGER NOT NULL, " +
+
+                        // Số câu đúng
+                        "correct_answers INTEGER NOT NULL, " +
+
+                        // Số câu sai
+                        "wrong_answers INTEGER NOT NULL, " +
+
+                        // Điểm
+                        "score REAL NOT NULL, " +
+
+                        // Thời gian hoàn thành
+                        "completed_at TEXT, " +
+
+                        // Khóa ngoại tới VOCABULARY_SET
+                        "FOREIGN KEY(set_id) " +
+                        "REFERENCES " + TABLE_VOCABULARY_SET + "(id) " +
+
+                        "ON DELETE CASCADE" +
+
+                        ")";
+
+        db.execSQL(createQuizResultTable);
+    }
+
+
+    // NÂNG VERSION DATABASE
+    @Override
+    public void onUpgrade(
+            SQLiteDatabase db,
+            int oldVersion,
+            int newVersion) {
+
+        // Xóa bảng theo thứ tự từ bảng phụ → bảng chính
+
+        db.execSQL(
+                "DROP TABLE IF EXISTS " +
+                        TABLE_LEARNING_HISTORY
+        );
+
+        db.execSQL(
+                "DROP TABLE IF EXISTS " +
+                        TABLE_QUIZ_RESULT
+        );
+
+        db.execSQL(
+                "DROP TABLE IF EXISTS " +
+                        TABLE_WORD
+        );
+
+        db.execSQL(
+                "DROP TABLE IF EXISTS " +
+                        TABLE_VOCABULARY_SET
+        );
+
+        // Tạo lại database
+        onCreate(db);
+    }
+}
                                 // Số câu đúng
                                 "correct_answers INTEGER NOT NULL, " +
 

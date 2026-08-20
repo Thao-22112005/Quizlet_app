@@ -34,18 +34,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_forgot_password);
 
-
-        // ==========================================
         // FIREBASE
-        // ==========================================
-
         mAuth = FirebaseAuth.getInstance();
 
-
-        // ==========================================
         // ÁNH XẠ VIEW
-        // ==========================================
-
         tilEmail = findViewById(R.id.tilEmail);
 
         edtEmail = findViewById(R.id.edtEmail);
@@ -55,37 +47,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         tvBack = findViewById(R.id.tvBack);
 
 
-        // ==========================================
         // GỬI LINK RESET
-        // ==========================================
-
         btnSendReset.setOnClickListener(
                 v -> sendResetEmail()
         );
 
 
-        // ==========================================
         // QUAY LẠI LOGIN
-        // ==========================================
-
         tvBack.setOnClickListener(v -> finish());
     }
 
-
-    // =====================================================
     // GỬI EMAIL ĐẶT LẠI MẬT KHẨU
-    // =====================================================
-
     private void sendResetEmail() {
 
         String email =
                 edtEmail.getText().toString().trim();
 
-
-        // ==========================================
         // KIỂM TRA EMAIL
-        // ==========================================
-
         if (TextUtils.isEmpty(email)) {
 
             tilEmail.setError(
@@ -108,18 +86,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         tilEmail.setErrorEnabled(false);
 
-
-        // ==========================================
         // KHÓA NÚT
-        // ==========================================
-
         btnSendReset.setEnabled(false);
 
-
-        // ==========================================
         // FIREBASE GỬI EMAIL
-        // ==========================================
-
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
 
