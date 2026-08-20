@@ -2,6 +2,11 @@ package com.example.englishvocabulary.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -24,6 +29,14 @@ import com.example.englishvocabulary.models.VocabularySet;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import com.example.englishvocabulary.R;
+import com.example.englishvocabulary.activities.VocabularySetDetailActivity;
+import com.example.englishvocabulary.adapters.VocabularySetAdapter;
+import com.example.englishvocabulary.database.VocabularySetDAO;
+import com.example.englishvocabulary.models.VocabularySet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +196,33 @@ public class ThuVienFragment extends Fragment {
 
         loadVocabularySet();
 
+    private RecyclerView rvVocabularySets;
+    private LinearLayout layoutEmpty;
+    private EditText edtSearch;
+
+    private VocabularySetDAO vocabularySetDAO;
+    private VocabularySetAdapter vocabularySetAdapter;
+    private List<VocabularySet> allSets;
+
+    public ThuVienFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(
+                R.layout.fragment_thu_vien, container, false);
+
+        rvVocabularySets = view.findViewById(R.id.rvVocabularySets);
+        layoutEmpty = view.findViewById(R.id.layoutEmpty);
+        edtSearch = view.findViewById(R.id.edtSearch);
+
+        vocabularySetDAO = new VocabularySetDAO(getContext());
+
+        setupRecyclerView();
+        setupSearch();
 
         return view;
     }
@@ -354,5 +394,141 @@ public class ThuVienFragment extends Fragment {
                     View.VISIBLE
             );
         }
+        super.onResume();
+        loadData();
+    }
+
+    // =====================================================
+    // SETUP RECYCLERVIEW
+    // =====================================================
+
+    private void setupRecyclerView() {
+        allSets = new ArrayList<>();
+
+        vocabularySetAdapter = new VocabularySetAdapter(
+                getContext(),
+                allSets,
+                new VocabularySetAdapter.OnClickItemListener() {
+                    @Override
+                    public void onClickItem(VocabularySet vocabularySet) {
+                        Intent intent = new Intent(
+                                getContext(),
+                                VocabularySetDetailActivity.class);
+                        intent.putExtra("set_id", vocabularySet.getId());
+                        intent.putExtra("set_title", vocabularySet.getTitle());
+                        startActivity(intent);
+                    }
+                },
+                new VocabularySetAdapter.OnSetClickListener() {
+                    @Override
+                    public void onEdit(VocabularySet set) {
+                        showEditDialog(set);
+                    }
+
+                    @Override
+                    public void onDelete(VocabularySet set) {
+                        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
+                                getContext())
+                                .setTitle("Xoá chủ đề")
+                                .setMessage("Xoá \"" + set.getTitle()
+                                        + "\" và tất cả từ bên trong?")
+                                .setPositiveButton("Xoá", (d, w) -> {
+                                    vocabularySetDAO.delete(set.getId());
+                                    loadData();
+                                })
+                                .setNegativeButton("Huỷ", null)
+                                .show();
+                    }
+                });
+
+        rvVocabularySets.setLayoutManager(
+                new LinearLayoutManager(getContext()));
+        rvVocabularySets.setAdapter(vocabularySetAdapter);
+    }
+
+    // =====================================================
+    // DIALOG SỬA CHỦ ĐỀ
+    // =====================================================
+
+    private void showEditDialog(VocabularySet set) {
+        android.widget.EditText input = new android.widget.EditText(getContext());
+        input.setText(set.getTitle());
+        input.setSelectAllOnFocus(true);
+        input.setPadding(48, 32, 48, 16);
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
+                getContext())
+                .setTitle("Sửa tên chủ đề")
+                .setView(input)
+                .setPositiveButton("Lưu", (d, w) -> {
+                    String newTitle = input.getText().toString().trim();
+                    if (!newTitle.isEmpty()) {
+                        set.setTitle(newTitle);
+                        vocabularySetDAO.update(set);
+                        loadData();
+                    }
+                })
+                .setNegativeButton("Huỷ", null)
+                .show();
+    }
+
+    // =====================================================
+    // SETUP TÌM KIẾM
+    // =====================================================
+
+    private void setupSearch() {
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(
+                    CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(
+                    CharSequence s, int start, int before, int count) {
+                filterSets(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    // =====================================================
+    // LOAD DỮ LIỆU
+    // =====================================================
+
+    private void loadData() {
+        allSets = vocabularySetDAO.getAll();
+
+        if (allSets.isEmpty()) {
+            layoutEmpty.setVisibility(View.VISIBLE);
+            rvVocabularySets.setVisibility(View.GONE);
+        } else {
+            layoutEmpty.setVisibility(View.GONE);
+            rvVocabularySets.setVisibility(View.VISIBLE);
+            vocabularySetAdapter.updateData(allSets);
+        }
+    }
+
+    // =====================================================
+    // LỌC
+    // =====================================================
+
+    private void filterSets(String keyword) {
+        if (keyword.isEmpty()) {
+            vocabularySetAdapter.updateData(allSets);
+            return;
+        }
+
+        List<VocabularySet> filtered = new ArrayList<>();
+        for (VocabularySet set : allSets) {
+            if (set.getTitle().toLowerCase()
+                    .contains(keyword.toLowerCase())) {
+                filtered.add(set);
+            }
+        }
+        vocabularySetAdapter.updateData(filtered);
     }
 }

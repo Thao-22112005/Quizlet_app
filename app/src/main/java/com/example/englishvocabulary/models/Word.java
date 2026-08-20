@@ -11,6 +11,7 @@ public class Word {
     private String meaning;
     private String example;
     private String note;
+    public int isLearned;
 
     public Word() {
     }
@@ -28,7 +29,7 @@ public class Word {
 
     public Word(int id, int setId, String english,
                 String pronunciation, String meaning,
-                String example, String note) {
+                String example, String note, int isLearned) {
 
         this.id = id;
         this.setId = setId;
@@ -37,6 +38,7 @@ public class Word {
         this.meaning = meaning;
         this.example = example;
         this.note = note;
+        this.isLearned = isLearned;
     }
 
     public int getId() {
@@ -101,5 +103,11 @@ public class Word {
 
     public void setLoaiTu(String loaiTu) {
         this.loaiTu = loaiTu;
+    public int getIsLearned() {
+        return isLearned;
+    }
+
+    public void setIsLearned(int isLearned) {
+        this.isLearned = isLearned;
     }
 }
