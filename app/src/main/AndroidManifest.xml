@@ -52,10 +52,6 @@
             android:name=".activities.QuizResultActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activities.AIChatbotFragment"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
