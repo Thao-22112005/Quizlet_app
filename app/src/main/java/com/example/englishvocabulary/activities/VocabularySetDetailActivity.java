@@ -250,15 +250,31 @@ public class VocabularySetDetailActivity
         });
 
         btnFlashcard.setOnClickListener(v -> {
-            Toast.makeText(this,
-                    "Chức năng Flashcard đang phát triển",
-                    Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(
+                    VocabularySetDetailActivity.this,
+                    FlashcardActivity.class
+            );
+
+            intent.putExtra(
+                    "set_id",
+                    setId
+            );
+
+            startActivity(intent);
         });
 
         btnQuiz.setOnClickListener(v -> {
-            Toast.makeText(this,
-                    "Chức năng Trắc nghiệm đang phát triển",
-                    Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(
+                    VocabularySetDetailActivity.this,
+                    QuizActivity.class
+            );
+
+            intent.putExtra(
+                    "set_id",
+                    setId
+            );
+
+            startActivity(intent);
         });
 
         btnMatching.setOnClickListener(v -> {
@@ -271,7 +287,7 @@ public class VocabularySetDetailActivity
 
     // 9. Load từ từ DB
     private void loadWords() {
-        wordList = wordDAO.getListBySetId(setId);
+        wordList = wordDAO.getBySetId(setId);
         tvWordCount.setText(wordList.size() + " từ");
 
         if (wordList.isEmpty()) {

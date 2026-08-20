@@ -19,9 +19,9 @@ import java.util.List;
 
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
 
-    private OnWordActionListener listener;
+    private final OnWordActionListener listener;
     private List<Word> words;
-    private Context context;
+    private final Context context;
 
     public WordAdapter(Context context, List<Word> words, OnWordActionListener listener) {
         this.context = context;
@@ -44,44 +44,42 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public WordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_word, parent, false);
-        return new WordAdapter.ViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_word, parent, false);
+        return new ViewHolder(view);
     }
 
-    // --- GẮN DỮ LIỆU VÀO VIEW ---
-    // Gọi mỗi khi 1 item cần hiển thị (scroll)
     @Override
-    public void onBindViewHolder(@NonNull WordAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Word word = words.get(position);
         holder.tvEnglish.setText(word.getEnglish());
         holder.tvMeaning.setText(word.getMeaning());
 
-        if(word.getPronunciation() != null && !word.getPronunciation().isEmpty()) {
+        if (word.getPronunciation() != null && !word.getPronunciation().isEmpty()) {
             holder.tvPronunciation.setText(word.getPronunciation());
             holder.tvPronunciation.setVisibility(View.VISIBLE);
         } else {
-            holder.tvPronunciation.setText("");
             holder.tvPronunciation.setVisibility(View.GONE);
         }
 
-        // Lấy chữ cái đầu
-        String firstLetter = word.getEnglish().substring(0, 1);
+        if (word.getLoaiTu() != null && !word.getLoaiTu().isEmpty()) {
+            holder.tvLoaiTu.setText(word.getLoaiTu());
+            holder.tvLoaiTu.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvLoaiTu.setVisibility(View.GONE);
+        }
 
-        holder.tvLetter.setText(firstLetter.toUpperCase());
+        String firstLetter = word.getEnglish().isEmpty() ? "?" : word.getEnglish().substring(0, 1).toUpperCase();
+        holder.tvLetter.setText(firstLetter);
 
         int colorIndex = position % COLORS.length;
-        // Tạo hình tròn
         GradientDrawable circle = new GradientDrawable();
         circle.setShape(GradientDrawable.OVAL);
         circle.setColor(COLORS[colorIndex][0]);
-//        circle.setStroke(2, COLORS[colorIndex][1]);// cân nhắc thêm
         holder.iconBg.setBackground(circle);
         holder.tvLetter.setTextColor(COLORS[colorIndex][1]);
 
-        holder.itemView.setOnClickListener(view -> {
-            showPopupMenu(view, word);
-        });
+        holder.itemView.setOnClickListener(view -> showPopupMenu(view, word));
     }
 
     @Override
@@ -89,16 +87,16 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
         return words.size();
     }
 
-    private void showPopupMenu(View view, Word word){
+    private void showPopupMenu(View view, Word word) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.getMenu().add(0, 1, 0, "Sửa từ");
         popupMenu.getMenu().add(0, 2, 1, "Xoá từ");
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
-            if(menuItem.getItemId() == 1){
+            if (menuItem.getItemId() == 1) {
                 listener.onEdit(word);
                 return true;
-            } else if(menuItem.getItemId() == 2){
+            } else if (menuItem.getItemId() == 2) {
                 listener.onDelete(word);
                 return true;
             }
@@ -113,11 +111,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tvEnglish;
-        TextView tvPronunciation;
-        TextView tvMeaning;
-        TextView tvLetter;
+        TextView tvEnglish, tvPronunciation, tvMeaning, tvLetter, tvLoaiTu;
         View iconBg;
 
         public ViewHolder(@NonNull View itemView) {
@@ -126,24 +120,25 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
             tvPronunciation = itemView.findViewById(R.id.tvPronunciation);
             tvMeaning = itemView.findViewById(R.id.tvMeaning);
             tvLetter = itemView.findViewById(R.id.tvLetter);
+            tvLoaiTu = itemView.findViewById(R.id.tvLoaiTu);
             iconBg = itemView.findViewById(R.id.iconBg);
         }
     }
 
-    public void updateList(List<Word> words){
+    public void updateList(List<Word> words) {
         this.words = words;
         notifyDataSetChanged();
     }
 
-    public void removeItem(int position){
-        words.remove(position);
-        notifyItemRemoved(position);
+    public void removeItem(int position) {
+        if (position >= 0 && position < words.size()) {
+            words.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, words.size());
+        }
     }
 
-    public Word getItem(int position){
-        words.get(position);
-        notifyItemChanged(position);
+    public Word getItem(int position) {
         return words.get(position);
     }
-
 }

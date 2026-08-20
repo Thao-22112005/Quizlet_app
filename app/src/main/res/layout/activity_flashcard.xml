@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#F6F7FB">
 
 
     <!-- NÚT QUAY LẠI -->
@@ -99,23 +99,17 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardFlashcard"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
-
-        android:backgroundTint="#FFF"
-
+        android:backgroundTint="#FFFFFF"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginTop="35dp"
         android:layout_marginBottom="30dp"
-
         app:cardCornerRadius="20dp"
-        app:cardElevation="3dp"
-
+        app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintTop_toBottomOf="@id/progressBar"
         app:layout_constraintBottom_toTopOf="@id/layoutAnswer">
 
@@ -202,34 +196,21 @@
 
                 <TextView
                     android:id="@+id/tvBackEnglish"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:text="ability"
-                    android:textSize="28sp"
+                    android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="#222222" />
-
-                <TextView
-                    android:id="@+id/tvBackLoaiTu"
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:text="n"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#222222" />
+                    android:textColor="#4055F5" />
 
                 <TextView
                     android:id="@+id/tvPronunciation"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#222222" />
+                    android:textSize="18sp"
+                    android:textColor="#666666"
+                    android:layout_marginTop="4dp"
+                    android:textStyle="italic" />
 
                 <!-- NGHĨA -->
 

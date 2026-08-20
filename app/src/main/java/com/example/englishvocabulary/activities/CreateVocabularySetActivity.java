@@ -1,6 +1,5 @@
 package com.example.englishvocabulary.activities;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,7 +12,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.englishvocabulary.MainActivity;
 import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.database.VocabularySetDAO;
 import com.example.englishvocabulary.models.VocabularySet;
@@ -31,28 +29,48 @@ import java.util.Locale;
 
 public class CreateVocabularySetActivity extends AppCompatActivity {
 
-    private TextInputLayout tilTitle, tilDescription, tilTopic, tilLevel;
+    // =====================================================
+    // VIEW
+    // =====================================================
 
-    private TextInputEditText edtTitle, edtDescription, edtTopic, edtLevel;
-
+    private ImageButton btnBack;
     private ImageView imgCover;
     private Button btnChooseCover;
-    private ImageButton btnBack;
     private Button btnCreate;
 
+    private TextInputLayout tilTitle;
+
+    private TextInputEditText edtTitle;
+    private TextInputEditText edtDescription;
+    private TextInputEditText edtTopic;
+    private TextInputEditText edtLevel;
+
+
+    // =====================================================
     // DATABASE
+    // =====================================================
+
     private VocabularySetDAO vocabularySetDAO;
 
+
+    // =====================================================
     // FIREBASE
+    // =====================================================
+
     private FirebaseAuth mAuth;
 
-    // ẢNH BÌA
+
+    // =====================================================
+    // ẢNH ĐƯỢC CHỌN
+    // =====================================================
+
     private Uri selectedImageUri;
 
-    private int previousNavItemId;
 
+    // =====================================================
+    // IMAGE PICKER
+    // =====================================================
 
-    // Mở thư viện chọn ảnh
     private final ActivityResultLauncher<String> imagePicker =
             registerForActivityResult(
                     new ActivityResultContracts.GetContent(),
@@ -62,118 +80,140 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
 
                             selectedImageUri = uri;
 
-                            // Hiển thị ảnh đã chọn
-                            imgCover.setImageURI(uri);
+                            imgCover.setImageURI(
+                                    selectedImageUri
+                            );
                         }
                     }
             );
 
 
+    // =====================================================
+    // ON CREATE
+    // =====================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_create_vocabulary_set);
-
-
-        // Lấy ID menu trước đó
-        previousNavItemId = getIntent().getIntExtra(
-                "previous_nav_item",
-                R.id.nav_home
+        setContentView(
+                R.layout.activity_create_vocabulary_set
         );
 
 
-        // FIREBASE
+        // Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
 
 
-        // DATABASE
+        // SQLite
         vocabularySetDAO =
                 new VocabularySetDAO(this);
 
 
-        // ÁNH XẠ VIEW
-
-        tilTitle = findViewById(R.id.tilTitle);
-        tilDescription = findViewById(R.id.tilDescription);
-        tilTopic = findViewById(R.id.tilTopic);
-        tilLevel = findViewById(R.id.tilLevel);
-
-        edtTitle = findViewById(R.id.edtTitle);
-        edtDescription = findViewById(R.id.edtDescription);
-        edtTopic = findViewById(R.id.edtTopic);
-        edtLevel = findViewById(R.id.edtLevel);
-
-        imgCover = findViewById(R.id.imgCover);
-        btnChooseCover = findViewById(R.id.btnChooseCover);
-        btnCreate = findViewById(R.id.btnCreate);
-        btnBack = findViewById(R.id.btnBack);
+        // Ánh xạ view
+        initViews();
 
 
-        // CHỌN ẢNH BÌA
-
-        btnChooseCover.setOnClickListener(v -> {
-
-            imagePicker.launch("image/*");
-
-        });
-
-
-        // TẠO BỘ TỪ
-
-        btnCreate.setOnClickListener(v -> {
-
-            createVocabularySet();
-
-        });
-
-
-        // QUAY LẠI
-
-        btnBack.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            CreateVocabularySetActivity.this,
-                            MainActivity.class
-                    );
-
-            // Gửi ID menu trước đó về MainActivity
-            intent.putExtra(
-                    "previous_nav_item",
-                    previousNavItemId
-            );
-
-            intent.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP
-            );
-
-            startActivity(intent);
-
-            finish();
-        });
+        // Sự kiện
+        initEvents();
     }
 
 
+    // =====================================================
+    // ÁNH XẠ VIEW
+    // =====================================================
+
+    private void initViews() {
+
+        btnBack =
+                findViewById(R.id.btnBack);
+
+        btnChooseCover =
+                findViewById(R.id.btnChooseCover);
+
+        btnCreate =
+                findViewById(R.id.btnCreate);
+
+        imgCover =
+                findViewById(R.id.imgCover);
+
+
+        tilTitle =
+                findViewById(R.id.tilTitle);
+
+
+        edtTitle =
+                findViewById(R.id.edtTitle);
+
+        edtDescription =
+                findViewById(R.id.edtDescription);
+
+        edtTopic =
+                findViewById(R.id.edtTopic);
+
+        edtLevel =
+                findViewById(R.id.edtLevel);
+    }
+
+
+    // =====================================================
+    // SỰ KIỆN
+    // =====================================================
+
+    private void initEvents() {
+
+        // Nút quay lại
+        btnBack.setOnClickListener(v -> finish());
+
+
+        // Chọn ảnh bìa
+        btnChooseCover.setOnClickListener(v ->
+                imagePicker.launch("image/*")
+        );
+
+
+        // Tạo bộ từ
+        btnCreate.setOnClickListener(v ->
+                createVocabularySet()
+        );
+    }
+
+
+    // =====================================================
+    // TẠO BỘ TỪ
+    // =====================================================
+
     private void createVocabularySet() {
 
+        // -------------------------------------------------
         // Lấy dữ liệu từ giao diện
+        // -------------------------------------------------
 
         String title =
-                edtTitle.getText().toString().trim();
+                edtTitle.getText()
+                        .toString()
+                        .trim();
 
         String description =
-                edtDescription.getText().toString().trim();
+                edtDescription.getText()
+                        .toString()
+                        .trim();
 
         String topic =
-                edtTopic.getText().toString().trim();
+                edtTopic.getText()
+                        .toString()
+                        .trim();
 
         String level =
-                edtLevel.getText().toString().trim();
+                edtLevel.getText()
+                        .toString()
+                        .trim();
 
 
+        // -------------------------------------------------
         // KIỂM TRA TÊN BỘ TỪ
+        // -------------------------------------------------
 
         if (TextUtils.isEmpty(title)) {
 
@@ -184,23 +224,24 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
             edtTitle.requestFocus();
 
             return;
-
-        } else {
-
-            tilTitle.setError(null);
         }
 
+        tilTitle.setError(null);
 
+
+        // -------------------------------------------------
         // KIỂM TRA ĐĂNG NHẬP FIREBASE
+        // -------------------------------------------------
 
-        FirebaseUser firebaseUser =
+        FirebaseUser user =
                 mAuth.getCurrentUser();
 
-        if (firebaseUser == null) {
+
+        if (user == null) {
 
             Toast.makeText(
                     this,
-                    "Vui lòng đăng nhập trước",
+                    "Vui lòng đăng nhập",
                     Toast.LENGTH_SHORT
             ).show();
 
@@ -208,17 +249,17 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         }
 
 
-        // LẤY FIREBASE UID
+        // -------------------------------------------------
+        // KIỂM TRA TÊN BỘ TỪ ĐÃ TỒN TẠI
+        // -------------------------------------------------
 
-        String userUid =
-                firebaseUser.getUid();
-
-        // KIỂM TRA TÊN BỘ TỪ ĐÃ TỒN TẠI CHƯA
-
-        if (vocabularySetDAO.isTitleExists(userUid, title)) {
+        if (vocabularySetDAO.isTitleExists(
+                user.getUid(),
+                title
+        )) {
 
             tilTitle.setError(
-                    "Tên bộ từ này đã tồn tại!"
+                    "Tên bộ từ này đã tồn tại"
             );
 
             edtTitle.requestFocus();
@@ -226,7 +267,13 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
             return;
         }
 
-        // THỜI GIAN HIỆN TẠI
+
+        tilTitle.setError(null);
+
+
+        // -------------------------------------------------
+        // THỜI GIAN
+        // -------------------------------------------------
 
         String currentTime =
                 new SimpleDateFormat(
@@ -234,6 +281,10 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                         Locale.getDefault()
                 ).format(new Date());
 
+
+        // -------------------------------------------------
+        // LƯU ẢNH
+        // -------------------------------------------------
 
         String coverImage = "";
 
@@ -246,39 +297,56 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         }
 
 
+        // -------------------------------------------------
         // TẠO OBJECT VOCABULARY SET
+        // -------------------------------------------------
 
-        VocabularySet vocabularySet =
+        VocabularySet set =
                 new VocabularySet();
 
-        vocabularySet.setUserUid(userUid);
 
-        vocabularySet.setTitle(title);
+        set.setUserUid(
+                user.getUid()
+        );
 
-        vocabularySet.setDescription(description);
+        set.setTitle(
+                title
+        );
 
-        vocabularySet.setTopic(topic);
+        set.setDescription(
+                description
+        );
 
-        vocabularySet.setLevel(level);
+        set.setTopic(
+                topic
+        );
 
-        vocabularySet.setCoverImage(coverImage);
+        set.setLevel(
+                level
+        );
 
-        vocabularySet.setCreatedAt(currentTime);
+        set.setCoverImage(
+                coverImage
+        );
 
-        vocabularySet.setUpdatedAt(currentTime);
+        set.setCreatedAt(
+                currentTime
+        );
+
+        set.setUpdatedAt(
+                currentTime
+        );
 
 
-        // LƯU DATABASE
+        // -------------------------------------------------
+        // INSERT DATABASE
+        // -------------------------------------------------
 
-        long id =
-                vocabularySetDAO.insert(
-                        vocabularySet
-                );
+        long result =
+                vocabularySetDAO.insert(set);
 
 
-        // KIỂM TRA KẾT QUẢ
-
-        if (id != -1) {
+        if (result != -1) {
 
             Toast.makeText(
                     this,
@@ -286,42 +354,54 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
 
+
+            // Quay lại màn hình trước
             finish();
 
         } else {
 
             Toast.makeText(
                     this,
-                    "Tạo bộ từ thất bại!",
+                    "Lỗi khi lưu bộ từ",
                     Toast.LENGTH_SHORT
             ).show();
         }
     }
 
-    // LƯU ẢNH VÀO BỘ NHỚ CỦA APP
 
-    private String saveImageToInternalStorage(Uri imageUri) {
+    // =====================================================
+    // LƯU ẢNH VÀO INTERNAL STORAGE
+    // =====================================================
+
+    private String saveImageToInternalStorage(
+            Uri uri
+    ) {
+
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
 
         try {
 
-            InputStream inputStream =
-                    getContentResolver().openInputStream(
-                            imageUri
-                    );
+            // Mở ảnh
+            inputStream =
+                    getContentResolver()
+                            .openInputStream(uri);
+
 
             if (inputStream == null) {
+
                 return "";
             }
 
 
             // Tạo tên file
-
             String fileName =
                     "cover_" +
                             System.currentTimeMillis() +
                             ".jpg";
 
 
+            // Thư mục internal storage của app
             File file =
                     new File(
                             getFilesDir(),
@@ -329,19 +409,23 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
                     );
 
 
-            // Ghi ảnh vào bộ nhớ app
-
-            FileOutputStream outputStream =
+            // Tạo output stream
+            outputStream =
                     new FileOutputStream(file);
 
 
+            // Bộ nhớ đệm
             byte[] buffer =
-                    new byte[1024];
+                    new byte[4096];
 
             int length;
 
 
-            while ((length = inputStream.read(buffer)) > 0) {
+            // Copy ảnh
+            while (
+                    (length =
+                            inputStream.read(buffer)) > 0
+            ) {
 
                 outputStream.write(
                         buffer,
@@ -351,20 +435,48 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
             }
 
 
-            outputStream.close();
-
-            inputStream.close();
+            outputStream.flush();
 
 
             // Trả về đường dẫn file
-
             return file.getAbsolutePath();
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
+            Toast.makeText(
+                    this,
+                    "Không thể lưu ảnh bìa",
+                    Toast.LENGTH_SHORT
+            ).show();
+
             return "";
+
+        } finally {
+
+            // Đóng input
+            if (inputStream != null) {
+
+                try {
+
+                    inputStream.close();
+
+                } catch (Exception ignored) {
+                }
+            }
+
+
+            // Đóng output
+            if (outputStream != null) {
+
+                try {
+
+                    outputStream.close();
+
+                } catch (Exception ignored) {
+                }
+            }
         }
     }
 }

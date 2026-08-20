@@ -34,7 +34,7 @@ public class FlashcardActivity extends AppCompatActivity {
 
     private TextView tvEnglish, tvLoaiTu;
 
-    private TextView tvBackEnglish, tvBackLoaiTu, tvPronunciation;
+    private TextView tvBackEnglish, tvPronunciation;
     private TextView tvMeaning;
     private TextView tvExample, tvTranslateExample;
 
@@ -104,7 +104,6 @@ public class FlashcardActivity extends AppCompatActivity {
         layoutBackCard = findViewById(R.id.layoutBackCard);
 
         tvBackEnglish = findViewById(R.id.tvBackEnglish);
-        tvBackLoaiTu = findViewById(R.id.tvBackLoaiTu);
         tvPronunciation = findViewById(R.id.tvPronunciation);
 
         tvMeaning = findViewById(R.id.tvMeaning);
@@ -258,7 +257,6 @@ public class FlashcardActivity extends AppCompatActivity {
         tvBackEnglish.setText(
                 word.getEnglish()
         );
-        tvBackLoaiTu.setText(word.getLoaiTu());
         tvPronunciation.setText(word.getPronunciation());
 
         tvMeaning.setText(
@@ -273,13 +271,19 @@ public class FlashcardActivity extends AppCompatActivity {
             tvExample.setText(
                     word.getExample()
             );
-            tvTranslateExample.setText(word.getNote());
+
 
         } else {
 
             tvExample.setText(
-                    "Chưa có ví dụ"
+                    ""
             );
+        }
+
+        if(!word.getNote().isEmpty() || word.getNote() != null){
+            tvTranslateExample.setText(word.getNote());
+        }else{
+            tvTranslateExample.setText("");
         }
 
 

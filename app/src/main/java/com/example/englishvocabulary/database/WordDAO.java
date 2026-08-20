@@ -14,12 +14,18 @@ public class WordDAO {
 
     private DatabaseHelper dbHelper;
 
+    // =====================================================
+    // CONSTRUCTOR
+    // =====================================================
 
     public WordDAO(Context context) {
-
-        dbHelper =
-                new DatabaseHelper(context);
+        dbHelper = new DatabaseHelper(context);
     }
+
+
+    // =====================================================
+    // THÊM TỪ VỰNG
+    // =====================================================
 
     public long insert(Word word) {
 
@@ -38,8 +44,6 @@ public class WordDAO {
         );
 
 
-
-
         // TỪ TIẾNG ANH
 
         values.put(
@@ -48,10 +52,13 @@ public class WordDAO {
         );
 
 
+        // LOẠI TỪ
+
         values.put(
                 "loai_tu",
                 word.getLoaiTu()
         );
+
 
         // PHIÊN ÂM
 
@@ -85,6 +92,14 @@ public class WordDAO {
         );
 
 
+        // MẶC ĐỊNH CHƯA HỌC
+
+        values.put(
+                "is_learned",
+                word.getIsLearned()
+        );
+
+
         long id =
                 db.insert(
                         DatabaseHelper.TABLE_WORD,
@@ -92,17 +107,20 @@ public class WordDAO {
                         values
                 );
 
-
         db.close();
 
         return id;
     }
 
+
+    // =====================================================
+    // LẤY TỪ VỰNG THEO ID
+    // =====================================================
+
     public Word getById(int id) {
 
         SQLiteDatabase db =
                 dbHelper.getReadableDatabase();
-
 
         Cursor cursor =
                 db.query(
@@ -124,31 +142,29 @@ public class WordDAO {
 
         Word word = null;
 
-
         if (cursor.moveToFirst()) {
-
-            word =
-                    cursorToWord(cursor);
+            word = cursorToWord(cursor);
         }
 
 
         cursor.close();
-
         db.close();
-
 
         return word;
     }
+
+
+    // =====================================================
+    // LẤY DANH SÁCH TỪ THEO BỘ TỪ
+    // =====================================================
 
     public List<Word> getBySetId(int setId) {
 
         List<Word> list =
                 new ArrayList<>();
 
-
         SQLiteDatabase db =
                 dbHelper.getReadableDatabase();
-
 
         Cursor cursor =
                 db.query(
@@ -171,38 +187,37 @@ public class WordDAO {
 
         while (cursor.moveToNext()) {
 
-            Word word =
-                    cursorToWord(cursor);
-
-            list.add(word);
+            list.add(
+                    cursorToWord(cursor)
+            );
         }
 
 
         cursor.close();
-
         db.close();
-
 
         return list;
     }
 
+
+    // =====================================================
+    // CẬP NHẬT TỪ VỰNG
+    // =====================================================
 
     public int update(Word word) {
 
         SQLiteDatabase db =
                 dbHelper.getWritableDatabase();
 
-
         ContentValues values =
                 new ContentValues();
 
-
-        // TỪ TIẾNG ANH
 
         values.put(
                 "english",
                 word.getEnglish()
         );
+
 
         values.put(
                 "loai_tu",
@@ -210,15 +225,11 @@ public class WordDAO {
         );
 
 
-        // PHIÊN ÂM
-
         values.put(
                 "pronunciation",
                 word.getPronunciation()
         );
 
-
-        // NGHĨA TIẾNG VIỆT
 
         values.put(
                 "meaning",
@@ -226,19 +237,21 @@ public class WordDAO {
         );
 
 
-        // VÍ DỤ
-
         values.put(
                 "example",
                 word.getExample()
         );
 
 
-        // GHI CHÚ
-
         values.put(
                 "note",
                 word.getNote()
+        );
+
+
+        values.put(
+                "is_learned",
+                word.getIsLearned()
         );
 
 
@@ -260,16 +273,18 @@ public class WordDAO {
 
         db.close();
 
-
         return result;
     }
 
+
+    // =====================================================
+    // XÓA TỪ VỰNG
+    // =====================================================
 
     public int delete(int id) {
 
         SQLiteDatabase db =
                 dbHelper.getWritableDatabase();
-
 
         int result =
                 db.delete(
@@ -285,18 +300,19 @@ public class WordDAO {
 
         db.close();
 
-
         return result;
     }
 
-    private Word cursorToWord(
-            Cursor cursor) {
+
+    // =====================================================
+    // CHUYỂN CURSOR → WORD
+    // =====================================================
+
+    private Word cursorToWord(Cursor cursor) {
 
         Word word =
                 new Word();
 
-
-        // ID
 
         word.setId(
                 cursor.getInt(
@@ -307,8 +323,6 @@ public class WordDAO {
         );
 
 
-        // ID BỘ TỪ
-
         word.setSetId(
                 cursor.getInt(
                         cursor.getColumnIndexOrThrow(
@@ -318,8 +332,6 @@ public class WordDAO {
         );
 
 
-        // TỪ TIẾNG ANH
-
         word.setEnglish(
                 cursor.getString(
                         cursor.getColumnIndexOrThrow(
@@ -327,6 +339,7 @@ public class WordDAO {
                         )
                 )
         );
+
 
         word.setLoaiTu(
                 cursor.getString(
@@ -337,8 +350,6 @@ public class WordDAO {
         );
 
 
-        // PHIÊN ÂM
-
         word.setPronunciation(
                 cursor.getString(
                         cursor.getColumnIndexOrThrow(
@@ -347,8 +358,6 @@ public class WordDAO {
                 )
         );
 
-
-        // NGHĨA TIẾNG VIỆT
 
         word.setMeaning(
                 cursor.getString(
@@ -359,8 +368,6 @@ public class WordDAO {
         );
 
 
-        // VÍ DỤ
-
         word.setExample(
                 cursor.getString(
                         cursor.getColumnIndexOrThrow(
@@ -369,8 +376,6 @@ public class WordDAO {
                 )
         );
 
-
-        // GHI CHÚ
 
         word.setNote(
                 cursor.getString(
@@ -381,244 +386,72 @@ public class WordDAO {
         );
 
 
-        return word;
-    }
-
-    // TẠO DỮ LIỆU WORD GIẢ ĐỂ TEST
-    public void insertFakeData(int setId) {
-
-        // TỪ 1
-        Word word1 = new Word();
-
-        word1.setSetId(setId);
-        word1.setEnglish("apple");
-        word1.setLoaiTu("n");
-        word1.setPronunciation("/ˈæpəl/");
-        word1.setMeaning("quả táo");
-        word1.setExample("I eat an apple every day.");
-        word1.setNote("Tôi ăn táo mọi ngày.");
-
-
-        // TỪ 2
-        Word word2 = new Word();
-
-        word2.setSetId(setId);
-        word2.setEnglish("book");
-        word2.setLoaiTu("v");
-        word2.setPronunciation("/bʊk/");
-        word2.setMeaning("quyển sách");
-        word2.setExample("I am reading a book.");
-        word2.setNote("Tôi đang đọc sách");
-
-
-        // TỪ 3
-        Word word3 = new Word();
-
-        word3.setSetId(setId);
-        word3.setEnglish("teacher");
-        word3.setLoaiTu("n");
-        word3.setPronunciation("/ˈtiːtʃər/");
-        word3.setMeaning("giáo viên");
-        word3.setExample("My teacher is very kind.");
-        word3.setNote("Giáo viên của tôi rất tốt bụng");
-
-
-        // TỪ 4
-        Word word4 = new Word();
-
-        word4.setSetId(setId);
-        word4.setEnglish("student");
-        word4.setLoaiTu("n");
-        word4.setPronunciation("/ˈstuːdənt/");
-        word4.setMeaning("học sinh");
-        word4.setExample("She is a good student.");
-        word4.setNote("Danh từ");
-
-
-        // TỪ 5
-        Word word5 = new Word();
-
-        word5.setSetId(setId);
-        word5.setEnglish("school");
-        word5.setLoaiTu("n");
-        word5.setPronunciation("/skuːl/");
-        word5.setMeaning("trường học");
-        word5.setExample("I go to school every day.");
-        word5.setNote("Danh từ");
-
-
-        // LƯU DATABASE
-
-        insert(word1);
-        insert(word2);
-        insert(word3);
-        insert(word4);
-        insert(word5);
-    }
-}
-    private DatabaseHelper dbHelper;
-    public WordDAO(Context context) {
-        dbHelper = new DatabaseHelper(context);
-    }
-
-    //Them
-    public long insert(Word word){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("english", word.getEnglish());
-        values.put("pronunciation", word.getPronunciation());
-        values.put("meaning", word.getMeaning());
-        values.put("example", word.getExample());
-        values.put("note", word.getNote());
-        values.put("set_id", word.getSetId());
-        long id = db.insert(DatabaseHelper.TABLE_WORD, null, values);
-        db.close();
-        return id;
-    }
-
-    //Sua
-    public long update(Word word){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put("english", word.getEnglish());
-        values.put("pronunciation", word.getPronunciation());
-        values.put("meaning", word.getMeaning());
-        values.put("example", word.getExample());
-        values.put("note", word.getNote());
-
-        int result = db.update(
-                DatabaseHelper.TABLE_WORD,
-                values,
-                "id = ?",
-                new String[]{
-                        String.valueOf(word.getId())
-                }
-        );
-        db.close();
-        return result;
-    }
-
-    //Xoa
-    public int delete(int id){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int result = db.delete(
-                DatabaseHelper.TABLE_WORD,
-                "id = ?",
-                new String[]{String.valueOf(id)}
-        );
-        db.close();
-        return result;
-    }
-
-    // cursor to object
-    private Word cursorToWord(Cursor cursor){
-        Word word = new Word();
-        word.setId(
-                cursor.getInt(
-                        cursor.getColumnIndexOrThrow("id")
-                )
-        );
-        word.setEnglish(
-                cursor.getString(
-                        cursor.getColumnIndexOrThrow("english")
-                )
-        );
-
-        word.setPronunciation(
-                cursor.getString(
-                        cursor.getColumnIndexOrThrow("pronunciation")
-                )
-        );
-        word.setMeaning(
-                cursor.getString(
-                        cursor.getColumnIndexOrThrow("meaning")
-                )
-        );
-        word.setExample(
-                cursor.getString(
-                        cursor.getColumnIndexOrThrow("example")
-                )
-        );
-        word.setNote(
-                cursor.getString(
-                        cursor.getColumnIndexOrThrow("note")
-                )
-        );
-        word.setSetId(
-                cursor.getInt(
-                        cursor.getColumnIndexOrThrow("set_id")
-                )
-        );
         word.setIsLearned(
                 cursor.getInt(
-                        cursor.getColumnIndexOrThrow("is_learned")
+                        cursor.getColumnIndexOrThrow(
+                                "is_learned"
+                        )
                 )
         );
+
+
         return word;
     }
 
-    //get all
-    public List<Word> getAll(){
-        List<Word> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_WORD,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "id DESC"
-        );
-        while (cursor.moveToNext()){
-            Word word = cursorToWord(cursor);
-            list.add(word);
-        }
-        cursor.close();
-        db.close();
-        return list;
-    }
+    public int getWordCountBySetId(int setId) {
 
-    //get by id
-    public Word getWordById(int id){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DatabaseHelper.TABLE_WORD,
-                null,
-                "id = ?",
-                new String[]{String.valueOf(id)},
-                null,
-                null,
-                null);
-        Word word = null;
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " +
+                        DatabaseHelper.TABLE_WORD +
+                        " WHERE set_id = ?",
+                new String[]{
+                        String.valueOf(setId)
+                }
+        );
+
+        int count = 0;
+
         if (cursor.moveToFirst()) {
-            word = cursorToWord(cursor);
+            count = cursor.getInt(0);
         }
+
         cursor.close();
         db.close();
-        return word;
+
+        return count;
     }
 
-    //get list by set id
-    public List<Word> getListBySetId(int setId){
-        List<Word> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_WORD,
-                null,
-                "set_id = ?",
-                new String[]{String.valueOf(setId)},
-                null,
-                null,
-                "id DESC"
-        );
-        while (cursor.moveToNext()){
-            Word word = cursorToWord(cursor);
-            list.add(word);
+    public int getLearnedWordCount(int setId) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        String sql =
+                "SELECT COUNT(DISTINCT word_id) " +
+                        "FROM LEARNING_HISTORY " +
+                        "WHERE set_id = ? " +
+                        "AND is_correct = 1";
+
+        Cursor cursor =
+                db.rawQuery(
+                        sql,
+                        new String[]{
+                                String.valueOf(setId)
+                        }
+                );
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
         }
+
         cursor.close();
         db.close();
-        return list;
-    }
 
+        return count;
+    }
 }

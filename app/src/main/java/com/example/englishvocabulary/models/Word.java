@@ -5,35 +5,21 @@ public class Word {
     private int id;
     private int setId;
     private String english;
-
     private String loaiTu;
     private String pronunciation;
     private String meaning;
     private String example;
     private String note;
-    public int isLearned;
+    private int isLearned;
 
     public Word() {
     }
 
-    public Word(String note, String example, String meaning, String pronunciation, String loaiTu, String english, int setId, int id) {
-        this.note = note;
-        this.example = example;
-        this.meaning = meaning;
-        this.pronunciation = pronunciation;
+    public Word(int id, int setId, String english, String loaiTu, String pronunciation, String meaning, String example, String note, int isLearned) {
+        this.id = id;
+        this.setId = setId;
+        this.english = english;
         this.loaiTu = loaiTu;
-        this.english = english;
-        this.setId = setId;
-        this.id = id;
-    }
-
-    public Word(int id, int setId, String english,
-                String pronunciation, String meaning,
-                String example, String note, int isLearned) {
-
-        this.id = id;
-        this.setId = setId;
-        this.english = english;
         this.pronunciation = pronunciation;
         this.meaning = meaning;
         this.example = example;
@@ -63,6 +49,14 @@ public class Word {
 
     public void setEnglish(String english) {
         this.english = english;
+    }
+
+    public String getLoaiTu() {
+        return loaiTu;
+    }
+
+    public void setLoaiTu(String loaiTu) {
+        this.loaiTu = loaiTu;
     }
 
     public String getPronunciation() {
@@ -97,12 +91,6 @@ public class Word {
         this.note = note;
     }
 
-    public String getLoaiTu() {
-        return loaiTu;
-    }
-
-    public void setLoaiTu(String loaiTu) {
-        this.loaiTu = loaiTu;
     public int getIsLearned() {
         return isLearned;
     }

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +11,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.activities.EditVocabularySetActivity;
+import com.example.englishvocabulary.activities.VocabularySetDetailActivity;
 import com.example.englishvocabulary.database.VocabularySetDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.example.englishvocabulary.models.VocabularySet;
 
+import java.io.File;
 import java.util.List;
 
 public class VocabularySetAdapter
@@ -33,6 +32,12 @@ public class VocabularySetAdapter
     private List<VocabularySet> vocabularySetList;
 
     private VocabularySetDAO vocabularySetDAO;
+    private WordDAO wordDAO;
+
+
+    // =====================================================
+    // CONSTRUCTOR
+    // =====================================================
 
     public VocabularySetAdapter(
             Context context,
@@ -43,8 +48,15 @@ public class VocabularySetAdapter
 
         vocabularySetDAO =
                 new VocabularySetDAO(context);
+
+        wordDAO =
+                new WordDAO(context);
     }
 
+
+    // =====================================================
+    // TẠO VIEW HOLDER
+    // =====================================================
 
     @NonNull
     @Override
@@ -53,7 +65,8 @@ public class VocabularySetAdapter
             int viewType) {
 
         View view =
-                LayoutInflater.from(context)
+                LayoutInflater
+                        .from(context)
                         .inflate(
                                 R.layout.item_vocabulary_set,
                                 parent,
@@ -64,54 +77,100 @@ public class VocabularySetAdapter
     }
 
 
+    // =====================================================
+    // GÁN DỮ LIỆU
+    // =====================================================
+
     @Override
     public void onBindViewHolder(
             @NonNull ViewHolder holder,
             int position) {
 
-        VocabularySet vocabularySet =
+        VocabularySet set =
                 vocabularySetList.get(position);
 
 
+        // =================================================
         // TÊN BỘ TỪ
+        // =================================================
 
         holder.tvTitle.setText(
-                vocabularySet.getTitle()
+                set.getTitle()
         );
 
 
+        // =================================================
         // MÔ TẢ
+        // =================================================
 
-        if (vocabularySet.getDescription() != null &&
-                !vocabularySet.getDescription().isEmpty()) {
+        if (set.getDescription() != null
+                && !set.getDescription().isEmpty()) {
 
             holder.tvDescription.setText(
-                    vocabularySet.getDescription()
+                    set.getDescription()
             );
 
         } else {
 
             holder.tvDescription.setText(
-                    "Chưa có mô tả"
+                    "Không có mô tả"
             );
         }
 
 
+        // =================================================
+        // TRÌNH ĐỘ
+        // =================================================
+
+        if (set.getLevel() != null
+                && !set.getLevel().isEmpty()) {
+
+            holder.tvLevel.setText(
+                    set.getLevel()
+            );
+
+        } else {
+
+            holder.tvLevel.setText(
+                    "Chưa đặt trình độ"
+            );
+        }
+
+
+        // =================================================
+        // ĐẾM SỐ TỪ
+        // =================================================
+
+        int count =
+                wordDAO
+                        .getBySetId(set.getId())
+                        .size();
+
+        holder.tvWordCount.setText(
+                count + " thuật ngữ"
+        );
+
+
+        // =================================================
         // ẢNH BÌA
+        // =================================================
 
-        String coverImage =
-                vocabularySet.getCoverImage();
+        String coverPath =
+                set.getCoverImage();
 
-        if (coverImage != null &&
-                !coverImage.isEmpty()) {
+        if (coverPath != null
+                && !coverPath.isEmpty()) {
 
-            try {
+            File imgFile =
+                    new File(coverPath);
+
+            if (imgFile.exists()) {
 
                 holder.imgCover.setImageURI(
-                        Uri.parse(coverImage)
+                        Uri.fromFile(imgFile)
                 );
 
-            } catch (Exception e) {
+            } else {
 
                 holder.imgCover.setImageResource(
                         android.R.drawable.ic_menu_gallery
@@ -126,31 +185,76 @@ public class VocabularySetAdapter
         }
 
 
-        // MORE
+        // =================================================
+        // CLICK VÀO BỘ TỪ
+        // =================================================
+
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            context,
+                            VocabularySetDetailActivity.class
+                    );
+
+
+            // ID của bộ từ
+            intent.putExtra(
+                    "set_id",
+                    set.getId()
+            );
+
+
+            // Tên bộ từ
+            intent.putExtra(
+                    "set_title",
+                    set.getTitle()
+            );
+
+
+            context.startActivity(intent);
+        });
+
+
+        // =================================================
+        // NÚT MORE
+        // =================================================
 
         holder.btnMore.setOnClickListener(v -> {
 
-            showMoreDialog(vocabularySet);
+            showMoreDialog(
+                    set,
+                    position
+            );
         });
     }
 
 
-    // HIỂN THỊ MENU MORE
+    // =====================================================
+    // MENU MORE
+    // =====================================================
 
     private void showMoreDialog(
-            VocabularySet vocabularySet) {
+            VocabularySet set,
+            int position) {
 
         String[] options = {
                 "Sửa bộ từ",
-                "Xóa bộ từ"
+                "Xoá bộ từ"
         };
 
 
         new AlertDialog.Builder(context)
-                .setTitle("Tùy chọn")
+
+                .setTitle("Tuỳ chọn")
+
                 .setItems(
                         options,
                         (dialog, which) -> {
+
+                            // -----------------------------
+                            // SỬA
+                            // -----------------------------
 
                             if (which == 0) {
 
@@ -162,23 +266,23 @@ public class VocabularySetAdapter
 
                                 intent.putExtra(
                                         "vocabulary_set_id",
-                                        vocabularySet.getId()
+                                        set.getId()
                                 );
 
-                                intent.putExtra(
-                                        "previous_nav_item",
-                                        R.id.nav_library
+                                context.startActivity(
+                                        intent
                                 );
+                            }
 
-                                context.startActivity(intent);
+                            // -----------------------------
+                            // XOÁ
+                            // -----------------------------
 
-
-                            } else {
-
-                                // XÓA
+                            else {
 
                                 showDeleteDialog(
-                                        vocabularySet
+                                        set,
+                                        position
                                 );
                             }
                         }
@@ -187,52 +291,55 @@ public class VocabularySetAdapter
     }
 
 
-    // XÁC NHẬN XÓA
+    // =====================================================
+    // XÓA BỘ TỪ
+    // =====================================================
 
     private void showDeleteDialog(
-            VocabularySet vocabularySet) {
+            VocabularySet set,
+            int position) {
 
         new AlertDialog.Builder(context)
-                .setTitle("Xóa bộ từ")
+
+                .setTitle("Xoá bộ từ")
+
                 .setMessage(
-                        "Bạn có chắc muốn xóa bộ từ \"" +
-                                vocabularySet.getTitle() +
-                                "\" không?"
+                        "Bạn có chắc chắn muốn xoá bộ từ \""
+                                + set.getTitle()
+                                + "\" không?"
                 )
+
                 .setNegativeButton(
-                        "Hủy",
+                        "Huỷ",
                         null
                 )
+
                 .setPositiveButton(
-                        "Xóa",
+                        "Xoá",
                         (dialog, which) -> {
 
-                            int result =
+                            if (
                                     vocabularySetDAO.delete(
-                                            vocabularySet.getId()
-                                    );
+                                            set.getId()
+                                    ) > 0
+                            ) {
 
-                            if (result > 0) {
+                                vocabularySetList.remove(
+                                        position
+                                );
 
-                                int position =
-                                        vocabularySetList.indexOf(
-                                                vocabularySet
-                                        );
+                                notifyItemRemoved(
+                                        position
+                                );
 
-                                if (position != -1) {
-
-                                    vocabularySetList.remove(
-                                            position
-                                    );
-
-                                    notifyItemRemoved(
-                                            position
-                                    );
-                                }
+                                notifyItemRangeChanged(
+                                        position,
+                                        vocabularySetList.size()
+                                );
 
                                 Toast.makeText(
                                         context,
-                                        "Xóa bộ từ thành công",
+                                        "Đã xoá bộ từ",
                                         Toast.LENGTH_SHORT
                                 ).show();
 
@@ -240,7 +347,7 @@ public class VocabularySetAdapter
 
                                 Toast.makeText(
                                         context,
-                                        "Xóa bộ từ thất bại",
+                                        "Xoá thất bại",
                                         Toast.LENGTH_SHORT
                                 ).show();
                             }
@@ -249,6 +356,10 @@ public class VocabularySetAdapter
                 .show();
     }
 
+
+    // =====================================================
+    // SỐ LƯỢNG ITEM
+    // =====================================================
 
     @Override
     public int getItemCount() {
@@ -257,6 +368,10 @@ public class VocabularySetAdapter
     }
 
 
+    // =====================================================
+    // VIEW HOLDER
+    // =====================================================
+
     public static class ViewHolder
             extends RecyclerView.ViewHolder {
 
@@ -264,6 +379,8 @@ public class VocabularySetAdapter
 
         TextView tvTitle;
         TextView tvDescription;
+        TextView tvWordCount;
+        TextView tvLevel;
 
         ImageButton btnMore;
 
@@ -289,114 +406,34 @@ public class VocabularySetAdapter
                             R.id.tvDescription
                     );
 
+            tvWordCount =
+                    itemView.findViewById(
+                            R.id.tvWordCount
+                    );
+
+            tvLevel =
+                    itemView.findViewById(
+                            R.id.tvLevel
+                    );
+
             btnMore =
                     itemView.findViewById(
                             R.id.btnMore
                     );
         }
     }
-}
-public class VocabularySetAdapter extends RecyclerView.Adapter<VocabularySetAdapter.ViewHolder> {
 
-    private Context context;
-    private List<VocabularySet> vocabularySets;
-    private OnClickItemListener onClickItemListener;
-    private OnSetClickListener onSetClickListener;
-    private WordDAO wordDAO;
 
-    public VocabularySetAdapter(Context context, List<VocabularySet> vocabularySets, OnClickItemListener onClickItemListener, OnSetClickListener onSetClickListener) {
-        this.context = context;
-        this.vocabularySets = vocabularySets;
-        this.onClickItemListener = onClickItemListener;
-        this.onSetClickListener = onSetClickListener;
-        this.wordDAO = new WordDAO(context);
-    }
+    // =====================================================
+    // CẬP NHẬT DATA
+    // =====================================================
 
-    @NonNull
-    @Override
-    public VocabularySetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_vocabulary_set, parent, false);
-        return new ViewHolder(view);
-    }
+    public void updateData(
+            List<VocabularySet> newList) {
 
-    @Override
-    public void onBindViewHolder(@NonNull VocabularySetAdapter.ViewHolder holder, int position) {
-        VocabularySet vocabularySet = vocabularySets.get(position);
-        holder.tvSetTitle.setText(vocabularySet.getTitle());
-        holder.tvWordCount.setText(wordDAO.getListBySetId(vocabularySet.getId()).size() + " từ");
+        this.vocabularySetList =
+                newList;
 
-        if (vocabularySet.getLevel() != null && !vocabularySet.getLevel().isEmpty()) {
-            holder.tvLevel.setText(vocabularySet.getLevel());
-            holder.tvLevel.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvLevel.setVisibility(View.GONE);
-        }
-        if (vocabularySet.getDescription() != null && !vocabularySet.getDescription().isEmpty()) {
-            holder.tvSetDescription.setText(vocabularySet.getDescription());
-            holder.tvSetDescription.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvSetDescription.setVisibility(View.GONE);
-        }
-
-        holder.itemView.setOnClickListener(view -> {
-            if(onClickItemListener != null) {
-                onClickItemListener.onClickItem(vocabularySet);
-            }
-        });
-
-        holder.btnMore.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(context, holder.btnMore);
-            popupMenu.getMenu().add(0, 1, 0, "Sửa chủ đề");
-            popupMenu.getMenu().add(0, 2, 1, "Xóa chủ đề");
-            popupMenu.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == 1) {
-                    if (onSetClickListener != null) {
-                        onSetClickListener.onEdit(vocabularySet);
-                        return true;
-                    }
-                } else if (menuItem.getItemId() == 2) {
-                    if (onSetClickListener != null) {
-                        onSetClickListener.onDelete(vocabularySet);
-                        return true;
-                    }
-                }
-                return false;
-            });
-            popupMenu.show();
-        });
-    }
-    @Override
-    public int getItemCount() {
-        return vocabularySets.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tvSetTitle, tvWordCount, tvLevel, tvSetDescription;
-        ImageButton btnMore;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvSetTitle = itemView.findViewById(R.id.tvSetTitle);
-            tvWordCount = itemView.findViewById(R.id.tvWordCount);
-            tvLevel = itemView.findViewById(R.id.tvLevel);
-            tvSetDescription = itemView.findViewById(R.id.tvSetDescription);
-            btnMore = itemView.findViewById(R.id.btnMore);
-        }
-
-    }
-
-    public interface OnClickItemListener {
-        void onClickItem(VocabularySet vocabularySet);
-    }
-
-    public interface OnSetClickListener {
-        void onEdit(VocabularySet vocabularySet);
-        void onDelete(VocabularySet vocabularySet);
-    }
-
-    public void updateData(List<VocabularySet> vocabularySets) {
-        this.vocabularySets = vocabularySets;
         notifyDataSetChanged();
     }
 }

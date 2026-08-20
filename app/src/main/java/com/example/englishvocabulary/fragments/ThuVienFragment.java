@@ -2,17 +2,13 @@ package com.example.englishvocabulary.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,105 +25,199 @@ import com.example.englishvocabulary.models.VocabularySet;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-
-import com.example.englishvocabulary.R;
-import com.example.englishvocabulary.activities.VocabularySetDetailActivity;
-import com.example.englishvocabulary.adapters.VocabularySetAdapter;
-import com.example.englishvocabulary.database.VocabularySetDAO;
-import com.example.englishvocabulary.models.VocabularySet;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ThuVienFragment extends Fragment {
+
+
+    // =====================================================
+    // VIEW
+    // =====================================================
 
     private RecyclerView recyclerVocabularySet;
 
-    private TextView tvEmpty;
+    private LinearLayout layoutEmpty;
+
+    private TextView tvEmptyText;
 
     private TextInputEditText edtSearch;
 
     private ImageButton btnAddVocabulary;
 
+
+    // =====================================================
     // DATABASE
+    // =====================================================
+
     private VocabularySetDAO vocabularySetDAO;
 
+
+    // =====================================================
     // FIREBASE
+    // =====================================================
+
     private FirebaseAuth mAuth;
 
+
+    // =====================================================
     // ADAPTER
+    // =====================================================
+
     private VocabularySetAdapter adapter;
 
-    // DANH SÁCH BỘ TỪ
-    private List<VocabularySet> vocabularySetList;
 
-    private List<VocabularySet> allVocabularySetList;
+    // =====================================================
+    // LIST
+    // =====================================================
+
+    // Danh sách đang hiển thị
+    private final List<VocabularySet> vocabularySetList =
+            new ArrayList<>();
+
+
+    // Danh sách đầy đủ dùng để tìm kiếm
+    private final List<VocabularySet> allVocabularySetList =
+            new ArrayList<>();
+
+
+    // =====================================================
+    // CONSTRUCTOR
+    // =====================================================
+
+    public ThuVienFragment() {
+        // Required empty public constructor
+    }
+
+
+    // =====================================================
+    // ON CREATE VIEW
+    // =====================================================
 
     @Nullable
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState
+    ) {
 
-        View view = inflater.inflate(
-                R.layout.fragment_thu_vien,
-                container,
-                false
-        );
+        View view =
+                inflater.inflate(
+                        R.layout.fragment_thu_vien,
+                        container,
+                        false
+                );
 
 
+        // -------------------------------------------------
         // ÁNH XẠ VIEW
+        // -------------------------------------------------
+
+        initViews(view);
+
+
+        // -------------------------------------------------
+        // DATABASE
+        // -------------------------------------------------
+
+        vocabularySetDAO =
+                new VocabularySetDAO(
+                        requireContext()
+                );
+
+
+        // -------------------------------------------------
+        // FIREBASE AUTH
+        // -------------------------------------------------
+
+        mAuth =
+                FirebaseAuth.getInstance();
+
+
+        // -------------------------------------------------
+        // RECYCLER VIEW
+        // -------------------------------------------------
+
+        setupRecyclerView();
+
+
+        // -------------------------------------------------
+        // SỰ KIỆN
+        // -------------------------------------------------
+
+        setupListeners();
+
+
+        // -------------------------------------------------
+        // TÌM KIẾM
+        // -------------------------------------------------
+
+        setupSearch();
+
+
+        // -------------------------------------------------
+        // TẢI DỮ LIỆU
+        // -------------------------------------------------
+
+        loadVocabularySet();
+
+
+        return view;
+    }
+
+
+    // =====================================================
+    // ÁNH XẠ VIEW
+    // =====================================================
+
+    private void initViews(View view) {
 
         recyclerVocabularySet =
                 view.findViewById(
                         R.id.recyclerVocabularySet
                 );
 
-        tvEmpty =
+
+        layoutEmpty =
                 view.findViewById(
-                        R.id.tvEmpty
+                        R.id.layoutEmpty
                 );
+
+
+        tvEmptyText =
+                view.findViewById(
+                        R.id.tvEmptyText
+                );
+
 
         edtSearch =
                 view.findViewById(
                         R.id.edtSearch
                 );
 
+
         btnAddVocabulary =
                 view.findViewById(
                         R.id.btnAddVocabulary
                 );
+    }
 
 
-        // DATABASE
+    // =====================================================
+    // RECYCLER VIEW
+    // =====================================================
 
-        vocabularySetDAO =
-                new VocabularySetDAO(requireContext());
-
-
-        // FIREBASE
-
-        mAuth =
-                FirebaseAuth.getInstance();
-
-
-        // KHỞI TẠO DANH SÁCH
-
-        vocabularySetList =
-                new ArrayList<>();
-
-        allVocabularySetList =
-                new ArrayList<>();
-
-
-        // RECYCLERVIEW
+    private void setupRecyclerView() {
 
         recyclerVocabularySet.setLayoutManager(
-                new LinearLayoutManager(requireContext())
+                new LinearLayoutManager(
+                        requireContext()
+                )
         );
+
 
         adapter =
                 new VocabularySetAdapter(
@@ -135,29 +225,48 @@ public class ThuVienFragment extends Fragment {
                         vocabularySetList
                 );
 
-        recyclerVocabularySet.setAdapter(adapter);
+
+        recyclerVocabularySet.setAdapter(
+                adapter
+        );
+    }
 
 
-        // NÚT TẠO BỘ TỪ
+    // =====================================================
+    // SỰ KIỆN
+    // =====================================================
 
-        btnAddVocabulary.setOnClickListener(v -> {
+    private void setupListeners() {
 
-            Intent intent =
-                    new Intent(
-                            requireContext(),
-                            CreateVocabularySetActivity.class
+        // Nút tạo bộ từ
+        btnAddVocabulary.setOnClickListener(
+                v -> {
+
+                    Intent intent =
+                            new Intent(
+                                    requireContext(),
+                                    CreateVocabularySetActivity.class
+                            );
+
+
+                    // Gửi màn hình hiện tại
+                    intent.putExtra(
+                            "previous_nav_item",
+                            R.id.nav_library
                     );
 
-            intent.putExtra(
-                    "previous_nav_item",
-                    R.id.nav_library
-            );
 
-            startActivity(intent);
-        });
+                    startActivity(intent);
+                }
+        );
+    }
 
 
-        // TÌM KIẾM
+    // =====================================================
+    // TÌM KIẾM
+    // =====================================================
+
+    private void setupSearch() {
 
         edtSearch.addTextChangedListener(
                 new TextWatcher() {
@@ -167,7 +276,8 @@ public class ThuVienFragment extends Fragment {
                             CharSequence s,
                             int start,
                             int count,
-                            int after) {
+                            int after
+                    ) {
                     }
 
 
@@ -176,7 +286,8 @@ public class ThuVienFragment extends Fragment {
                             CharSequence s,
                             int start,
                             int before,
-                            int count) {
+                            int count
+                    ) {
 
                         filterVocabularySet(
                                 s.toString()
@@ -186,96 +297,70 @@ public class ThuVienFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(
-                            Editable s) {
+                            Editable s
+                    ) {
                     }
                 }
         );
-
-
-        // LẤY DỮ LIỆU
-
-        loadVocabularySet();
-
-    private RecyclerView rvVocabularySets;
-    private LinearLayout layoutEmpty;
-    private EditText edtSearch;
-
-    private VocabularySetDAO vocabularySetDAO;
-    private VocabularySetAdapter vocabularySetAdapter;
-    private List<VocabularySet> allSets;
-
-    public ThuVienFragment() {
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
 
-        View view = inflater.inflate(
-                R.layout.fragment_thu_vien, container, false);
+    // =====================================================
+    // TẢI DANH SÁCH BỘ TỪ
+    // =====================================================
 
-        rvVocabularySets = view.findViewById(R.id.rvVocabularySets);
-        layoutEmpty = view.findViewById(R.id.layoutEmpty);
-        edtSearch = view.findViewById(R.id.edtSearch);
-
-        vocabularySetDAO = new VocabularySetDAO(getContext());
-
-        setupRecyclerView();
-        setupSearch();
-
-        return view;
-    }
-
-    // KHI QUAY LẠI FRAGMENT
-    @Override
-    public void onResume() {
-
-        super.onResume();
-
-        loadVocabularySet();
-    }
-
-    // LẤY DANH SÁCH BỘ TỪ
     private void loadVocabularySet() {
+
+        // -------------------------------------------------
+        // Kiểm tra Fragment còn hoạt động
+        // -------------------------------------------------
+
+        if (!isAdded()) {
+            return;
+        }
+
+
+        // -------------------------------------------------
+        // Lấy user Firebase
+        // -------------------------------------------------
 
         FirebaseUser firebaseUser =
                 mAuth.getCurrentUser();
 
 
-        // KIỂM TRA ĐĂNG NHẬP
+        // -------------------------------------------------
+        // Chưa đăng nhập
+        // -------------------------------------------------
 
         if (firebaseUser == null) {
 
-            vocabularySetList.clear();
-
             allVocabularySetList.clear();
+
+            vocabularySetList.clear();
 
             adapter.notifyDataSetChanged();
 
-            tvEmpty.setText(
-                    "Vui lòng đăng nhập"
-            );
 
-            tvEmpty.setVisibility(
-                    View.VISIBLE
-            );
-
-            recyclerVocabularySet.setVisibility(
-                    View.GONE
+            updateUI(
+                    true,
+                    "Vui lòng đăng nhập để xem thư viện"
             );
 
             return;
         }
 
 
-        // LẤY FIREBASE UID
+        // -------------------------------------------------
+        // UID người dùng
+        // -------------------------------------------------
 
         String userUid =
                 firebaseUser.getUid();
 
 
-        // LẤY DANH SÁCH TỪ DATABASE
+        // -------------------------------------------------
+        // LẤY DỮ LIỆU TỪ SQLITE
+        // -------------------------------------------------
 
         List<VocabularySet> list =
                 vocabularySetDAO.getByUserUid(
@@ -283,58 +368,80 @@ public class ThuVienFragment extends Fragment {
                 );
 
 
+        // -------------------------------------------------
+        // LƯU DANH SÁCH GỐC
+        // -------------------------------------------------
+
         allVocabularySetList.clear();
 
-        allVocabularySetList.addAll(list);
+        if (list != null) {
 
+            allVocabularySetList.addAll(
+                    list
+            );
+        }
+
+
+        // -------------------------------------------------
+        // HIỂN THỊ DANH SÁCH
+        // -------------------------------------------------
 
         vocabularySetList.clear();
 
-        vocabularySetList.addAll(list);
+        vocabularySetList.addAll(
+                allVocabularySetList
+        );
 
+
+        // -------------------------------------------------
+        // CẬP NHẬT ADAPTER
+        // -------------------------------------------------
 
         adapter.notifyDataSetChanged();
 
 
-        // KIỂM TRA DANH SÁCH
+        // -------------------------------------------------
+        // CẬP NHẬT GIAO DIỆN
+        // -------------------------------------------------
 
         if (vocabularySetList.isEmpty()) {
 
-            tvEmpty.setText(
-                    "Chưa có bộ từ nào"
-            );
-
-            tvEmpty.setVisibility(
-                    View.VISIBLE
-            );
-
-            recyclerVocabularySet.setVisibility(
-                    View.GONE
+            updateUI(
+                    true,
+                    "Chưa có bộ từ nào. Nhấn + để tạo mới!"
             );
 
         } else {
 
-            tvEmpty.setVisibility(
-                    View.GONE
-            );
-
-            recyclerVocabularySet.setVisibility(
-                    View.VISIBLE
+            updateUI(
+                    false,
+                    ""
             );
         }
     }
 
+
+    // =====================================================
     // TÌM KIẾM BỘ TỪ
-    private void filterVocabularySet(String keyword) {
+    // =====================================================
+
+    private void filterVocabularySet(
+            String keyword
+    ) {
 
         String search =
-                keyword.trim().toLowerCase();
+                keyword
+                        .trim()
+                        .toLowerCase();
 
 
+        // Xóa danh sách hiện tại
         vocabularySetList.clear();
 
 
-        // NẾU KHÔNG NHẬP TỪ KHÓA
+        // -------------------------------------------------
+        // Không nhập từ khóa
+        // -------------------------------------------------
 
         if (search.isEmpty()) {
 
@@ -342,41 +449,89 @@ public class ThuVienFragment extends Fragment {
                     allVocabularySetList
             );
 
-        } else {
+        }
 
-            // TÌM THEO TÊN BỘ TỪ
+        // -------------------------------------------------
+        // Có từ khóa
+        // -------------------------------------------------
 
-            for (VocabularySet vocabularySet :
-                    allVocabularySetList) {
+        else {
+
+            for (
+                    VocabularySet set :
+                    allVocabularySetList
+            ) {
 
                 String title =
-                        vocabularySet.getTitle();
+                        set.getTitle();
 
 
-                if (title != null &&
-                        title.toLowerCase()
-                                .contains(search)) {
+                if (
+                        title != null
+                                &&
+                                title
+                                        .toLowerCase()
+                                        .contains(search)
+                ) {
 
                     vocabularySetList.add(
-                            vocabularySet
+                            set
                     );
                 }
             }
         }
 
 
+        // -------------------------------------------------
+        // Cập nhật RecyclerView
+        // -------------------------------------------------
+
         adapter.notifyDataSetChanged();
 
 
-        // KIỂM TRA KẾT QUẢ TÌM KIẾM
+        // -------------------------------------------------
+        // Cập nhật Empty State
+        // -------------------------------------------------
 
         if (vocabularySetList.isEmpty()) {
 
-            tvEmpty.setText(
-                    "Không tìm thấy bộ từ"
-            );
+            if (search.isEmpty()) {
 
-            tvEmpty.setVisibility(
+                updateUI(
+                        true,
+                        "Chưa có bộ từ nào. Nhấn + để tạo mới!"
+                );
+
+            } else {
+
+                updateUI(
+                        true,
+                        "Không tìm thấy kết quả phù hợp"
+                );
+            }
+
+        } else {
+
+            updateUI(
+                    false,
+                    ""
+            );
+        }
+    }
+
+
+    // =====================================================
+    // CẬP NHẬT GIAO DIỆN
+    // =====================================================
+
+    private void updateUI(
+            boolean isEmpty,
+            String message
+    ) {
+
+        if (isEmpty) {
+
+            layoutEmpty.setVisibility(
                     View.VISIBLE
             );
 
@@ -384,9 +539,13 @@ public class ThuVienFragment extends Fragment {
                     View.GONE
             );
 
+            tvEmptyText.setText(
+                    message
+            );
+
         } else {
 
-            tvEmpty.setVisibility(
+            layoutEmpty.setVisibility(
                     View.GONE
             );
 
@@ -394,141 +553,45 @@ public class ThuVienFragment extends Fragment {
                     View.VISIBLE
             );
         }
+    }
+
+
+    // =====================================================
+    // KHI QUAY LẠI FRAGMENT
+    // =====================================================
+
+    @Override
+    public void onResume() {
+
         super.onResume();
-        loadData();
-    }
 
-    // =====================================================
-    // SETUP RECYCLERVIEW
-    // =====================================================
+        /*
+         * Khi từ CreateVocabularySetActivity quay lại,
+         * Fragment sẽ tải lại dữ liệu từ SQLite.
+         *
+         * Vì vậy bộ từ vừa tạo sẽ xuất hiện ngay.
+         */
 
-    private void setupRecyclerView() {
-        allSets = new ArrayList<>();
+        if (mAuth != null) {
 
-        vocabularySetAdapter = new VocabularySetAdapter(
-                getContext(),
-                allSets,
-                new VocabularySetAdapter.OnClickItemListener() {
-                    @Override
-                    public void onClickItem(VocabularySet vocabularySet) {
-                        Intent intent = new Intent(
-                                getContext(),
-                                VocabularySetDetailActivity.class);
-                        intent.putExtra("set_id", vocabularySet.getId());
-                        intent.putExtra("set_title", vocabularySet.getTitle());
-                        startActivity(intent);
-                    }
-                },
-                new VocabularySetAdapter.OnSetClickListener() {
-                    @Override
-                    public void onEdit(VocabularySet set) {
-                        showEditDialog(set);
-                    }
-
-                    @Override
-                    public void onDelete(VocabularySet set) {
-                        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
-                                getContext())
-                                .setTitle("Xoá chủ đề")
-                                .setMessage("Xoá \"" + set.getTitle()
-                                        + "\" và tất cả từ bên trong?")
-                                .setPositiveButton("Xoá", (d, w) -> {
-                                    vocabularySetDAO.delete(set.getId());
-                                    loadData();
-                                })
-                                .setNegativeButton("Huỷ", null)
-                                .show();
-                    }
-                });
-
-        rvVocabularySets.setLayoutManager(
-                new LinearLayoutManager(getContext()));
-        rvVocabularySets.setAdapter(vocabularySetAdapter);
-    }
-
-    // =====================================================
-    // DIALOG SỬA CHỦ ĐỀ
-    // =====================================================
-
-    private void showEditDialog(VocabularySet set) {
-        android.widget.EditText input = new android.widget.EditText(getContext());
-        input.setText(set.getTitle());
-        input.setSelectAllOnFocus(true);
-        input.setPadding(48, 32, 48, 16);
-
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
-                getContext())
-                .setTitle("Sửa tên chủ đề")
-                .setView(input)
-                .setPositiveButton("Lưu", (d, w) -> {
-                    String newTitle = input.getText().toString().trim();
-                    if (!newTitle.isEmpty()) {
-                        set.setTitle(newTitle);
-                        vocabularySetDAO.update(set);
-                        loadData();
-                    }
-                })
-                .setNegativeButton("Huỷ", null)
-                .show();
-    }
-
-    // =====================================================
-    // SETUP TÌM KIẾM
-    // =====================================================
-
-    private void setupSearch() {
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(
-                    CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(
-                    CharSequence s, int start, int before, int count) {
-                filterSets(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    // =====================================================
-    // LOAD DỮ LIỆU
-    // =====================================================
-
-    private void loadData() {
-        allSets = vocabularySetDAO.getAll();
-
-        if (allSets.isEmpty()) {
-            layoutEmpty.setVisibility(View.VISIBLE);
-            rvVocabularySets.setVisibility(View.GONE);
-        } else {
-            layoutEmpty.setVisibility(View.GONE);
-            rvVocabularySets.setVisibility(View.VISIBLE);
-            vocabularySetAdapter.updateData(allSets);
+            loadVocabularySet();
         }
     }
 
+
     // =====================================================
-    // LỌC
+    // HỦY VIEW
     // =====================================================
 
-    private void filterSets(String keyword) {
-        if (keyword.isEmpty()) {
-            vocabularySetAdapter.updateData(allSets);
-            return;
-        }
+    @Override
+    public void onDestroyView() {
 
-        List<VocabularySet> filtered = new ArrayList<>();
-        for (VocabularySet set : allSets) {
-            if (set.getTitle().toLowerCase()
-                    .contains(keyword.toLowerCase())) {
-                filtered.add(set);
-            }
-        }
-        vocabularySetAdapter.updateData(filtered);
+        super.onDestroyView();
+
+        recyclerVocabularySet = null;
+        layoutEmpty = null;
+        tvEmptyText = null;
+        edtSearch = null;
+        btnAddVocabulary = null;
     }
 }
