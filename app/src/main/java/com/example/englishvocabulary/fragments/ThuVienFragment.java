@@ -1,66 +1,199 @@
 package com.example.englishvocabulary.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.example.englishvocabulary.R;
+import com.example.englishvocabulary.activities.VocabularySetDetailActivity;
+import com.example.englishvocabulary.adapters.VocabularySetAdapter;
+import com.example.englishvocabulary.database.VocabularySetDAO;
+import com.example.englishvocabulary.models.VocabularySet;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ThuVienFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class ThuVienFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView rvVocabularySets;
+    private LinearLayout layoutEmpty;
+    private EditText edtSearch;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private VocabularySetDAO vocabularySetDAO;
+    private VocabularySetAdapter vocabularySetAdapter;
+    private List<VocabularySet> allSets;
 
     public ThuVienFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ThuVienFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ThuVienFragment newInstance(String param1, String param2) {
-        ThuVienFragment fragment = new ThuVienFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(
+                R.layout.fragment_thu_vien, container, false);
+
+        rvVocabularySets = view.findViewById(R.id.rvVocabularySets);
+        layoutEmpty = view.findViewById(R.id.layoutEmpty);
+        edtSearch = view.findViewById(R.id.edtSearch);
+
+        vocabularySetDAO = new VocabularySetDAO(getContext());
+
+        setupRecyclerView();
+        setupSearch();
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    // =====================================================
+    // SETUP RECYCLERVIEW
+    // =====================================================
+
+    private void setupRecyclerView() {
+        allSets = new ArrayList<>();
+
+        vocabularySetAdapter = new VocabularySetAdapter(
+                getContext(),
+                allSets,
+                new VocabularySetAdapter.OnClickItemListener() {
+                    @Override
+                    public void onClickItem(VocabularySet vocabularySet) {
+                        Intent intent = new Intent(
+                                getContext(),
+                                VocabularySetDetailActivity.class);
+                        intent.putExtra("set_id", vocabularySet.getId());
+                        intent.putExtra("set_title", vocabularySet.getTitle());
+                        startActivity(intent);
+                    }
+                },
+                new VocabularySetAdapter.OnSetClickListener() {
+                    @Override
+                    public void onEdit(VocabularySet set) {
+                        showEditDialog(set);
+                    }
+
+                    @Override
+                    public void onDelete(VocabularySet set) {
+                        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
+                                getContext())
+                                .setTitle("Xoá chủ đề")
+                                .setMessage("Xoá \"" + set.getTitle()
+                                        + "\" và tất cả từ bên trong?")
+                                .setPositiveButton("Xoá", (d, w) -> {
+                                    vocabularySetDAO.delete(set.getId());
+                                    loadData();
+                                })
+                                .setNegativeButton("Huỷ", null)
+                                .show();
+                    }
+                });
+
+        rvVocabularySets.setLayoutManager(
+                new LinearLayoutManager(getContext()));
+        rvVocabularySets.setAdapter(vocabularySetAdapter);
+    }
+
+    // =====================================================
+    // DIALOG SỬA CHỦ ĐỀ
+    // =====================================================
+
+    private void showEditDialog(VocabularySet set) {
+        android.widget.EditText input = new android.widget.EditText(getContext());
+        input.setText(set.getTitle());
+        input.setSelectAllOnFocus(true);
+        input.setPadding(48, 32, 48, 16);
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
+                getContext())
+                .setTitle("Sửa tên chủ đề")
+                .setView(input)
+                .setPositiveButton("Lưu", (d, w) -> {
+                    String newTitle = input.getText().toString().trim();
+                    if (!newTitle.isEmpty()) {
+                        set.setTitle(newTitle);
+                        vocabularySetDAO.update(set);
+                        loadData();
+                    }
+                })
+                .setNegativeButton("Huỷ", null)
+                .show();
+    }
+
+    // =====================================================
+    // SETUP TÌM KIẾM
+    // =====================================================
+
+    private void setupSearch() {
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(
+                    CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(
+                    CharSequence s, int start, int before, int count) {
+                filterSets(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    // =====================================================
+    // LOAD DỮ LIỆU
+    // =====================================================
+
+    private void loadData() {
+        allSets = vocabularySetDAO.getAll();
+
+        if (allSets.isEmpty()) {
+            layoutEmpty.setVisibility(View.VISIBLE);
+            rvVocabularySets.setVisibility(View.GONE);
+        } else {
+            layoutEmpty.setVisibility(View.GONE);
+            rvVocabularySets.setVisibility(View.VISIBLE);
+            vocabularySetAdapter.updateData(allSets);
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_thu_vien, container, false);
+    // =====================================================
+    // LỌC
+    // =====================================================
+
+    private void filterSets(String keyword) {
+        if (keyword.isEmpty()) {
+            vocabularySetAdapter.updateData(allSets);
+            return;
+        }
+
+        List<VocabularySet> filtered = new ArrayList<>();
+        for (VocabularySet set : allSets) {
+            if (set.getTitle().toLowerCase()
+                    .contains(keyword.toLowerCase())) {
+                filtered.add(set);
+            }
+        }
+        vocabularySetAdapter.updateData(filtered);
     }
 }
