@@ -88,6 +88,27 @@ public class QuizResultActivity extends AppCompatActivity {
             total =
                     correct + wrong;
 
+        } else if ("MATCHING".equals(learningMode)) {
+            tvCorrectTitle.setText("Số cặp");
+            tvWrongTitle.setText("Ghép sai");
+
+            correct =
+                    getIntent().getIntExtra(
+                            "correct",
+                            0
+                    );
+
+            wrong =
+                    getIntent().getIntExtra(
+                            "wrong",
+                            0
+                    );
+
+            total =
+                    getIntent().getIntExtra(
+                            "total",
+                            correct + wrong
+                    );
 
         } else {
             tvCorrectTitle.setText("Đúng");
@@ -118,7 +139,13 @@ public class QuizResultActivity extends AppCompatActivity {
         // TÍNH ĐIỂM
         int score = 0;
 
-        if (total > 0) {
+        if ("MATCHING".equals(learningMode)) {
+            // Matching: điểm dựa trên hiệu suất
+            // 0 lần sai = 100%, càng sai nhiều càng thấp
+            if (correct > 0) {
+                score = correct * 100 / (correct + wrong);
+            }
+        } else if (total > 0) {
 
             score =
                     correct * 100 / total;
@@ -151,6 +178,22 @@ public class QuizResultActivity extends AppCompatActivity {
                         new Intent(
                                 QuizResultActivity.this,
                                 FlashcardActivity.class
+                        );
+
+                intent.putExtra(
+                        "set_id",
+                        setId
+                );
+
+                startActivity(intent);
+
+            } else if ("MATCHING".equals(learningMode)) {
+
+                // CHƠI LẠI MATCHING
+                Intent intent =
+                        new Intent(
+                                QuizResultActivity.this,
+                                MatchingGameActivity.class
                         );
 
                 intent.putExtra(

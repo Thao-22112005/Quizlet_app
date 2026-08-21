@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.englishvocabulary.models.Word;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WordDAO {
 
@@ -498,5 +500,146 @@ public class WordDAO {
         db.close();
 
         return count;
+    }
+
+    // Kiểm tra từ đã tồn tại chưa
+    public boolean isDuplicate(int setId, String english, String loaiTu) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Chuẩn hoá loại từ trước khi so sánh
+        String normalizedLoaiTu = normalizeLoaiTu(loaiTu);
+
+        String where = "set_id = ? AND english = ? COLLATE NOCASE";
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(setId));
+        args.add(english.trim());
+
+        // Nếu có loại từ → check cả loại từ
+        if (normalizedLoaiTu != null && !normalizedLoaiTu.isEmpty()) {
+            where += " AND loai_tu = ?";
+            args.add(normalizedLoaiTu.trim());
+        }
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + DatabaseHelper.TABLE_WORD
+                        + " WHERE " + where,
+                args.toArray(new String[0]));
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+
+        return count > 0;  // true = đã trùng
+    }
+
+    // Check trùng nhưng loại trừ 1 ID (dùng khi sửa)
+    public boolean isDuplicateExcept(int setId, String english,
+                                     String loaiTu, int excludeId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Chuẩn hoá loại từ trước khi so sánh
+        String normalizedLoaiTu = normalizeLoaiTu(loaiTu);
+
+        String where = "set_id = ? AND english = ? COLLATE NOCASE AND id != ?";
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(setId));
+        args.add(english.trim());
+        args.add(String.valueOf(excludeId));
+
+        if (normalizedLoaiTu != null && !normalizedLoaiTu.isEmpty()) {
+            where += " AND loai_tu = ?";
+            args.add(normalizedLoaiTu.trim());
+        }
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + DatabaseHelper.TABLE_WORD
+                        + " WHERE " + where,
+                args.toArray(new String[0]));
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count > 0;
+    }
+
+    // =====================================================
+    // CHUẨN HOÁ LOẠI TỪ
+    // =====================================================
+
+    private static final Map<String, String> LOAI_TU_MAP = new HashMap<>();
+    static {
+        LOAI_TU_MAP.put("n", "(n) Danh từ");
+        LOAI_TU_MAP.put("noun", "(n) Danh từ");
+        LOAI_TU_MAP.put("(n)", "(n) Danh từ");
+        LOAI_TU_MAP.put("v", "(v) Động từ");
+        LOAI_TU_MAP.put("verb", "(v) Động từ");
+        LOAI_TU_MAP.put("(v)", "(v) Động từ");
+        LOAI_TU_MAP.put("adj", "(adj) Tính từ");
+        LOAI_TU_MAP.put("adjective", "(adj) Tính từ");
+        LOAI_TU_MAP.put("(adj)", "(adj) Tính từ");
+        LOAI_TU_MAP.put("adv", "(adv) Trạng từ");
+        LOAI_TU_MAP.put("adverb", "(adv) Trạng từ");
+        LOAI_TU_MAP.put("(adv)", "(adv) Trạng từ");
+        LOAI_TU_MAP.put("prep", "(prep) Giới từ");
+        LOAI_TU_MAP.put("preposition", "(prep) Giới từ");
+        LOAI_TU_MAP.put("(prep)", "(prep) Giới từ");
+        LOAI_TU_MAP.put("conj", "(conj) Liên từ");
+        LOAI_TU_MAP.put("conjunction", "(conj) Liên từ");
+        LOAI_TU_MAP.put("(conj)", "(conj) Liên từ");
+        LOAI_TU_MAP.put("pron", "(pron) Đại từ");
+        LOAI_TU_MAP.put("pronoun", "(pron) Đại từ");
+        LOAI_TU_MAP.put("(pron)", "(pron) Đại từ");
+        LOAI_TU_MAP.put("det", "(det) Mạo từ");
+        LOAI_TU_MAP.put("determiner", "(det) Mạo từ");
+        LOAI_TU_MAP.put("(det)", "(det) Mạo từ");
+        LOAI_TU_MAP.put("interj", "(interj) Thán từ");
+        LOAI_TU_MAP.put("interjection", "(interj) Thán từ");
+        LOAI_TU_MAP.put("(interj)", "(interj) Thán từ");
+        LOAI_TU_MAP.put("phr", "(phr) Cụm từ");
+        LOAI_TU_MAP.put("phrase", "(phr) Cụm từ");
+        LOAI_TU_MAP.put("(phr)", "(phr) Cụm từ");
+        LOAI_TU_MAP.put("idiom", "(idiom) Thành ngữ");
+        LOAI_TU_MAP.put("(idiom)", "(idiom) Thành ngữ");
+    }
+
+    /**
+     * Chuẩn hoá loại từ: n/noun/(n)/noun (n) → "(n) Danh từ"
+     */
+    public static String normalizeLoaiTu(String input) {
+        if (input == null || input.isEmpty()) return "";
+        String key = input.toLowerCase().trim();
+
+        // 1. Exact match
+        String normalized = LOAI_TU_MAP.get(key);
+        if (normalized != null) return normalized;
+
+        // 2. Trích xuất viết tắt từ ngoặc: "noun (n)" → thử "(n)"
+        int start = key.indexOf('(');
+        int end = key.indexOf(')');
+        if (start != -1 && end > start) {
+            String abbr = key.substring(start, end + 1).trim();
+            normalized = LOAI_TU_MAP.get(abbr);
+            if (normalized != null) return normalized;
+        }
+
+        // 3. Thử từng key đã biết (ưu tiên key dài hơn)
+        String bestMatch = null;
+        int bestLen = 0;
+        for (Map.Entry<String, String> entry : LOAI_TU_MAP.entrySet()) {
+            String mapKey = entry.getKey();
+            if (key.contains(mapKey) && mapKey.length() > bestLen) {
+                bestMatch = entry.getValue();
+                bestLen = mapKey.length();
+            }
+        }
+        if (bestMatch != null) return bestMatch;
+
+        return input;
     }
 }

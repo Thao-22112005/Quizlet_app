@@ -109,8 +109,7 @@ public class VocabularySetAdapter
 
         int count =
                 wordDAO
-                        .getBySetId(set.getId())
-                        .size();
+                        .getWordCountBySetId(set.getId());
 
         holder.tvWordCount.setText(
                 count + " thuật ngữ"

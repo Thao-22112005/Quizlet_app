@@ -36,7 +36,7 @@ public class VocabularySetDetailActivity
     private TextView tvSetTitle, tvWordCount;
     private LinearLayout layoutEmpty;
     private RecyclerView rvWords;
-    private Button btnAddWord;
+    private Button btnAddWord, btnQuickAdd;
     private View btnFlashcard, btnQuiz, btnMatching;
 
     // 2. Biến Data
@@ -86,6 +86,7 @@ public class VocabularySetDetailActivity
         layoutEmpty = findViewById(R.id.layoutEmpty);
         rvWords = findViewById(R.id.rvWords);
         btnAddWord = findViewById(R.id.btnAddWord);
+        btnQuickAdd = findViewById(R.id.btnQuickAdd);
         btnFlashcard = findViewById(R.id.btnFlashcard);
         btnQuiz = findViewById(R.id.btnQuiz);
         btnMatching = findViewById(R.id.btnMatching);
@@ -249,6 +250,14 @@ public class VocabularySetDetailActivity
             startActivity(intent);
         });
 
+        btnQuickAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    this, QuickAddActivity.class);
+            intent.putExtra("set_id", setId);
+            startActivity(intent);
+        });
+
+
         btnFlashcard.setOnClickListener(v -> {
             Intent intent = new Intent(
                     VocabularySetDetailActivity.this,
@@ -278,10 +287,17 @@ public class VocabularySetDetailActivity
         });
 
         btnMatching.setOnClickListener(v -> {
-            Toast.makeText(this,
-                    "Chức năng Matching đang phát triển",
-                    Toast.LENGTH_SHORT).show();
-            return;
+            Intent intent = new Intent(
+                    VocabularySetDetailActivity.this,
+                    MatchingGameActivity.class
+            );
+
+            intent.putExtra(
+                    "set_id",
+                    setId
+            );
+
+            startActivity(intent);
         });
     }
 
