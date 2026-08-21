@@ -159,7 +159,7 @@ public class AddWordActivity extends AppCompatActivity {
     }
     private void saveWord() {
         String english = edtEnglish.getText().toString().trim();
-        String loaiTu = edtLoaiTu.getText().toString().trim();
+        String loaiTu = WordDAO.normalizeLoaiTu(edtLoaiTu.getText().toString().trim());
         String pronunciation = edtPronunciation.getText().toString().trim();
         String meaning = edtMeaning.getText().toString().trim();
         String example = edtExample.getText().toString().trim();
