@@ -18,9 +18,9 @@ import com.example.englishvocabulary.models.Word;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class QuickAddActivity extends AppCompatActivity {
 
@@ -34,43 +34,6 @@ public class QuickAddActivity extends AppCompatActivity {
     private WordDAO wordDAO;
     private int setId;
     private List<Word> validWords = new ArrayList<>();
-
-    // Map chuẩn hoá loại từ
-    private static final Map<String, String> LOAI_TU_MAP = new HashMap<>();
-    static {
-        LOAI_TU_MAP.put("n", "(n) Danh từ");
-        LOAI_TU_MAP.put("noun", "(n) Danh từ");
-        LOAI_TU_MAP.put("(n)", "(n) Danh từ");
-        LOAI_TU_MAP.put("v", "(v) Động từ");
-        LOAI_TU_MAP.put("verb", "(v) Động từ");
-        LOAI_TU_MAP.put("(v)", "(v) Động từ");
-        LOAI_TU_MAP.put("adj", "(adj) Tính từ");
-        LOAI_TU_MAP.put("adjective", "(adj) Tính từ");
-        LOAI_TU_MAP.put("(adj)", "(adj) Tính từ");
-        LOAI_TU_MAP.put("adv", "(adv) Trạng từ");
-        LOAI_TU_MAP.put("adverb", "(adv) Trạng từ");
-        LOAI_TU_MAP.put("(adv)", "(adv) Trạng từ");
-        LOAI_TU_MAP.put("prep", "(prep) Giới từ");
-        LOAI_TU_MAP.put("preposition", "(prep) Giới từ");
-        LOAI_TU_MAP.put("(prep)", "(prep) Giới từ");
-        LOAI_TU_MAP.put("conj", "(conj) Liên từ");
-        LOAI_TU_MAP.put("conjunction", "(conj) Liên từ");
-        LOAI_TU_MAP.put("(conj)", "(conj) Liên từ");
-        LOAI_TU_MAP.put("pron", "(pron) Đại từ");
-        LOAI_TU_MAP.put("pronoun", "(pron) Đại từ");
-        LOAI_TU_MAP.put("(pron)", "(pron) Đại từ");
-        LOAI_TU_MAP.put("det", "(det) Mạo từ");
-        LOAI_TU_MAP.put("determiner", "(det) Mạo từ");
-        LOAI_TU_MAP.put("(det)", "(det) Mạo từ");
-        LOAI_TU_MAP.put("interj", "(interj) Thán từ");
-        LOAI_TU_MAP.put("interjection", "(interj) Thán từ");
-        LOAI_TU_MAP.put("(interj)", "(interj) Thán từ");
-        LOAI_TU_MAP.put("phr", "(phr) Cụm từ");
-        LOAI_TU_MAP.put("phrase", "(phr) Cụm từ");
-        LOAI_TU_MAP.put("(phr)", "(phr) Cụm từ");
-        LOAI_TU_MAP.put("idiom", "(idiom) Thành ngữ");
-        LOAI_TU_MAP.put("(idiom)", "(idiom) Thành ngữ");
-    }
 
     // 3. onCreate
     @Override
@@ -129,6 +92,9 @@ public class QuickAddActivity extends AppCompatActivity {
         int validCount = 0;
         int errorCount = 0;
 
+        // Theo dõi từ đã thêm trong batch này (tránh trùng nội bộ)
+        Set<String> batchKeys = new HashSet<>();
+
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i].trim();
 
@@ -141,7 +107,7 @@ public class QuickAddActivity extends AppCompatActivity {
             String english = parts.length > 0
                     ? parts[0].trim() : "";
             String loaiTu = parts.length > 1
-                    ? normalizeLoaiTu(parts[1].trim()) : "";
+                    ? WordDAO.normalizeLoaiTu(parts[1].trim()) : "";
             String pronunciation = parts.length > 2
                     ? parts[2].trim() : "";
             String meaning = parts.length > 3
@@ -171,7 +137,7 @@ public class QuickAddActivity extends AppCompatActivity {
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             } else if (wordDAO.isDuplicate(setId, english, loaiTu)) {
-                // TRÙNG - từ đã tồn tại
+                // TRÙNG - từ đã tồn tại trong DB
                 errorCount++;
                 String warnLine = "⚠️ Dòng " + (i + 1)
                         + ": \"" + english + "\" đã tồn tại\n";
@@ -184,27 +150,45 @@ public class QuickAddActivity extends AppCompatActivity {
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             } else {
-                // HỢP LỆ
-                validCount++;
-                Word word = new Word();
-                word.setSetId(setId);
-                word.setEnglish(english);
-                word.setLoaiTu(loaiTu);
-                word.setPronunciation(pronunciation);
-                word.setMeaning(meaning);
-                word.setExample(example);
-                word.setNote(note);
-                word.setIsLearned(0);
-                validWords.add(word);
+                // Check trùng trong cùng batch
+                String batchKey = english.toLowerCase() + "|" + loaiTu;
+                if (batchKeys.contains(batchKey)) {
+                    errorCount++;
+                    String warnLine = "⚠️ Dòng " + (i + 1)
+                            + ": \"" + english + "\" bị trùng trong danh sách\n";
 
-                String okLine = "✅ " + english
-                        + " → " + meaning + "\n";
-                int start = preview.length();
-                preview.append(okLine);
-                preview.setSpan(
-                        new ForegroundColorSpan(0xFF10B981),
-                        start, preview.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    int start = preview.length();
+                    preview.append(warnLine);
+                    preview.setSpan(
+                            new ForegroundColorSpan(0xFFF59E0B),
+                            start, preview.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                } else {
+                    // HỢP LỆ
+                    validCount++;
+                    batchKeys.add(batchKey);
+
+                    Word word = new Word();
+                    word.setSetId(setId);
+                    word.setEnglish(english);
+                    word.setLoaiTu(loaiTu);
+                    word.setPronunciation(pronunciation);
+                    word.setMeaning(meaning);
+                    word.setExample(example);
+                    word.setNote(note);
+                    word.setIsLearned(0);
+                    validWords.add(word);
+
+                    String okLine = "✅ " + english
+                            + " → " + meaning + "\n";
+                    int start = preview.length();
+                    preview.append(okLine);
+                    preview.setSpan(
+                            new ForegroundColorSpan(0xFF10B981),
+                            start, preview.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
 
         }
@@ -240,39 +224,4 @@ public class QuickAddActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * Chuẩn hoá loại từ: n/noun/(n)/noun (n) → "(n) Danh từ"
-     * Hỗ trợ nhiều format: "n", "noun", "(n)", "noun (n)", "(n) noun",...
-     */
-    private String normalizeLoaiTu(String input) {
-        if (input == null || input.isEmpty()) return "";
-        String key = input.toLowerCase().trim();
-
-        // 1. Exact match
-        String normalized = LOAI_TU_MAP.get(key);
-        if (normalized != null) return normalized;
-
-        // 2. Trích xuất viết tắt từ ngoặc: "noun (n)" → thử "(n)"
-        int start = key.indexOf('(');
-        int end = key.indexOf(')');
-        if (start != -1 && end > start) {
-            String abbr = key.substring(start, end + 1).trim();
-            normalized = LOAI_TU_MAP.get(abbr);
-            if (normalized != null) return normalized;
-        }
-
-        // 3. Thử từng key đã biết (ưu tiên key dài hơn)
-        String bestMatch = null;
-        int bestLen = 0;
-        for (Map.Entry<String, String> entry : LOAI_TU_MAP.entrySet()) {
-            String mapKey = entry.getKey();
-            if (key.contains(mapKey) && mapKey.length() > bestLen) {
-                bestMatch = entry.getValue();
-                bestLen = mapKey.length();
-            }
-        }
-        if (bestMatch != null) return bestMatch;
-
-        return input;
-    }
 }
