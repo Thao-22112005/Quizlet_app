@@ -506,18 +506,20 @@ public class WordDAO {
     public boolean isDuplicate(int setId, String english, String loaiTu) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Chuẩn hoá loại từ trước khi so sánh
-        String normalizedLoaiTu = normalizeLoaiTu(loaiTu);
+        // Chuẩn hoá loại từ trước khi so sánh (giữ lại cả dạng gốc để tương thích dữ liệu cũ)
+        String rawLoaiTu = loaiTu == null ? "" : loaiTu.trim();
+        String normalizedLoaiTu = normalizeLoaiTu(rawLoaiTu);
 
-        String where = "set_id = ? AND english = ? COLLATE NOCASE";
+        String where = "set_id = ? AND english COLLATE NOCASE = ?";
         List<String> args = new ArrayList<>();
         args.add(String.valueOf(setId));
         args.add(english.trim());
 
-        // Nếu có loại từ → check cả loại từ
-        if (normalizedLoaiTu != null && !normalizedLoaiTu.isEmpty()) {
-            where += " AND loai_tu = ?";
+        // Nếu có loại từ → check cả loại từ (dạng chuẩn hoá hoặc dạng gốc)
+        if (!normalizedLoaiTu.isEmpty()) {
+            where += " AND (loai_tu = ? OR loai_tu = ?)";
             args.add(normalizedLoaiTu.trim());
+            args.add(rawLoaiTu);
         }
 
         Cursor cursor = db.rawQuery(
