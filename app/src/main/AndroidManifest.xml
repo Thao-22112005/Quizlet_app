@@ -66,6 +66,10 @@
 
         <activity android:name=".activities.QuickAddActivity" />
 
+        <activity
+            android:name=".activities.MatchingGameActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

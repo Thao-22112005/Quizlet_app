@@ -12,8 +12,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -29,10 +27,14 @@ import com.google.firebase.ai.java.GenerativeModelFutures;
 import com.google.firebase.ai.type.Content;
 import com.google.firebase.ai.type.GenerateContentResponse;
 import com.google.firebase.ai.type.GenerativeBackend;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AIChatFragment extends Fragment {
 
+    private FirebaseAuth firebaseAuth;
     private EditText edtMessage;
+    private TextView tvHello;
     private ImageButton btnSend;
     private LinearLayout chatContainer;
     private ScrollView scrollChat;
@@ -55,16 +57,21 @@ public class AIChatFragment extends Fragment {
                 container,
                 false
         );
-
+        tvHello = view.findViewById(R.id.tvHello);
         edtMessage = view.findViewById(R.id.edtMessage);
         btnSend = view.findViewById(R.id.btnSend);
         chatContainer = view.findViewById(R.id.chatContainer);
         scrollChat = view.findViewById(R.id.scrollChat);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         // Khởi tạo Gemini
         GenerativeModel ai = FirebaseAI
                 .getInstance(GenerativeBackend.googleAI())
                 .generativeModel("gemini-3.6-flash");
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        tvHello.setText("Xin chào! " +user.getDisplayName().trim()+"\nTôi có thể giúp bạn giải thích từ vựng, ngữ pháp, đặt câu, tạo bài tập... bất cứ điều gì liên quan đến việc học tiếng Anh.");
 
         model = GenerativeModelFutures.from(ai);
 
@@ -168,12 +175,12 @@ public class AIChatFragment extends Fragment {
         textView.setText(message);
         textView.setTextSize(14);
         textView.setTextColor(Color.WHITE);
-        textView.setPadding(16, 12, 16, 12);
+        textView.setPadding(20, 20, 20, 20);
 
         android.graphics.drawable.GradientDrawable background =
                 new android.graphics.drawable.GradientDrawable();
 
-        background.setColor(Color.rgb(95, 111, 230));
+        background.setColor(Color.parseColor("#304FFE"));
         background.setCornerRadius(30);
 
         textView.setBackground(background);
@@ -199,7 +206,7 @@ public class AIChatFragment extends Fragment {
         textView.setText(message);
         textView.setTextSize(14);
         textView.setTextColor(Color.rgb(40, 40, 40));
-        textView.setPadding(16, 12, 16, 12);
+        textView.setPadding(20, 20, 20, 20);
 
         android.graphics.drawable.GradientDrawable background =
                 new android.graphics.drawable.GradientDrawable();

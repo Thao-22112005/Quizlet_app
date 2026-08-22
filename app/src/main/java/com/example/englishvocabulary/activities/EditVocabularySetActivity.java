@@ -202,6 +202,8 @@ public class EditVocabularySetActivity extends AppCompatActivity {
 
         });
 
+        edtTitle.requestFocus();
+
 
         // CẬP NHẬT BỘ TỪ
 

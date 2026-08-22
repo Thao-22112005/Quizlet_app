@@ -86,6 +86,8 @@ public class CreateVocabularySetActivity extends AppCompatActivity {
         // Ánh xạ view
         initViews();
 
+        edtTitle.requestFocus();
+
 
         // Sự kiện
         initEvents();
