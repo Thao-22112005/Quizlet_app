@@ -12,8 +12,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -168,12 +166,12 @@ public class AIChatFragment extends Fragment {
         textView.setText(message);
         textView.setTextSize(14);
         textView.setTextColor(Color.WHITE);
-        textView.setPadding(16, 12, 16, 12);
+        textView.setPadding(20, 20, 20, 20);
 
         android.graphics.drawable.GradientDrawable background =
                 new android.graphics.drawable.GradientDrawable();
 
-        background.setColor(Color.rgb(95, 111, 230));
+        background.setColor(Color.parseColor("#304FFE"));
         background.setCornerRadius(30);
 
         textView.setBackground(background);
@@ -199,7 +197,7 @@ public class AIChatFragment extends Fragment {
         textView.setText(message);
         textView.setTextSize(14);
         textView.setTextColor(Color.rgb(40, 40, 40));
-        textView.setPadding(16, 12, 16, 12);
+        textView.setPadding(20, 20, 20, 20);
 
         android.graphics.drawable.GradientDrawable background =
                 new android.graphics.drawable.GradientDrawable();

@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -24,7 +25,8 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Đóng"
-            android:src="@drawable/ic_arrow_back" />
+            android:src="@drawable/ic_arrow_back"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -112,32 +114,33 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        tools:ignore="SpeakableTextPresentCheck">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:paddingTop="4dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="16dp">
 
             <LinearLayout
                 android:id="@+id/columnLeft"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="6dp" />
+                android:orientation="vertical" />
 
             <LinearLayout
                 android:id="@+id/columnRight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="6dp" />
+                android:orientation="vertical" />
 
         </LinearLayout>
 

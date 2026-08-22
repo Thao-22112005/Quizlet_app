@@ -35,7 +35,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Quay lại"
                 android:padding="10dp"
-                android:src="@android:drawable/ic_menu_revert"
+                android:src="@drawable/ic_back"
                 tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
@@ -88,15 +88,6 @@
                 android:textColor="#6B7280"
                 android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/tvTabAll"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Tất cả"
-                android:textColor="#6B7280"
-                android:textSize="13sp" />
 
         </LinearLayout>
 
@@ -300,10 +291,10 @@
                     android:textColor="#6B7280"
                     android:textSize="11sp" />
 
-                <com.example.englishvocabulary.activities.WeeklyChartView
+                <com.example.englishvocabulary.activities.ChartView
                     android:id="@+id/weeklyChart"
                     android:layout_width="match_parent"
-                    android:layout_height="165dp"
+                    android:layout_height="170dp"
                     android:layout_marginTop="5dp"
                     tools:ignore="MissingClass" />
 

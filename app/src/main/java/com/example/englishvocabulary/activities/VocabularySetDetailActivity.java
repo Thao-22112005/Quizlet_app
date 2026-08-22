@@ -278,10 +278,17 @@ public class VocabularySetDetailActivity
         });
 
         btnMatching.setOnClickListener(v -> {
-            Toast.makeText(this,
-                    "Chức năng Matching đang phát triển",
-                    Toast.LENGTH_SHORT).show();
-            return;
+            Intent intent = new Intent(
+                    VocabularySetDetailActivity.this,
+                    MatchingGameActivity.class
+            );
+
+            intent.putExtra(
+                    "set_id",
+                    setId
+            );
+
+            startActivity(intent);
         });
     }
 
