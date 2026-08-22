@@ -204,6 +204,15 @@
                     android:textColor="#4055F5" />
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvbackLoaiTu"
+                    android:text="Danh từ"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
                     android:id="@+id/tvPronunciation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -27,10 +27,14 @@ import com.google.firebase.ai.java.GenerativeModelFutures;
 import com.google.firebase.ai.type.Content;
 import com.google.firebase.ai.type.GenerateContentResponse;
 import com.google.firebase.ai.type.GenerativeBackend;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AIChatFragment extends Fragment {
 
+    private FirebaseAuth firebaseAuth;
     private EditText edtMessage;
+    private TextView tvHello;
     private ImageButton btnSend;
     private LinearLayout chatContainer;
     private ScrollView scrollChat;
@@ -53,16 +57,21 @@ public class AIChatFragment extends Fragment {
                 container,
                 false
         );
-
+        tvHello = view.findViewById(R.id.tvHello);
         edtMessage = view.findViewById(R.id.edtMessage);
         btnSend = view.findViewById(R.id.btnSend);
         chatContainer = view.findViewById(R.id.chatContainer);
         scrollChat = view.findViewById(R.id.scrollChat);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         // Khởi tạo Gemini
         GenerativeModel ai = FirebaseAI
                 .getInstance(GenerativeBackend.googleAI())
                 .generativeModel("gemini-3.6-flash");
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        tvHello.setText("Xin chào! " +user.getDisplayName().trim()+"\nTôi có thể giúp bạn giải thích từ vựng, ngữ pháp, đặt câu, tạo bài tập... bất cứ điều gì liên quan đến việc học tiếng Anh.");
 
         model = GenerativeModelFutures.from(ai);
 

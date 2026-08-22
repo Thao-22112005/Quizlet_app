@@ -93,6 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:maxWidth="280dp"
+                    android:id="@+id/tvHello"
                     android:background="@drawable/bg_ai_message"
                     android:padding="12dp"
                     android:text="Xin chào! 👋\nTôi có thể giúp bạn giải thích từ vựng, ngữ pháp, đặt câu, tạo bài tập... bất cứ điều gì liên quan đến việc học tiếng Anh."

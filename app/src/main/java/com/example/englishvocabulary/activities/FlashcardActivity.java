@@ -34,7 +34,7 @@ public class FlashcardActivity extends AppCompatActivity {
 
     private TextView tvEnglish, tvLoaiTu;
 
-    private TextView tvBackEnglish, tvPronunciation;
+    private TextView tvBackEnglish, tvPronunciation, tvbackLoaiTu;
     private TextView tvMeaning;
     private TextView tvExample, tvTranslateExample;
 
@@ -104,6 +104,7 @@ public class FlashcardActivity extends AppCompatActivity {
         layoutBackCard = findViewById(R.id.layoutBackCard);
 
         tvBackEnglish = findViewById(R.id.tvBackEnglish);
+        tvbackLoaiTu = findViewById(R.id.tvbackLoaiTu);
         tvPronunciation = findViewById(R.id.tvPronunciation);
 
         tvMeaning = findViewById(R.id.tvMeaning);
@@ -251,12 +252,14 @@ public class FlashcardActivity extends AppCompatActivity {
         tvEnglish.setText(
                 word.getEnglish()
         );
-        tvLoaiTu.setText(word.getLoaiTu());
+        tvLoaiTu.setText("("+word.getLoaiTu()+")");
 
         // MẶT SAU
         tvBackEnglish.setText(
                 word.getEnglish()
         );
+
+        tvbackLoaiTu.setText("("+word.getLoaiTu()+")");
         tvPronunciation.setText(word.getPronunciation());
 
         tvMeaning.setText(
