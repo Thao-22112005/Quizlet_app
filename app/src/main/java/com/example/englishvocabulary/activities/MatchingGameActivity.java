@@ -229,7 +229,7 @@ public class MatchingGameActivity extends AppCompatActivity {
     // =====================================================
 
     private CardView createCard(String text, int wordIndex,
-                                boolean isLeft) {
+                                 boolean isLeft) {
 
         // Card
         CardView card = new CardView(this);
