@@ -191,7 +191,7 @@
             android:id="@+id/btnCreate"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            android:text="TẠO BỘ TỪ"
+            android:text="+ TẠO BỘ TỪ"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
