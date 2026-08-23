@@ -4,6 +4,9 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -36,6 +39,10 @@ public class ImportWordsFromImageActivity extends AppCompatActivity {
 
     private WordDAO wordDAO;
 
+    private ProgressBar progressBar;
+
+    private TextView tvLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,14 @@ public class ImportWordsFromImageActivity extends AppCompatActivity {
 
         wordDAO = new WordDAO(this);
 
+        progressBar = findViewById(
+                R.id.progressBar
+        );
+
+        tvLoading = findViewById(
+                R.id.tvLoading
+        );
+
         textRecognizer =
                 TextRecognition.getClient(
                         TextRecognizerOptions.DEFAULT_OPTIONS
@@ -84,8 +99,34 @@ public class ImportWordsFromImageActivity extends AppCompatActivity {
     }
 
 
+    private void showLoading() {
+
+        progressBar.setVisibility(
+                View.VISIBLE
+        );
+
+        tvLoading.setVisibility(
+                View.VISIBLE
+        );
+    }
+
+
+    private void hideLoading() {
+
+        progressBar.setVisibility(
+                View.GONE
+        );
+
+        tvLoading.setVisibility(
+                View.GONE
+        );
+    }
+
+
     // OCR
     private void recognizeTextFromImage(Uri imageUri) {
+
+        showLoading();
 
         try {
 
@@ -99,6 +140,8 @@ public class ImportWordsFromImageActivity extends AppCompatActivity {
                     .process(image)
 
                     .addOnSuccessListener(result -> {
+
+                        hideLoading();
 
                         Log.d(
                                 TAG,
@@ -125,6 +168,8 @@ public class ImportWordsFromImageActivity extends AppCompatActivity {
 
                     .addOnFailureListener(e -> {
 
+                        hideLoading();
+
                         Log.e(
                                 TAG,
                                 "OCR FAILED",
@@ -139,6 +184,8 @@ public class ImportWordsFromImageActivity extends AppCompatActivity {
                     });
 
         } catch (Exception e) {
+
+            hideLoading();
 
             Log.e(
                     TAG,
