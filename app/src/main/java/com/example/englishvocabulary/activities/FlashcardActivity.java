@@ -34,7 +34,7 @@ public class FlashcardActivity extends AppCompatActivity {
 
     private TextView tvEnglish, tvLoaiTu;
 
-    private TextView tvBackEnglish, tvPronunciation, tvbackLoaiTu;
+    private TextView tvBackEnglish, tvbackLoaiTu;
     private TextView tvMeaning;
     private TextView tvExample, tvTranslateExample;
 
@@ -105,7 +105,7 @@ public class FlashcardActivity extends AppCompatActivity {
 
         tvBackEnglish = findViewById(R.id.tvBackEnglish);
         tvbackLoaiTu = findViewById(R.id.tvbackLoaiTu);
-        tvPronunciation = findViewById(R.id.tvPronunciation);
+
 
         tvMeaning = findViewById(R.id.tvMeaning);
 
@@ -252,17 +252,15 @@ public class FlashcardActivity extends AppCompatActivity {
         tvEnglish.setText(
                 word.getEnglish()
         );
-        tvLoaiTu.setText("("+word.getLoaiTu()+")");
+        tvLoaiTu.setText(word.getLoaiTu());
 
         // MẶT SAU
         tvBackEnglish.setText(
                 word.getEnglish()
         );
 
-        tvbackLoaiTu.setText("("+word.getLoaiTu()+")");
-        tvPronunciation.setText(word.getPronunciation());
-
-        tvMeaning.setText(
+        tvbackLoaiTu.setText(word.getLoaiTu());
+        tvMeaning.setText("Nghĩa tiếng Việt: "+
                 word.getMeaning()
         );
 
@@ -271,7 +269,7 @@ public class FlashcardActivity extends AppCompatActivity {
         if (word.getExample() != null &&
                 !word.getExample().isEmpty()) {
 
-            tvExample.setText(
+            tvExample.setText("Ví dụ: "+
                     word.getExample()
             );
 
@@ -283,8 +281,8 @@ public class FlashcardActivity extends AppCompatActivity {
             );
         }
 
-        if(!word.getNote().isEmpty() || word.getNote() != null){
-            tvTranslateExample.setText(word.getNote());
+        if(!word.getNote().isEmpty() && word.getNote() != null){
+            tvTranslateExample.setText("Dịch nghĩa: "+word.getNote());
         }else{
             tvTranslateExample.setText("");
         }

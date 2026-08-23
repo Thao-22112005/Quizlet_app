@@ -212,14 +212,6 @@
                     android:textStyle="bold"
                     android:textColor="#333333"/>
 
-                <TextView
-                    android:id="@+id/tvPronunciation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="#666666"
-                    android:layout_marginTop="4dp"
-                    android:textStyle="italic" />
 
                 <!-- NGHĨA -->
 

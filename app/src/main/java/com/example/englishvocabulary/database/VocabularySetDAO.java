@@ -26,7 +26,7 @@ public class VocabularySetDAO {
         Cursor cursor = db.query(
                 DatabaseHelper.TABLE_VOCABULARY_SET,
                 new String[]{"id"},
-                "user_uid = ? AND title = ?",
+                "user_uid = ? AND title = ? COLLATE NOCASE",
                 new String[]{userUid, title},
                 null,
                 null,

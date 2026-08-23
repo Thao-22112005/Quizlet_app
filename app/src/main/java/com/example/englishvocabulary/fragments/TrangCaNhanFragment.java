@@ -1,5 +1,6 @@
 package com.example.englishvocabulary.fragments;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -128,7 +129,8 @@ public class TrangCaNhanFragment extends Fragment {
 
         layoutLogout.setOnClickListener(v -> {
 
-            logout();
+            new AlertDialog.Builder(requireContext()).setTitle("Đăng xuất").setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                    .setPositiveButton("Có", (dialog, which) -> { logout(); }).setNegativeButton("Không", (dialog, which) -> { dialog.dismiss(); }).show();
         });
 
         btnBack.setOnClickListener(v -> {

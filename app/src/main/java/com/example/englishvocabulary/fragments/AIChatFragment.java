@@ -36,8 +36,12 @@ public class AIChatFragment extends Fragment {
     private EditText edtMessage;
     private TextView tvHello;
     private ImageButton btnSend;
+
+    private ImageButton btnBack;
     private LinearLayout chatContainer;
     private ScrollView scrollChat;
+
+    private int previousNavItemId = R.id.nav_home;
 
     private GenerativeModelFutures model;
 
@@ -51,6 +55,14 @@ public class AIChatFragment extends Fragment {
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
+        Bundle args = getArguments();
+
+        if (args != null) {
+            previousNavItemId = args.getInt(
+                    "previous_nav_item",
+                    R.id.nav_home
+            );
+        }
 
         View view = inflater.inflate(
                 R.layout.fragment_a_i_chat,
@@ -60,6 +72,7 @@ public class AIChatFragment extends Fragment {
         tvHello = view.findViewById(R.id.tvHello);
         edtMessage = view.findViewById(R.id.edtMessage);
         btnSend = view.findViewById(R.id.btnSend);
+        btnBack = view.findViewById(R.id.btnBack);
         chatContainer = view.findViewById(R.id.chatContainer);
         scrollChat = view.findViewById(R.id.scrollChat);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -77,6 +90,21 @@ public class AIChatFragment extends Fragment {
         model = GenerativeModelFutures.from(ai);
 
         btnSend.setOnClickListener(v -> sendMessage());
+
+        btnBack.setOnClickListener(v -> {
+
+            if (isAdded()) {
+
+                getParentFragmentManager().popBackStack();
+
+                com.google.android.material.bottomnavigation.BottomNavigationView bottomNav =
+                        requireActivity().findViewById(R.id.bottomNavigation);
+
+                if (bottomNav != null) {
+                    bottomNav.setSelectedItemId(previousNavItemId);
+                }
+            }
+        });
 
         return view;
     }
@@ -117,7 +145,7 @@ public class AIChatFragment extends Fragment {
 
         // Tạo prompt
         String prompt =
-                "Bạn là trợ lý học tiếng Anh trong ứng dụng EnglishVocabulary. " +
+                "Bạn là trợ lý học tiếng Anh trong ứng dụng QuizletApp. " +
                         "Hãy trả lời bằng tiếng Việt, giải thích dễ hiểu cho học sinh. " +
                         "Nếu người dùng hỏi về từ vựng, hãy cung cấp: nghĩa tiếng Việt, " +
                         "cách phát âm, từ loại và một ví dụ tiếng Anh. " +

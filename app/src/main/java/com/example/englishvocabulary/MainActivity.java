@@ -18,6 +18,7 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigation;
+    private int previousNavItemId = R.id.nav_home;
     private int currentNavItemId;
 
     @Override
@@ -48,8 +49,18 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new ThuVienFragment());
                 return true;
             } else if (itemId == R.id.nav_ai) {
+                previousNavItemId = currentNavItemId;
+
                 currentNavItemId = R.id.nav_ai;
-                loadFragment(new AIChatFragment());
+
+                AIChatFragment fragment = new AIChatFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("previous_nav_item", previousNavItemId);
+                fragment.setArguments(bundle);
+
+                loadFragment(fragment);
+
                 return true;
             } else if (itemId == R.id.nav_add) {
                 Intent intent = new Intent(MainActivity.this, CreateVocabularySetActivity.class);
@@ -73,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null)
                 .commit();
     }
 }

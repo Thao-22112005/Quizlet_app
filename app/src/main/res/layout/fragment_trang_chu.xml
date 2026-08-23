@@ -28,17 +28,14 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- Nút tìm kiếm -->
-
-            <ImageButton
-                android:id="@+id/btnSearch"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Tìm kiếm"
+            <ImageView
+                android:id="@+id/imgAI"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_gemini"
                 android:padding="9dp"
-                android:src="@android:drawable/ic_menu_search"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:src="@drawable/logo_gemini"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <View
                 android:layout_width="0dp"

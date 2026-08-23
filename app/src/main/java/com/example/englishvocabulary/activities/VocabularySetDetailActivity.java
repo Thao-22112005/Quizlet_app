@@ -36,7 +36,7 @@ public class VocabularySetDetailActivity
     private TextView tvSetTitle, tvWordCount;
     private LinearLayout layoutEmpty;
     private RecyclerView rvWords;
-    private Button btnAddWord, btnQuickAdd;
+    private Button btnAddWord, btnQuickAdd, btnReadImage;
     private View btnFlashcard, btnQuiz, btnMatching;
 
     // 2. Biến Data
@@ -90,6 +90,7 @@ public class VocabularySetDetailActivity
         btnFlashcard = findViewById(R.id.btnFlashcard);
         btnQuiz = findViewById(R.id.btnQuiz);
         btnMatching = findViewById(R.id.btnMatching);
+        btnReadImage = findViewById(R.id.btnReadImage);
 
         tvSetTitle.setText(
                 setTitle != null ? setTitle : "Chi tiết bộ từ");
@@ -254,6 +255,21 @@ public class VocabularySetDetailActivity
             Intent intent = new Intent(
                     this, QuickAddActivity.class);
             intent.putExtra("set_id", setId);
+            startActivity(intent);
+        });
+
+        btnReadImage.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    VocabularySetDetailActivity.this,
+                    ImportWordsFromImageActivity.class
+            );
+
+            intent.putExtra(
+                    "set_id",
+                    setId
+            );
+
             startActivity(intent);
         });
 

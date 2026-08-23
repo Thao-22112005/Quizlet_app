@@ -104,6 +104,9 @@ dependencies {
         "org.reactivestreams:reactive-streams:1.0.4"
     )
 
+    //thư viện OCR
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+
 
     // =====================================================
     // TEST

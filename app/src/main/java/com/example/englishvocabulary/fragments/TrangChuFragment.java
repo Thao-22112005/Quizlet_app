@@ -30,6 +30,7 @@ import java.util.List;
 public class TrangChuFragment extends Fragment {
 
     private TextView tvGreeting;
+    private ImageView imgAI;
     private TextView tvAvatar;
     private TextView tvContinueTitle;
     private TextView tvContinueCount;
@@ -52,6 +53,7 @@ public class TrangChuFragment extends Fragment {
 
         // Ánh xạ View
         tvGreeting = view.findViewById(R.id.tvGreeting);
+        imgAI = view.findViewById(R.id.imgAI);
         tvAvatar = view.findViewById(R.id.tvAvatar);
         tvContinueTitle = view.findViewById(R.id.tvContinueTitle);
         tvContinueCount = view.findViewById(R.id.tvContinueCount);
@@ -75,6 +77,11 @@ public class TrangChuFragment extends Fragment {
         tvViewAll.setOnClickListener(v -> {
             BottomNavigationView bottomNavigation = requireActivity().findViewById(R.id.bottomNavigation);
             bottomNavigation.setSelectedItemId(R.id.nav_library);
+        });
+
+        imgAI.setOnClickListener(v->{
+            BottomNavigationView bottomNavigation = requireActivity().findViewById(R.id.bottomNavigation);
+            bottomNavigation.setSelectedItemId(R.id.nav_ai);
         });
 
         tvAvatar.setOnClickListener(v -> {
