@@ -71,7 +71,8 @@ public class AIChatFragment extends Fragment {
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        tvHello.setText("Xin chào! " +user.getDisplayName().trim()+"\nTôi có thể giúp bạn giải thích từ vựng, ngữ pháp, đặt câu, tạo bài tập... bất cứ điều gì liên quan đến việc học tiếng Anh.");
+        tvHello.setText("Xin chào! " +user.getDisplayName().trim()+
+                "\nTôi có thể giúp bạn giải thích từ vựng, ngữ pháp, đặt câu, tạo bài tập... bất cứ điều gì liên quan đến việc học tiếng Anh.");
 
         model = GenerativeModelFutures.from(ai);
 
