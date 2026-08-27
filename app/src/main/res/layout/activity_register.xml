@@ -3,10 +3,24 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
     android:background="#F5F7FA">
+    <!-- LOGO ỨNG DỤNG -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgAppLogo"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/app_logo"
+        android:scaleType="centerCrop"
+        android:contentDescription="Logo ứng dụng"
+        app:shapeAppearanceOverlay="@style/CircleImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="0dp"/>
 
     <TextView
         android:id="@+id/tvTitle"
@@ -16,9 +30,10 @@
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="#1F2937"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgAppLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="17dp"/>
 
     <TextView
         android:id="@+id/tvSubtitle"
@@ -37,7 +52,7 @@
         android:id="@+id/tilName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="15dp"
         android:hint="Họ và tên"
         app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -125,15 +140,15 @@
         android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        android:minHeight="48dp"
         android:text="Đã có tài khoản? Đăng nhập"
         android:textColor="#2563EB"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRegister" />
+        app:layout_constraintTop_toBottomOf="@id/btnRegister"
+        tools:ignore="TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

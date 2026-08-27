@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "quizletapp.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
 
     public static final String TABLE_VOCABULARY_SET =
@@ -21,6 +21,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_QUIZ_RESULT =
             "QUIZ_RESULT";
+
+
+    // =========================
+    // BẢNG CHAT MỚI
+    // =========================
+
+    public static final String TABLE_CHAT_CONVERSATION =
+            "CHAT_CONVERSATION";
+
+    public static final String TABLE_CHAT_MESSAGE =
+            "CHAT_MESSAGE";
+
 
     public DatabaseHelper(Context context) {
         super(
@@ -38,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.setForeignKeyConstraintsEnabled(true);
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -76,6 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createVocabularySetTable);
 
+
         String createWordTable =
                 "CREATE TABLE " + TABLE_WORD + " (" +
 
@@ -104,8 +118,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "loai_tu TEXT, " +
 
                         // Đã học chưa
-                        // 0 = chưa học
-                        // 1 = đã học
                         "is_learned INTEGER DEFAULT 0, " +
 
                         // Khóa ngoại tới VOCABULARY_SET
@@ -114,12 +126,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         TABLE_VOCABULARY_SET +
                         "(id) " +
 
-                        // Xóa bộ từ thì xóa các từ bên trong
                         "ON DELETE CASCADE" +
 
                         ")";
 
         db.execSQL(createWordTable);
+
 
         String createLearningHistoryTable =
                 "CREATE TABLE " +
@@ -136,12 +148,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "word_id INTEGER NOT NULL, " +
 
                         // Kết quả
-                        // 1 = đúng
-                        // 0 = sai
                         "is_correct INTEGER NOT NULL, " +
 
                         // Chế độ học
-                        // FLASHCARD / QUIZ / MATCHING...
                         "learning_mode TEXT NOT NULL, " +
 
                         // Thời gian học
@@ -166,6 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         ")";
 
         db.execSQL(createLearningHistoryTable);
+
 
         String createQuizResultTable =
                 "CREATE TABLE " +
@@ -204,6 +214,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         ")";
 
         db.execSQL(createQuizResultTable);
+
+
+        // =========================
+        // CHAT CONVERSATION
+        // =========================
+
+        String createChatConversationTable =
+                "CREATE TABLE " +
+                        TABLE_CHAT_CONVERSATION +
+                        " (" +
+
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                        // UID tài khoản Firebase
+                        "user_uid TEXT NOT NULL, " +
+
+                        // Tiêu đề cuộc trò chuyện
+                        "title TEXT NOT NULL, " +
+
+                        // Thời gian tạo
+                        "created_at TEXT, " +
+
+                        // Thời gian cập nhật gần nhất
+                        "updated_at TEXT" +
+
+                        ")";
+
+        db.execSQL(createChatConversationTable);
+
+
+        // =========================
+        // CHAT MESSAGE
+        // =========================
+
+        String createChatMessageTable =
+                "CREATE TABLE " +
+                        TABLE_CHAT_MESSAGE +
+                        " (" +
+
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                        // ID cuộc trò chuyện
+                        "conversation_id INTEGER NOT NULL, " +
+
+                        // Người gửi: user / ai
+                        "sender TEXT NOT NULL, " +
+
+                        // Nội dung tin nhắn
+                        "message TEXT NOT NULL, " +
+
+                        // Thời gian gửi
+                        "created_at TEXT, " +
+
+                        // Khóa ngoại
+                        "FOREIGN KEY(conversation_id) " +
+                        "REFERENCES " +
+                        TABLE_CHAT_CONVERSATION +
+                        "(id) " +
+
+                        "ON DELETE CASCADE" +
+
+                        ")";
+
+        db.execSQL(createChatMessageTable);
     }
 
 
@@ -214,6 +288,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             int newVersion) {
 
         // Xóa bảng con trước
+        db.execSQL(
+                "DROP TABLE IF EXISTS " +
+                        TABLE_CHAT_MESSAGE
+        );
+
+        db.execSQL(
+                "DROP TABLE IF EXISTS " +
+                        TABLE_CHAT_CONVERSATION
+        );
+
         db.execSQL(
                 "DROP TABLE IF EXISTS " +
                         TABLE_LEARNING_HISTORY

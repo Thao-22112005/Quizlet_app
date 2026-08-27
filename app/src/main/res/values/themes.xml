@@ -36,4 +36,9 @@
     <style name="Theme.EnglishVocabulary"
         parent="Base.Theme.EnglishVocabulary" />
 
+    <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
