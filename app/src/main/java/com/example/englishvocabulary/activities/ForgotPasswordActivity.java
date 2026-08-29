@@ -89,6 +89,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         // KHÓA NÚT
         btnSendReset.setEnabled(false);
 
+        // ĐẶT NGÔN NGỮ EMAIL LÀ TIẾNG VIỆT
+        mAuth.setLanguageCode("vi");
+
         // FIREBASE GỬI EMAIL
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {

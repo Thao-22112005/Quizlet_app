@@ -45,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
+        // ĐẶT NGÔN NGỮ EMAIL LÀ TIẾNG VIỆT
+        mAuth.setLanguageCode("vi");
 
         tilName = findViewById(R.id.tilName);
         tilEmail = findViewById(R.id.tilEmail);
