@@ -186,7 +186,7 @@ public class AIChatFragment extends Fragment {
             tvHello.setText(
                     "Xin chào! " +
                             userName.trim() +
-                            " 👋\n" +
+                            "\n" +
                             "Tôi có thể giúp bạn giải thích từ vựng, " +
                             "ngữ pháp, đặt câu, tạo bài tập... bất cứ điều gì " +
                             "liên quan đến việc học tiếng Anh."
@@ -202,10 +202,6 @@ public class AIChatFragment extends Fragment {
         }
 
 
-        // =========================
-        // KHỞI TẠO GEMINI
-        // =========================
-
         GenerativeModel ai =
                 FirebaseAI
                         .getInstance(
@@ -217,20 +213,11 @@ public class AIChatFragment extends Fragment {
 
         model =
                 GenerativeModelFutures.from(ai);
-
-
-        // =========================
-        // NÚT GỬI
-        // =========================
-
         btnSend.setOnClickListener(
                 v -> sendMessage()
         );
 
 
-        // =========================
-        // NÚT MENU LỊCH SỬ
-        // =========================
 
         btnMenu.setOnClickListener(v -> {
 
