@@ -17,6 +17,7 @@ import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.database.LearningHistoryDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.example.englishvocabulary.models.LearningHistory;
+import com.example.englishvocabulary.models.SpeakWord;
 import com.example.englishvocabulary.models.Word;
 
 import java.text.SimpleDateFormat;
@@ -204,8 +205,8 @@ public class FlashcardActivity extends AppCompatActivity {
 
         // PHÁT ÂM
         btnSound.setOnClickListener(v -> {
-
-            speakWord();
+            SpeakWord s = new SpeakWord();
+            s.speakWord(textToSpeech,wordList,currentPosition);
 
         });
 
@@ -419,21 +420,28 @@ public class FlashcardActivity extends AppCompatActivity {
             notRememberedCount++;
         }
 
-        // CẬP NHẬT TRẠNG THÁI ĐÃ HỌC VÀO WORD
-        if (isCorrect == 1) {
+//        // CẬP NHẬT TRẠNG THÁI ĐÃ HỌC VÀO WORD
+//        if (isCorrect == 1) {
+//
+//            wordDAO.updateLearnedStatus(
+//                    word.getId(),
+//                    1
+//            );
+//
+//        } else {
+//
+//            wordDAO.updateLearnedStatus(
+//                    word.getId(),
+//                    0
+//            );
+//        }
 
-            wordDAO.updateLearnedStatus(
-                    word.getId(),
-                    1
-            );
-
-        } else {
-
-            wordDAO.updateLearnedStatus(
-                    word.getId(),
-                    0
-            );
-        }
+        // Dù "Đã nhớ" hay "Chưa nhớ"
+        // thì người dùng vẫn đã học từ này
+        wordDAO.updateLearnedStatus(
+                word.getId(),
+                1
+        );
 
 
         // THỜI GIAN HIỆN TẠI

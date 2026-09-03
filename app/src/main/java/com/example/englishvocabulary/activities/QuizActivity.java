@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.database.LearningHistoryDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.example.englishvocabulary.models.LearningHistory;
+import com.example.englishvocabulary.models.SpeakWord;
 import com.example.englishvocabulary.models.Word;
 
 import java.text.SimpleDateFormat;
@@ -38,6 +40,8 @@ public class QuizActivity extends AppCompatActivity {
     private TextView tvAnswer4;
 
     private ProgressBar progressBar;
+
+    private TextToSpeech textToSpeech;
 
     private WordDAO wordDAO;
 
@@ -170,6 +174,21 @@ public class QuizActivity extends AppCompatActivity {
             finish();
 
         });
+        // TEXT TO SPEECH
+        textToSpeech =
+                new TextToSpeech(
+                        this,
+                        status -> {
+
+                            if (status ==
+                                    TextToSpeech.SUCCESS) {
+
+                                textToSpeech.setLanguage(
+                                        Locale.US
+                                );
+                            }
+                        }
+                );
 
         tvAnswer1.setOnClickListener(v -> {
 
@@ -421,6 +440,9 @@ public class QuizActivity extends AppCompatActivity {
                     selectedAnswer
             );
 
+            SpeakWord s = new SpeakWord();
+            s.speakWord(textToSpeech, wordList, currentPosition);
+
         } else {
 
             // SAI
@@ -438,6 +460,8 @@ public class QuizActivity extends AppCompatActivity {
             // Hiển thị đáp án đúng
 
             showCorrectAnswer();
+            SpeakWord s = new SpeakWord();
+            s.speakWord(textToSpeech, wordList, currentPosition);
         }
 
 
@@ -751,5 +775,18 @@ public class QuizActivity extends AppCompatActivity {
         // Đóng QuizActivity
 
         finish();
+    }
+    // GIẢI PHÓNG TTS
+    @Override
+    protected void onDestroy() {
+
+        if (textToSpeech != null) {
+
+            textToSpeech.stop();
+
+            textToSpeech.shutdown();
+        }
+
+        super.onDestroy();
     }
 }

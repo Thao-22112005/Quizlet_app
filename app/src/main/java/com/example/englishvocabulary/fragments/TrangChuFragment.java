@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.activities.FlashcardActivity;
 import com.example.englishvocabulary.activities.VocabularySetDetailActivity;
+import com.example.englishvocabulary.database.LearningHistoryDAO;
 import com.example.englishvocabulary.database.VocabularySetDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.example.englishvocabulary.models.VocabularySet;
@@ -46,6 +47,8 @@ public class TrangChuFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private List<VocabularySet> vocabularySets;
 
+    private LearningHistoryDAO learningHistoryDAO;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,6 +70,8 @@ public class TrangChuFragment extends Fragment {
         // Khởi tạo Database & Auth
         vocabularySetDAO = new VocabularySetDAO(requireContext());
         wordDAO = new WordDAO(requireContext());
+        learningHistoryDAO =
+                new LearningHistoryDAO(requireContext());
         firebaseAuth = FirebaseAuth.getInstance();
 
         // Tải thông tin
@@ -92,6 +97,59 @@ public class TrangChuFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showContinueSet(VocabularySet set) {
+
+        int total =
+                wordDAO.getBySetId(set.getId()).size();
+
+        int remembered =
+                learningHistoryDAO
+                        .getRememberedCountBySetId(
+                                set.getId()
+                        );
+
+        int progress =
+                (total > 0)
+                        ? (remembered * 100) / total
+                        : 0;
+
+        tvContinueTitle.setText(
+                set.getTitle()
+        );
+
+        tvContinueCount.setText(
+                total + " từ"
+        );
+
+        progressLearning.setProgress(progress);
+
+        tvProgressText.setText(
+                "Đã học thuộc " +
+                        remembered +
+                        " từ (" +
+                        progress +
+                        "%)"
+        );
+
+        btnContinue.setEnabled(total > 0);
+
+        btnContinue.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            requireContext(),
+                            FlashcardActivity.class
+                    );
+
+            intent.putExtra(
+                    "set_id",
+                    set.getId()
+            );
+
+            startActivity(intent);
+        });
     }
 
     private void loadUserInfo() {
@@ -144,23 +202,23 @@ public class TrangChuFragment extends Fragment {
         showRecentSets();
     }
 
-    private void showContinueSet(VocabularySet set) {
-        int total = wordDAO.getBySetId(set.getId()).size();
-        int learned = wordDAO.getLearnedWordCount(set.getId());
-        int progress = (total > 0) ? (learned * 100) / total : 0;
-
-        tvContinueTitle.setText(set.getTitle());
-        tvContinueCount.setText(total + " từ");
-        progressLearning.setProgress(progress);
-        tvProgressText.setText("Đã học thuộc " + learned + " từ (" + progress + "%)");
-
-        btnContinue.setEnabled(total > 0);
-        btnContinue.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), FlashcardActivity.class);
-            intent.putExtra("set_id", set.getId());
-            startActivity(intent);
-        });
-    }
+//    private void showContinueSet(VocabularySet set) {
+//        int total = wordDAO.getBySetId(set.getId()).size();
+//        int learned = wordDAO.getLearnedWordCount(set.getId());
+//        int progress = (total > 0) ? (learned * 100) / total : 0;
+//
+//        tvContinueTitle.setText(set.getTitle());
+//        tvContinueCount.setText(total + " từ");
+//        progressLearning.setProgress(progress);
+//        tvProgressText.setText("Đã học thuộc " + learned + " từ (" + progress + "%)");
+//
+//        btnContinue.setEnabled(total > 0);
+//        btnContinue.setOnClickListener(v -> {
+//            Intent intent = new Intent(requireContext(), FlashcardActivity.class);
+//            intent.putExtra("set_id", set.getId());
+//            startActivity(intent);
+//        });
+//    }
 
     private void showRecentSets() {
         layoutRecentSets.removeAllViews();

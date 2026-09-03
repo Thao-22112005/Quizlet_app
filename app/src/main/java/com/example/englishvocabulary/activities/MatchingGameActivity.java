@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.view.Gravity;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.database.LearningHistoryDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.example.englishvocabulary.models.LearningHistory;
+import com.example.englishvocabulary.models.SpeakWord;
 import com.example.englishvocabulary.models.Word;
 
 import java.text.SimpleDateFormat;
@@ -64,6 +66,10 @@ public class MatchingGameActivity extends AppCompatActivity {
     // Chặn click nhanh khi đang xử lý animation
     private boolean isProcessing = false;
 
+    // speak word
+    private TextToSpeech textToSpeech;
+    private SpeakWord speakWord;
+
     // Màu sắc - Light theme
     private static final int COLOR_LEFT_DEFAULT = Color.parseColor("#EEF2FF");
     private static final int COLOR_RIGHT_DEFAULT = Color.parseColor("#F3E8FF");
@@ -83,6 +89,15 @@ public class MatchingGameActivity extends AppCompatActivity {
         // Khởi tạo
         wordDAO = new WordDAO(this);
         learningHistoryDAO = new LearningHistoryDAO(this);
+        speakWord = new SpeakWord();
+
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+
+                textToSpeech.setLanguage(Locale.US);
+
+            }
+        });
         initViews();
         setupListeners();
         loadGame();
@@ -322,6 +337,12 @@ public class MatchingGameActivity extends AppCompatActivity {
         isProcessing = true;
 
         if (selectedLeftIndex == selectedRightIndex) {
+
+            speakWord.speakWord(
+                    textToSpeech,
+                    gameWords,
+                    selectedLeftIndex
+            );
             // ĐÚNG!
             selectedLeftCard.setCardBackgroundColor(COLOR_CORRECT);
             selectedRightCard.setCardBackgroundColor(COLOR_CORRECT);
@@ -480,5 +501,15 @@ public class MatchingGameActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         return (int) (dp * getResources()
                 .getDisplayMetrics().density);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
     }
 }

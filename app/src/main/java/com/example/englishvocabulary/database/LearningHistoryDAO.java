@@ -554,19 +554,114 @@ public class LearningHistoryDAO {
         return count;
     }
 
+//    public int getRememberedCountByUser(String userUid) {
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String SQL = "SELECT COUNT(DISTINCT lh.word_id) " +
+//                "FROM " + DatabaseHelper.TABLE_LEARNING_HISTORY + " lh " +
+//                "INNER JOIN " + DatabaseHelper.TABLE_VOCABULARY_SET + " vs ON lh.set_id = vs.id " +
+//                "WHERE vs.user_uid = ? AND lh.is_correct = 1";
+//        Cursor cursor = db.rawQuery(sql, new String[]{userUid});
+//        int count = 0;
+//        if (cursor.moveToFirst()) {
+//            count = cursor.getInt(0);
+//        }
+//        cursor.close();
+//        db.close();
+//        return count;
+//    }
     public int getRememberedCountByUser(String userUid) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String sql = "SELECT COUNT(DISTINCT lh.word_id) " +
-                "FROM " + DatabaseHelper.TABLE_LEARNING_HISTORY + " lh " +
-                "INNER JOIN " + DatabaseHelper.TABLE_VOCABULARY_SET + " vs ON lh.set_id = vs.id " +
-                "WHERE vs.user_uid = ? AND lh.is_correct = 1";
-        Cursor cursor = db.rawQuery(sql, new String[]{userUid});
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        String sql =
+                "SELECT COUNT(*) " +
+                        "FROM " + DatabaseHelper.TABLE_LEARNING_HISTORY + " lh " +
+                        "INNER JOIN " +
+                        DatabaseHelper.TABLE_VOCABULARY_SET +
+                        " vs ON lh.set_id = vs.id " +
+
+                        "WHERE vs.user_uid = ? " +
+
+                        // Chỉ xét Flashcard
+                        "AND lh.learning_mode = 'FLASHCARD' " +
+
+                        // Chỉ lấy kết quả mới nhất của mỗi từ
+                        "AND lh.id = ( " +
+                        "SELECT MAX(lh2.id) " +
+                        "FROM " +
+                        DatabaseHelper.TABLE_LEARNING_HISTORY +
+                        " lh2 " +
+                        "WHERE lh2.word_id = lh.word_id " +
+                        "AND lh2.learning_mode = 'FLASHCARD' " +
+                        ") " +
+
+                        // Lần gần nhất là Đã nhớ
+                        "AND lh.is_correct = 1";
+
+        Cursor cursor =
+                db.rawQuery(
+                        sql,
+                        new String[]{userUid}
+                );
+
         int count = 0;
+
         if (cursor.moveToFirst()) {
             count = cursor.getInt(0);
         }
+
         cursor.close();
         db.close();
+
+        return count;
+    }
+    public int getRememberedCountBySetId(int setId) {
+
+        SQLiteDatabase db =
+                dbHelper.getReadableDatabase();
+
+        String sql =
+                "SELECT COUNT(*) " +
+                        "FROM " +
+                        DatabaseHelper.TABLE_LEARNING_HISTORY +
+                        " lh " +
+
+                        "WHERE lh.set_id = ? " +
+
+                        // Chỉ xét Flashcard
+                        "AND lh.learning_mode = 'FLASHCARD' " +
+
+                        // Chỉ lấy trạng thái mới nhất của mỗi từ
+                        "AND lh.id = ( " +
+                        "SELECT MAX(lh2.id) " +
+                        "FROM " +
+                        DatabaseHelper.TABLE_LEARNING_HISTORY +
+                        " lh2 " +
+                        "WHERE lh2.word_id = lh.word_id " +
+                        "AND lh2.learning_mode = 'FLASHCARD' " +
+                        ") " +
+
+                        // Trạng thái mới nhất là Đã nhớ
+                        "AND lh.is_correct = 1";
+
+        Cursor cursor =
+                db.rawQuery(
+                        sql,
+                        new String[]{
+                                String.valueOf(setId)
+                        }
+                );
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
         return count;
     }
 }

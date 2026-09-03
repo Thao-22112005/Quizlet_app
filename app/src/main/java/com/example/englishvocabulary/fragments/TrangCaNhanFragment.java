@@ -19,6 +19,7 @@ import com.example.englishvocabulary.R;
 import com.example.englishvocabulary.activities.ForgotPasswordActivity;
 import com.example.englishvocabulary.activities.LoginActivity;
 import com.example.englishvocabulary.activities.ThongKeActivity;
+import com.example.englishvocabulary.database.LearningHistoryDAO;
 import com.example.englishvocabulary.database.WordDAO;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class TrangCaNhanFragment extends Fragment {
 
     private TextView tvAvatar;
+
+    private LearningHistoryDAO learningHistoryDAO;
     private TextView tvName;
     private TextView tvEmail;
 
@@ -96,6 +99,9 @@ public class TrangCaNhanFragment extends Fragment {
         wordDAO =
                 new WordDAO(requireContext());
 
+        learningHistoryDAO =
+                new LearningHistoryDAO(requireContext());
+
 
         loadUserInfo();
 
@@ -145,13 +151,56 @@ public class TrangCaNhanFragment extends Fragment {
     }
 
 
+//    private void loadLearningProgress() {
+//
+//        FirebaseUser user =
+//                firebaseAuth.getCurrentUser();
+//
+//
+//        // Không có user
+//        if (user == null) {
+//
+//            tvLearned.setText("0");
+//            tvRemembered.setText("0");
+//            tvNeedReview.setText("0");
+//
+//            return;
+//        }
+//
+//
+//        // UID của tài khoản Firebase
+//        String userUid =
+//                user.getUid();
+//
+//        int learned =
+//                wordDAO.getLearnedWordCountByUser(userUid);
+//
+//
+//        int needReview =
+//                wordDAO.getUnlearnedWordCountByUser(userUid);
+//
+//
+//        tvLearned.setText(
+//                String.valueOf(learned)
+//        );
+//
+//
+//        // Hiện tại "Đã nhớ" dùng số từ đã học
+//        tvRemembered.setText(
+//                String.valueOf(learned)
+//        );
+//
+//
+//        tvNeedReview.setText(
+//                String.valueOf(needReview)
+//        );
+//    }
+
     private void loadLearningProgress() {
 
         FirebaseUser user =
                 firebaseAuth.getCurrentUser();
 
-
-        // Không có user
         if (user == null) {
 
             tvLearned.setText("0");
@@ -161,29 +210,28 @@ public class TrangCaNhanFragment extends Fragment {
             return;
         }
 
-
-        // UID của tài khoản Firebase
         String userUid =
                 user.getUid();
 
+        // Số từ đã học
         int learned =
                 wordDAO.getLearnedWordCountByUser(userUid);
 
+        // Số từ đã nhớ
+        int remembered =
+                learningHistoryDAO.getRememberedCountByUser(userUid);
 
+        // Số từ chưa học
         int needReview =
                 wordDAO.getUnlearnedWordCountByUser(userUid);
-
 
         tvLearned.setText(
                 String.valueOf(learned)
         );
 
-
-        // Hiện tại "Đã nhớ" dùng số từ đã học
         tvRemembered.setText(
-                String.valueOf(learned)
+                String.valueOf(remembered)
         );
-
 
         tvNeedReview.setText(
                 String.valueOf(needReview)
